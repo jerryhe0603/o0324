@@ -1,0 +1,420 @@
+<{*<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" />*}>
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+			
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<li>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=list">公司管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			<{if $smarty.get.co_id}>編輯<{else}>新增<{/if}>
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			<{if $smarty.get.co_id}>編輯<{else}>新增<{/if}>公司
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		
+		<!-- 提示訊息 start -->
+		<div class="alert alert-info">
+			<i class="icon-hand-right"></i>
+			請填寫以下資料，<i class="icon-asterisk red"></i> 為必填。
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 提示訊息 ended -->
+		
+		<!-- 警示訊息 start -->
+		<div id="msg_warn" class="error alert alert-danger" style="display:none;">
+			<i class="icon-remove-sign icon-large"></i>
+			<span></span>
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 警示訊息 ended -->
+		
+		<div class="tabbable">
+			<ul class="nav nav-tabs" id="myTab4">
+				<li class="<{if $smarty.get.tab=='company'||!$smarty.get.tab}>active<{/if}>">
+					<a data-toggle="tab" href="#company">基本資料</a>
+				</li>
+				<{if $smarty.get.co_id}>
+				<li class="<{if $smarty.get.tab=='oldcat'}>active<{/if}>">
+					<a data-toggle="tab" href="#oldcat">貓舍</a>
+				</li>
+				<{/if}>
+			</ul>
+			
+			<div class="tab-content no-border">
+				<div id="company" class="tab-pane <{if $smarty.get.tab=='company'|| !$smarty.get.tab}>active<{/if}>">
+					<p>
+					
+						<div class="row">
+							<!-- company -->
+							<form class="form-horizontal" name="myForm2" id="myForm2" method="post" action="./index.php?func=<{$smarty.get.func}>&action=edit">
+							
+								<div class="control-group">
+									<label class="control-label" for="co_nickname"><i class="icon-asterisk red"></i> 名稱</label>
+
+									<div class="controls">
+										<input type="text" name="co_nickname" id="co_nickname" value="<{$oCompany->co_nickname}>" />
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label" for="parent_id_name">所屬公司</label>
+
+									<div class="controls">
+										<input type="text" name="parent_id_name" id="parent_id_name" data-provide="typeahead" placeholder="輸入母公司名稱..." value="<{$oCompany->parent_id_name}>" autocomplete="off" />
+									</div>
+								</div>
+
+								<!--
+								<div class="control-group">
+									<label class="control-label" for="co_name_en"> 公司英文名稱</label>
+
+									<div class="controls">
+										<input type="text" name="co_name_en" id="co_name_en" value="<{$oCompany->co_name_en}>" />
+									</div>
+								</div>
+								-->
+
+								
+								<div class="control-group">
+									<label class="control-label" for="co_name"> 發票抬頭</label>
+
+									<div class="controls">
+										<input type="text" name="co_name" id="co_name" value="<{$oCompany->co_name}>" />
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label" for="co_LastUser">代表人</label>
+
+									<div class="controls">
+										<input type="text" name="co_LastUser" id="co_LastUser" value="<{$oCompany->co_LastUser}>" />
+									</div>
+								</div>	
+								
+								<div class="control-group">
+									<label class="control-label" for="co_first_year">設立年(民國)</label>
+
+									<div class="controls">
+										<input type="text" name="co_first_year" id="co_first_year" value="<{$oCompany->co_first_year}>" maxlength="3" />
+									</div>
+								</div>	
+								
+								<div class="control-group">
+									<label class="control-label" for="co_capital">資本額(新台幣)</label>
+
+									<div class="controls">
+										<input type="text" name="co_capital" id="co_capital" value="<{$oCompany->co_capital}>" maxlength="20" />
+									</div>
+								</div>	
+
+								<div class="control-group">
+									<label class="control-label" for="tax_id">統一編號</label>
+
+									<div class="controls">
+										<input type="text" name="tax_id" id="tax_id" value="<{$oCompany->tax_id}>" maxlength="8" /> (最多8碼)
+									</div>
+								</div>	
+								
+								<div class="control-group">
+									<label class="control-label" for="payment_day">結帳日</label>
+									<div class="controls">
+									  <select name="payment_day" id="payment_day">
+										<{section name=foo start=0 loop=32 step=1}>
+										  <option value="<{$smarty.section.foo.index}>" <{if $smarty.section.foo.index==$oCompany->payment_day}>selected<{/if}> ><{$smarty.section.foo.index}></option>
+										<{/section}>
+									  </select>(1~31)號
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label">電話/手機/傳真</label>
+									<div class="controls">
+										<div id="company_tel"></div>
+										<script>SelectCompanyTel();</script>
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label">電子郵件</label>
+									<div class="controls">
+										<div id="company_email"></div>
+										<script>SelectCompanyEmail();</script>
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label">網址</label>
+									<div class="controls">
+										<div id="company_www"></div>
+										<script>SelectCompanyWww();</script>
+									</div>
+								</div>
+												
+								<div class="control-group">
+									<label class="control-label">地址</label>
+									<div class="controls">
+										<div id="company_address"></div>
+										<script>SelectCompanyAddress();</script>
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label">公司部門</label>
+									<div class="controls">
+										<div id="company_dept"></div>
+										<script>SelectCompanyDept();</script>
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label">公司品牌</label>
+									<div class="controls">
+										<div id="company_brand"></div>
+										<script>SelectCompanyBrand();</script>
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label" for="note">備註</label>
+									<div class="controls">
+										<textarea type="text" name="note" id="note" style="margin:0px; height:196px; width:503px;"><{$oCompany->note}></textarea>
+									</div>
+								</div>
+
+								<div class="control-group">
+									<label class="control-label" for="form-field-checkbox-5">狀態</label>
+									<div class="controls">	
+										<{if $oCompany && $oCompany->flag==0}>
+											<input type="checkbox" name="flag" value="1" class="ace ace-switch ace-switch-7" />
+										<{else}>
+											<input type="checkbox" name="flag" value="1" class="ace ace-switch ace-switch-7" checked />
+										<{/if}>
+										<span class="lbl"></span>		
+									</div>
+								</div>
+
+								<div class="clearfix form-actions">
+									<div class="col-md-offset-3 col-md-9">
+										<button class="btn btn-small btn-info" type="submit">
+											<i class="icon-ok bigger-110"></i>
+											送出
+										</button>
+
+										&nbsp; &nbsp; &nbsp;
+										<button class="btn btn-small" type="reset">
+											<i class="icon-undo bigger-110"></i>
+											重置
+										</button>
+
+										&nbsp; &nbsp; &nbsp;
+										<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+											<i class="icon-reply bigger-110"></i>
+											取消
+										</button>
+									</div>
+								</div>
+
+								<input type="hidden" name="co_id" value="<{$smarty.get.co_id}>" />
+								<input type="hidden" name="parent_id" id="parent_id" value="<{$oCompany->parent_id}>" />
+								<input type="hidden" name="site_type" value="company" />
+							</form>	
+							<!-- company -->
+						</div>
+					</p>
+				</div>
+				
+				<div id="oldcat" class="tab-pane <{if $smarty.get.tab=='oldcat'}>active<{/if}>">
+					<p>
+						<!-- oldcat -->
+						<form class="form-horizontal" name="myForm2" id="myForm2" method="post" action="./index.php?func=<{$smarty.get.func}>&action=edit&tab=oldcat">
+							<div class="control-group">
+								<label class="control-label" for="co_name">公司名稱</label>
+
+								<div class="controls">
+									<{$company.co_name}>
+								</div>
+							</div>
+								
+							<div class="control-group">
+								<label class="control-label" for="mm_id"><i class="icon-asterisk red"></i> 體系</label>
+								<div class="controls">	
+									<select name="mm_id" id="mm_id" style="float:left;">
+									  <option value="0">請選擇</option>
+									  <{foreach from=$ManagementData item="entry" name="foo"}> 
+									  <option value="<{$entry.mm_id|escape}>" <{if $entry.mm_id==$oCompany->oldcat.mm_id}>selected<{/if}>><{$entry.mm_name|escape}></option>
+									  <{/foreach}>
+									</select>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="ind_id"><i class="icon-asterisk red"></i> 產業別</label>
+								<div class="controls">	
+									<select name="ind_id" id="ind_id" style="float:left;">
+									  <option value="0">請選擇</option>
+									  <{foreach from=$IndustryData item="entry2" name="foo2"}> 
+									  <option value="<{$entry2.ind_id|escape}>" <{if $entry2.ind_id==$oCompany->oldcat.ind_id}>selected<{/if}>><{$entry2.ind_name|escape}></option>
+									  <{/foreach}>
+									</select>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label">客戶類型</label>
+								<div class="controls">
+									<div class="space-2"></div>
+									<label class="inline">
+										<input type="radio" class="ace" name="co_type" value="0" checked>
+										<span class="lbl"> 直客</span>
+									</label>
+									&nbsp; &nbsp; &nbsp;
+									<label class="inline">
+										<input type="radio" class="ace" name="co_type" value="1" <{if $oCompany->oldcat.co_type==1}>checked<{/if}>>
+										<span class="lbl"> 代理商</span>
+									</label>
+									&nbsp; &nbsp; &nbsp;
+									<label class="inline">
+										<input type="radio" class="ace" name="co_type" value="2" <{if $oCompany->oldcat.co_type==2}>checked<{/if}>>
+										<span class="lbl"> 銀河內部</span>
+									</label>
+									&nbsp; &nbsp; &nbsp;
+									<label class="inline">
+										<input type="radio" class="ace" name="co_type" value="3" <{if $oCompany->oldcat.co_type==3}>checked<{/if}>>
+										<span class="lbl"> 其他</span>
+									</label>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label" for="level">等級</label>
+								<div class="controls">
+									<select name="level" id="level">
+										<option value="0">請選擇</option>
+										<option value="1" <{if $oCompany->oldcat.level==1}>selected<{/if}>>A</option>
+										<option value="2" <{if $oCompany->oldcat.level==2}>selected<{/if}>>B</option>
+										<option value="3" <{if $oCompany->oldcat.level==3}>selected<{/if}>>C</option>
+										<option value="4" <{if $oCompany->oldcat.level==4}>selected<{/if}>>D</option>
+										<option value="5" <{if $oCompany->oldcat.level==5}>selected<{/if}>>E</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="clearfix form-actions">
+								<div class="col-md-offset-3 col-md-9">
+									<button class="btn btn-small btn-info" type="submit">
+										<i class="icon-ok bigger-110"></i>
+										送出
+									</button>
+
+									&nbsp; &nbsp; &nbsp;
+									<button class="btn btn-small" type="reset">
+										<i class="icon-undo bigger-110"></i>
+										重置
+									</button>
+
+									&nbsp; &nbsp; &nbsp;
+									<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+										<i class="icon-reply bigger-110"></i>
+										取消
+									</button>
+								</div>
+							</div>
+
+							<input type="hidden" name="co_id" value="<{$smarty.get.co_id}>" />
+							<input type="hidden" name="site_type" value="oldcat" />
+						</form>
+						<!-- oldcat -->
+					</p>
+				</div>
+			</div>
+		
+		</div>	
+		<!--PAGE CONTENT BEGINS HERE-->
+	</div>
+</div>	
+
+<script src="../js/jquery.validate.min.js"></script>
+<script>
+$(function() {
+	var dataid = [];
+	// 所屬公司
+	$('#parent_id_name').typeahead({
+		source: function(text, process) {	
+			if(!text) return;
+			
+			var data = [];
+
+			return $.ajax({
+				url: '../api/api.get_parent_company.php',
+				type: 'post',
+				data: {"text": text},
+				dataType: 'json',
+				success: function(json) {	
+
+					if(json.length) {	
+						for(var i = 0; i < json.length; i++) {
+							coided = json[i].co_id;
+							data.push(json[i].co_name);
+							dataid[json[i].co_name] = json[i].co_id;
+						}
+					}
+					console.log(data);
+					return typeof json == 'undefined' ? false : process(data);
+				}
+			});
+		},
+		updater: function (item) {
+			console.log('item='+item);
+			console.log('item id='+ dataid[item]);
+			$('#parent_id').val(dataid[item]);
+			return item;
+		}
+		
+	});
+
+	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			co_name: 'required',
+		},
+		messages: {
+			co_name: '請輸入公司名稱',
+		},
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+	
+});
+</script>

@@ -1,0 +1,150 @@
+	<style>
+     
+
+
+
+      #accounts .accounts_component{
+        border: 1px solid #fff;
+      }
+     
+
+      
+	 
+    </style>
+	<script>
+
+$(document).ready(function(){
+
+
+		window.addEventListener("message", receiveMessage, false);
+		
+		function receiveMessage (event) {
+			alert('get message!!');
+			console.log(event);
+		
+		  
+		}
+
+		$(".accountselector").colorbox({width:"1024", height:"768", 'overlayClose': false, 'iframe': true});
+
+
+		$(document).on('cbox_closed', function() {
+			
+		});
+	});
+</script>		
+
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+	
+			
+			身份帳號管理
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+			
+		</li>
+		<li class="dropdown">
+		  <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">帳號管理 <b class="caret"></b></a>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+			<li><a tabindex="-1" href="./index.php?func=accounts&action=list">帳號列表</a></li>
+			<li><a tabindex="-1" href="./index.php?func=accounts&action=search">進階搜尋</a></li>
+		  </ul>
+		  <span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		
+		<li>
+	
+			
+			<a href="./index.php?func=accounts&action=selector"> 選擇網站帳號</a>
+		</li>
+
+
+		
+	</ul><!--.breadcrumb-->
+
+<div class="nav-search" id="nav-search">
+		<form class="form-search" name=search-form id=search-form ENCTYPE=multipart/form-data method="post" action="index.php?func=accounts&action=search_list" >
+					<div class="control-group">	
+					<label  for="s_key">
+						<select name="s_terms" id="s_terms" >
+						<{foreach item=key name=foo from=$puppetsFieldsData}>
+					
+						<{if $key.element->sTagType == "text"}>
+						 <option value="<{$key.element->iElementMappingNo}>"><{$key.element->sName}></option>
+						<{/if}>
+						<{/foreach}>
+						</select>
+						<span class="input-icon">
+							<input type="text" name="s_key" aria-controls="table_report" placeholder="Search..." value="<{$searchKey}>">
+							<i class="icon-search" id="nav-search-icon"></i>
+						</span>
+					</label>
+					</div>
+					</form>
+	</div><!--#nav-search-->
+</div>	
+
+
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			選擇網站帳號
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">				
+			
+				
+				<div class="row-fluid ">
+				<div class="span6">
+				  <div class="clearfix">
+					
+					
+					<a class="btn btn-large btn-primary accountselector cboxElement" href="/api/api.accountsearch.php?func=puppets_selector&action=search"> 帳號選擇器</a>
+					<legend >帳號</legend>
+						
+					  <div id="accounts" class="form-horizontal form-fieldset">
+						<fieldset>
+						 
+						
+						 <div id="accounts_legend" data-rel="popover" >
+							
+												
+							
+						  </div>
+							
+												  
+						</fieldset>
+						
+					  </div>
+					
+					
+					
+				  </div>
+				</div>
+					
+					
+	
+	</div>
+</div>	
+
+
+
+
+		
+			

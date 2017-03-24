@@ -1,0 +1,167 @@
+
+<div class="control-group">
+		<label class="control-label" for="is_holiday">參與人員</label>
+		<div class="controls">
+	
+			<select  multiple=""  class ="select_chosen" id="task_user" name="task_user[]" data-placeholder="Choose a User...">
+				<option  label="" value=""></option>
+				<{foreach item=oUser from=$aAllUser}>
+				<option  label="<{$oUser->sName}>" value="<{$oUser->iUserNo}>" <{if $oUser->bSelected}>selected<{/if}>><{$oUser->sName}></option>
+				<{/foreach}>
+			</select>
+	
+
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="is_holiday">行事曆</label>
+		<div class="controls">
+	
+			<select    class ="select_chosen" id="task_group_uuid" name="task_group_uuid" data-placeholder="Choose a Calendar...">
+				<option  label="" value=""></option>
+				<{foreach item=oGroup from=$aGroups}>
+				<option  label="<{$oGroup->sName}>" value="<{$oGroup->sTaskGroupUuid}>"
+					<{if $oGroup->sTaskGroupUuid == $oTask->sTaskGroupUuid}>selected<{/if}>>
+					<{$oGroup->sName}>
+				</option>
+				<{/foreach}>
+			</select>
+	
+
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="is_holiday">事件</label>
+		<div class="controls">
+	
+			<select    class ="select_chosen" id="event_no" name="event_no" data-placeholder="Choose a Calendar...">
+				<option  label="" value=""></option>
+				<{foreach item=oEvent from=$aEvent}>
+				<option  label="<{$oEvent->sName}>" value="<{$oEvent->iEventNo}>"
+					<{if $oEvent->iEventNo == $oTask->iEventNo}>selected<{/if}>>
+					<{$oEvent->sName}>
+				</option>
+				<{/foreach}>
+			</select>
+	
+
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="task_name">活動名稱</label>
+
+		<div class="controls">
+			<input type="text" name="task_name" id="task_name" value="<{$oTask->sName}>" />
+		</div>
+	</div>	
+	<div class="control-group">
+		<label class="control-label" for="task_url">網址</label>
+
+		<div class="controls">
+			<span class="input-icon input-icon-left">
+			<input type="url" name="task_url" id="task_url" value="<{$oTask->sUrl}>">
+			<i class="icon-globe"></i>
+			</span>
+		</span>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="task_desc">描述</label>
+
+		<div class="controls">
+			<textarea id="task_desc"  name="task_desc" class="autosize-transition" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 50px;"><{$oTask->sDesc}></textarea>
+		
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="task_start_date">開始日期</label>
+
+		<div class="controls">
+			<span class="input-icon input-icon-left">
+			<input class="date-picker" name="task_start_date" id="task_start_date" type="text" data-date-format="yyyy-mm-dd" value="<{$oTask->iStartDate|date_format:'%Y-%m-%d'}>">
+			
+				<i class="icon-calendar"></i>
+			</span>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="task_start_time">開始時間</label>
+
+		<div class="controls bootstrap-timepicker">
+			<span class="input-icon input-icon-left">
+			<input name="task_start_time" id="task_start_time" type="text"  value="<{$oTask->iStartDate|date_format:'%H:%M'}>">
+			
+				<i class="icon-time"></i>
+			</span>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="task_end_date">結束日期</label>
+
+		<div class="controls">
+			<span class="input-icon input-icon-left">
+			<input class="date-picker" name="task_end_date" id="task_end_date" type="text" data-date-format="yyyy-mm-dd" value="<{$oTask->iEndDate|date_format:'%Y-%m-%d'}>">
+			
+				<i class="icon-calendar"></i>
+			</span>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="task_end_time">結束時間</label>
+
+		<div class="controls bootstrap-timepicker">
+			<span class="input-icon input-icon-left">
+			<input name="task_end_time" id="task_end_time" type="text" value="<{$oTask->iEndDate|date_format:'%H:%M'}>">
+			
+				<i class="icon-time"></i>
+			</span>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="is_allday">全天</label>
+		<div class="controls">
+	
+			<input name="is_allday"  id="is_allday" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $oTask->bAllDay}>checked<{/if}>>
+			<span class="lbl"></span>
+			</div>
+	</div>
+	
+	<div class="form-actions">
+		<button class="btn btn-small btn-info" type="submit">
+			<i class="icon-ok bigger-110"></i>
+			送出
+		</button>
+
+		&nbsp; &nbsp; &nbsp;
+		<button class="btn btn-small" type="reset">
+			<i class="icon-undo bigger-110"></i>
+			重置
+		</button>
+
+		
+	</div>
+
+<script>
+$('.select_chosen').chosen({search_contains: true});
+
+$('.date-picker').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
+$('#task_start_time').timepicker({
+					minuteStep: 1,
+					showSeconds: false,
+					showMeridian: false
+				}).next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
+$('#task_end_time').timepicker({
+					minuteStep: 1,
+					showSeconds: false,
+					showMeridian: false
+				}).next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
+</script>

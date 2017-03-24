@@ -1,0 +1,232 @@
+<style>
+#nav-search-input {
+	border-color: #6fb3e0;
+	border-width: 1px;
+	width: 120px;
+	height: 18px!important;
+	border-radius: 4px!important;
+	font-size: 13px;
+	color: #666!important;
+	z-index: 11;
+	-webkit-transition: all ease .15s;
+	-moz-transition: all ease .15s;
+	-o-transition: all ease .15s;
+	transition: all ease .15s;
+}
+#nav-search-icon {color: #6fb3e0;font-size: 14px;line-height: 24px;}
+#s_terms {width: 140px;height: 28px;padding: 2px 3px;}
+</style>
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<li class="active">產品列表</li>
+	</ul><!--.breadcrumb-->
+
+</div>
+
+<div class="page-content">
+	<!--PAGE CONTENT BEGINS HERE-->
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="page-header position-relative">
+				<a href="./index.php?func=<{$smarty.get.func}>&action=add" class="btn btn-app btn-primary btn-mini ">
+					<i class="icon-plus bigger-160"></i>新增
+				</a>
+			</div>
+		</div>
+		<!--
+		<div class="span1">
+			<div class="page-header position-relative">
+				<a href="./index.php?func=<{$smarty.get.func}>&action=total_calendar" class="btn btn-app btn-yellow btn-mini ">
+					<i class="icon-calendar bigger-160"></i>時程總覽
+				</a>
+			</div>
+		</div>
+		-->
+		<!--/.page-header-->
+	</div>
+
+	<div class="table-header">
+		<{if $smarty.get.search=='1'}>
+                <span>
+		Results for "<{$searchKey}>"
+                </span>
+                <span class="span2 pull-right align-center">
+                    <a href="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>">
+                        <label class="badge badge-light">
+                            取消搜尋
+                        </label>
+                    </a>
+                </span>
+		<{/if}>
+	</div>
+
+	<div class="dataTables_wrapper" role="grid">
+		<div class="row-fluid">		
+			<div class="span6">
+				<div id="table_report_length" class="dataTables_length">
+					<label>每頁 
+						<select id="select_page_items" onChange="relocate(this);" size="1"  aria-controls="table_report">
+							<option value="5">5</option>
+							<option value="10" selected="selected">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+						</select> 筆
+					</label>
+				</div>
+			</div>
+			<div class="span6 ">
+			
+				<div class="dataTables_filter " id="table_report_filter" style="height:35px;">
+					<form name="search-form" ENCTYPE="multipart/form-data" method="post" action="index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&search=1" >
+						<{html_options name=s_terms id=s_terms options=$searchOption selected=$searchTerm}>
+						<span class="input-icon">
+							<input type="text"  style="margin:0;" name="s_key" id="nav-search-input" aria-controls="table_report" placeholder="Search ..." <{if $smarty.get.search}>value="<{$searchKey}>"<{/if}> autocomplete="off">
+							<i class="icon-search" id="nav-search-icon"></i>
+						</span>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+		<table id="table_report" class="table table-striped table-bordered table-hover dataTable">
+			<thead>
+				<tr role="row">
+					<th class="sorting" role="columnheader" aria-label="activate to sort column ascending" id="product_no" class="sortable" onclick="sort_table('<{$OrderUrl}>','product_no','<{$OrderSort}>');" >序號</th>
+					<th class="sorting" role="columnheader" aria-label="activate to sort column ascending" id="product_name" class="sortable" onclick="sort_table('<{$OrderUrl}>','product_name','<{$OrderSort}>');" >產品名稱</th>
+					<th class="sorting" role="columnheader" aria-label="activate to sort column ascending" id="product_order" class="sortable" onclick="sort_table('<{$OrderUrl}>','product_order','<{$OrderSort}>');" >排序</th>
+					<th class="sorting" role="columnheader" aria-label="activate to sort column ascending" id="user_no" class="sortable" onclick="sort_table('<{$OrderUrl}>','user_no','<{$OrderSort}>');">建立者</th>
+					<th class="sorting" role="columnheader" aria-label="activate to sort column ascending" id="edit_user_no" class="sortable" onclick="sort_table('<{$OrderUrl}>','edit_user_no','<{$OrderSort}>');">編修者</th>
+					<th class="sorting" role="columnheader" aria-label="activate to sort column ascending" id="created" class="sortable" onclick="sort_table('<{$OrderUrl}>','created','<{$OrderSort}>');">建立日期</th>
+					<th class="sorting" role="columnheader" aria-label="activate to sort column ascending" id="modified" class="sortable" onclick="sort_table('<{$OrderUrl}>','modified','<{$OrderSort}>');">編修日期</th>
+					<th class="sorting" role="columnheader" aria-label="activate to sort column ascending" id="flag" class="sortable" onclick="sort_table('<{$OrderUrl}>','flag','<{$OrderSort}>');">狀態</th>
+					<th style="width: 140px;">編輯/狀態/刪除</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<{foreach item=oCProduct from=$aAllData}>
+				<tr class="row_focus">
+					<td><{$oCProduct->product_no}></td>
+					<td><{$oCProduct->product_name}></td>
+					<td><{$oCProduct->product_order}></td>
+					<td><{$oCProduct->sGetAddUser()}></td>
+					<td><{$oCProduct->sGetEditUser()}></td>
+                    <td><{$oCProduct->created}></td>
+                    <td><{$oCProduct->modified}></td>
+					<td>
+						<{if $oCProduct->flag == 1 }>
+							<span class="label label-large label-success arrowed arrowed-righ">開啟</span>
+						<{else}>
+							<span class="label label-large label-important arrowed arrowed-righ">關閉</span>
+						<{/if}>
+					</td>
+
+					<td class="td-actions">
+						<div class="hidden-phone visible-desktop action-buttons">
+							<a class="green" href="./index.php?func=<{$smarty.get.func}>&action=edit&product_no=<{$oCProduct->product_no}>" title="編輯">
+								<i class="icon-pencil bigger-130"></i>
+							</a>
+							<a class="orange" href="./index.php?func=<{$smarty.get.func}>&action=active&product_no=<{$oCProduct->product_no}>" title="<{if $oCProduct->flag == 1 }>停用<{else}>啟用<{/if}>">
+								<i class="icon-flag bigger-130"></i>
+							</a>
+							
+							<a class="blue" href="./index.php?func=<{$smarty.get.func}>&action=del&product_no=<{$oCProduct->product_no}>" title="刪除" onclick="return confirm('確定刪除嗎?');">
+								<i class="icon-ban-circle bigger-130"></i>
+							</a>
+						</div>
+					</td>
+
+				</tr>
+				<{/foreach}>
+			</tbody>
+		</table>
+
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="dataTables_info" id="table_report_info" style="font-size:13px;">顯示 <{$StartRow}> 至 <{$EndRow}> 筆，共 <{$Total}> 筆</div>
+			</div>
+			<div class="span6">
+				<div class="dataTables_paginate paging_bootstrap pagination">
+					<{$PageBar}>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div><!--/row-->
+</div><!--/#page-content-->
+
+<script src="../js/jquery.validate.min.js"></script>
+<script>
+var _PageItems = "<{$PageItem}>";
+var _PageUrl = "<{$OrderUrl}>";
+for(var i=0 ; i<document.getElementById("select_page_items").options.length ; i++) {
+	if(document.getElementById("select_page_items").options[i].value == _PageItems) {
+		document.getElementById("select_page_items").selectedIndex = i;
+		break;
+	}
+}
+
+function relocate(obj){ 
+	var val=obj.options[obj.selectedIndex].value;
+	var url_string=_PageUrl;
+	var loc=url_string+'&items='+val;
+	document.location=loc;
+}
+
+/**
+* @desc 新的排序
+*/
+function sort_table_style2(id,sort){
+	var elem;
+	if(document.getElementById) {
+		elem = document.getElementById(id);
+	} else if (document.all){
+		elem = document.all[id];
+	}
+	if(sort.toUpperCase()=="DESC") elem.className = "sorting_desc";
+	else elem.className = "sorting_asc";
+}
+
+sort_table_style2('<{$NowOrder}>','<{$NowSort}>');
+
+$(function() {
+	$('#search-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {s_key: 'required',},
+
+		messages: {s_key: '請填入專案名稱',},
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			$('.alert-error', $('.search-form')).show();
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+	
+	$('.row_focus').click(function (){
+		$('.row_focus').removeClass('success');
+		$(this).addClass('success');
+	});
+
+});
+</script>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <{include file="./admin/header.html"}>
+        <link href="../js/select2-3.5.1/select2.css" rel="stylesheet"/>
+		<script src="../js/select2-3.5.1/select2.js"></script>
+    </head> 
+
+    <body style>
+        <div class="main-container container-fluid">
+        	<div class="page-header position-relative">
+				<h1>
+					設定品牌
+				</h1>
+			</div><!--/.page-header-->
+
+			<div class="row-fluid">
+				<!--PAGE CONTENT BEGINS HERE-->
+				<form class="form-horizontal" id="validation-form" method="post" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&project_no=<{$oProject->sProjectUuid}>">
+					<input type="hidden" name="project_no" value="<{$oProject->sProjectUuid}>">
+					<div class="control-group">
+						<label class="control-label" for="cb_id">品牌名稱</label>
+						<div class="controls">
+							<select  id="cb_id" name="cb_id" data-placeholder="Choose a Brand...">
+								<option value="0" ></option>
+                                <{foreach from=$aBrandId item=brand}>
+                                <option value="<{$brand->iBrandNo}>" <{if $brand->iBrandNo==$oProject->iBrandId }>selected<{/if}> ><{$brand->sName}></option>
+                                <{/foreach}>
+                            </select>
+						</div>
+					</div>
+					<div class="form-actions">
+						<button class="btn btn-small btn-info" type="submit">
+							<i class="icon-ok bigger-110"></i>
+							送出
+						</button>
+
+						&nbsp; &nbsp; &nbsp;
+						<button class="btn btn-small" type="reset">
+							<i class="icon-undo bigger-110"></i>
+							重置
+						</button>
+
+						&nbsp; &nbsp; &nbsp;
+						<button class="btn btn-small btn-danger" type="button" onclick="window.colorbox_close()">
+							<i class="icon-reply bigger-110"></i>
+							取消
+						</button>
+					</div>
+
+				<form>	
+			</div>
+            
+        </div>
+
+        <script>
+			$('#validation-form').on('reset',function(e){
+				e.preventDefault();
+				location.reload();
+			})
+
+			$(function() {
+				//SELECT2
+				$('#company_client').select2({
+					placeholder: "選擇/搜尋 客戶",
+					width: "800px",
+					allowClear: true
+				});
+				$('#contract_client').select2({
+					placeholder: "選擇/搜尋 客戶",
+					width: "800px",
+					allowClear: true
+				});
+			});
+			
+
+			function colorbox_close(){
+				parent.postMessage("", "*");
+			}
+		</script>
+    </body>
+</html>

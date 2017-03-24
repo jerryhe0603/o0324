@@ -1,0 +1,8 @@
+.DS_Store
+Thumbs.db
+*.swp
+tpl/templates_c/*
+test/*
+data/*
+log/*
+inc/config.php

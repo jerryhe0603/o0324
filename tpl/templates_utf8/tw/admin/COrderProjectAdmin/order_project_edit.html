@@ -1,0 +1,229 @@
+<!--basic styles-->
+
+<link href="../css/bootstrap.min.css" rel="stylesheet" />
+<link href="../css/bootstrap-responsive.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/font-awesome.min.css" />
+
+<!--[if IE 7]>
+  <link rel="stylesheet" href="../css/font-awesome-ie7.min.css" />
+<![endif]-->
+
+<!--page specific plugin styles-->
+<link rel="stylesheet" href="../css/chosen.css">
+<!--fonts-->
+
+<!--ace styles-->
+
+<link rel="stylesheet" href="../css/ace.min.css" />
+<link rel="stylesheet" href="../css/ace-responsive.min.css" />
+<link rel="stylesheet" href="../css/ace-skins.min.css" />
+
+<!--[if lte IE 8]>
+  <link rel="stylesheet" href="../css/ace-ie.min.css" />
+<![endif]-->
+<link rel="stylesheet" href="../css/jquery-ui-1.10.3.full.min.css">
+<!--inline styles if any-->
+
+<script type="text/javascript">
+	window.jQuery || document.write("<script src='../js/jquery-1.9.1.min.js'>"+"<"+"/script>");
+</script>
+<script src="../js/bootstrap.min.js"></script>
+
+<!--<script src="../js/jquery-ui-1.10.3.custom.min.js"></script>-->
+<script src="../js/jquery-ui-1.10.3.full.min.js"></script>
+<script src="../js/jquery.ui.touch-punch.min.js"></script>
+<script src="../js/jquery.slimscroll.min.js"></script>
+<script src="../js/jquery.easy-pie-chart.min.js"></script>
+<script src="../js/jquery.sparkline.min.js"></script>
+<script src="../js/jquery.form.min.js"></script>
+<script src="../js/jquery.autosize-min.js"></script>
+<script src="../js/chosen.jquery.min.js"></script>
+<script src="../js/bootbox-4.0.0.min.js"></script>
+<!--ace scripts-->
+
+<script src="../js/ace-elements.min.js"></script>
+<script src="../js/ace.min.js"></script>
+
+
+<script type="text/javascript" src="../js/function_admin.js"></script>
+				
+<script>
+$(function() {
+$('textarea[class*=autosize]').autosize({append: "\n"});
+})
+</script>
+
+<link rel="stylesheet" href="../css/datepicker.css" />
+<link rel="stylesheet" href="../css/bootstrap-timepicker.css" />
+
+<style>
+input:not([type="image"]), textarea {
+box-sizing: content-box;
+}
+table {
+line-height: 20px;
+font-size: 13px;
+}
+</style>
+
+<link rel="stylesheet" href="../css/datepicker.css" />
+<link rel="stylesheet" href="../css/bootstrap-timepicker.css" />
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<{if $sAdmin}>
+			<a href="./index.php?func=order&action=admin">所有訂單 </a>
+			<{else}>
+			<a href="./index.php?func=order&action=list">我的訂單 </a>
+			<{/if}>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=order&action=view&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>">訂單:<{$oOrder->sName}></a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			<a href="./index.php?func=order_project&action=list_by_order&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>">專案列表</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+			<li class="active">新增專案</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+				新增專案
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		<form class="form-horizontal" id="validation-form" method="post" action="index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}><{if $smarty.get.order_no}>&order_no=<{$oOrder->sOrderUuid}><{/if}><{$sAdmin}>">
+			<input type="hidden" name="order_no" value="<{$oOrder->sOrderUuid}>">
+			<div class="control-group">
+				<label class="control-label" for="service_id">專案服務</label>
+				<div class="controls">
+					<select   id="service_id" name="service_id" data-placeholder="Choose a Service...">
+		                                            <option value="0" ></option>
+		                                            <{foreach from=$aService item=sServiceName key=iServiceId}>
+		                                            <option value="<{$iServiceId}>" ><{$sServiceName}></option>
+		                                            <{/foreach}>
+		                                        </select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="cb_id">品牌名稱<i class="icon-refresh" onclick="updateBrand(<{$iCompanyId}>);"></i></label>
+				<div class="controls">
+					<select  id="cb_id" name="cb_id" data-placeholder="Choose a Brand...">
+						<option value="0" ></option>
+						<{if $aBrandId|@count ne 0}>
+		                                            <{foreach from=$aBrandId item=brand}>
+		                                            <option value="<{$brand->iBrandNo}>" ><{$brand->sName}></option>
+		                                            <{/foreach}>
+		                                            <{/if}>
+		                                        </select>
+		                                        <a href="http://<{$sGenesisServer}>/admin/index.php?func=company&action=list&action=edit&co_id=<{$iCompanyId}>&PHPSESSID=<{$PHPSESSID}>" target="_blank">新增/編輯品牌</a>
+				</div>
+			</div>
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small" type="reset">
+					<i class="icon-undo bigger-110"></i>
+					重置
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					取消
+				</button>
+			</div>
+		<form>	
+	</div>
+</div>	
+
+<script src="../js/jquery.validate.min.js"></script>
+<script src="../js/date-time/bootstrap-datepicker.min.js"></script>
+<script>
+$(function() {
+	$('.datepicker').datepicker({format: "yyyy-mm-dd",changeMonth: true, changeYear: true});
+
+	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			service_id: 'selectcheck',
+			cb_id: 'selectcheck',
+		},
+
+		messages: {
+			service_id: '請選擇專案服務',
+			cb_id: '請選擇品牌名稱',
+		},
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			$('.alert-error', $('.validation-form')).show();
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+		errorPlacement:function(error, element){
+			$(error).appendTo($(element).closest('.controls'));
+		}        
+	});
+
+	jQuery.validator.addMethod('selectcheck', function (value) {
+		return (value != '0');
+	}, "擇一選項");
+})
+
+
+function updateBrand(company_id){
+	$('#brand').html('');
+	if(company_id==0) return;
+	$.ajax({
+		url: '../ajax/ajax.CCompanyBrand.php',
+		type:'post',
+		data:{"co_id":company_id},
+		dataType:'json',
+		success:function(json){
+			console.log(json);
+			str='<option value="0" ></option>';
+			for(i in json){
+				str+='<option value="'+i+'" >'+json[i].sName+'</option>';
+			}
+			$('#cb_id').html(str);
+			
+		}
+	});
+}
+
+</script>
+
+

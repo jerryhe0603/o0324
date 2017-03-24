@@ -1,0 +1,85 @@
+<div class="row-fluid">
+	<table id="table_report" class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr role="row">
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案編號</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案名稱</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >品牌</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案起始時間</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案結束時間</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案PM</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >報價PR總篇數</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >委託篇數</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >回應率</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >狀態</th>
+				<!--
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">波段標記</th>
+				-->
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">專案已建置</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">檢視/編輯</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<{foreach item=oOrderProject from=$aAllProject}>
+			<tr>
+				
+				<td><{$oOrderProject->sId}></td>
+				<td><{$oOrderProject->sProjectName}></td>
+				<{assign var=oBrand value=$oOrderProject->oCompanyBrand()}>
+				<td><{$oBrand->sName}></td>
+				<td><{$oOrderProject->sStartDate}></td>
+				<td><{$oOrderProject->sEndDate}></td>
+				<td>
+				<{if $oOrderProject->aUser|@count ne 0 }>
+				<{foreach item=oOrderProjectUser from=$oOrderProject->aUser }>
+					<{$oOrderProjectUser->sName}><br>
+				<{/foreach}>
+				<{/if}>
+				</td>
+				<td><{$oOrderProject->iPostCountBasicBonus}></td>
+				<td><{$oOrderProject->iPostCountExtra}></td>
+				<td><{$oOrderProject->iPromiseResRate}></td>
+				<td><{$oOrderProject->sCondition}></td>
+				<!--<td></td>-->
+				<td>
+					<{if $oOrderProject->bExist == 1 }>
+					<span class="label label-large label-success arrowed arrowed-righ">是</span>
+					<{else}>
+					<span class="label label-large label-important arrowed arrowed-righ">否</span>
+					<{/if}>
+				</td>
+				<td class="td-actions">
+					<div class="hidden-phone visible-desktop action-buttons">
+					<{if $oOrderProject->bExist}>
+						<a class="blue cbox" href="<{$sApiUrl}>&action=view_order&project_no=<{$oOrderProject->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="檢視">
+							檢視
+						</a>
+						<a class="green cbox" href="<{$sApiUrl}>&action=edit_order&project_no=<{$oOrderProject->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="編輯">
+							編輯
+						</a>
+					<{else}>
+						<a class="green cbox" href="<{$sApiUrl}>&action=add_order&project_no=<{$oOrderProject->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>&project_no_prefix=<{$oOrder->sOrderNo}>" title="編輯">
+							編輯
+						</a>
+						<!--
+						<a class="red" href="./index.php?func=<{$smarty.get.func}>&action=deactivate&project_no=<{$oOrderProject->sProjectUuid}>&order_no=<{$oOrder->sOrderUuid}>" title="刪除">
+							刪除
+						</a>	
+						-->					
+					<{/if}>
+					<a class="orange cbox" href="./index.php?func=order_project&action=edit_client&project_no=<{$oOrderProject->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="設定前台權限">
+						設定前台權限
+
+					</a>
+					<a class="orange cbox" href="./index.php?func=order_project&action=edit_brand&project_no=<{$oOrderProject->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="設定品牌">
+						設定品牌
+					</a>
+					</div>
+				</td>
+
+			</tr>
+			<{/foreach}>
+		</tbody>
+	</table>
+</div>

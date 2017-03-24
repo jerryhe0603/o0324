@@ -1,0 +1,200 @@
+		
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>			
+			網站管理
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+	
+			
+			<a href="./index.php?func=site_type&action=list">網站類型管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">網站類型列表</li>
+	</ul><!--.breadcrumb-->
+
+<div class="page-content">
+
+	
+	<div class="row-fluid">
+		<div class="page-header position-relative">
+			<a href="./index.php?func=<{$smarty.get.func}>&action=add" class="btn btn-app btn-primary btn-mini ">
+		<i class="icon-plus bigger-160"></i>
+											新增
+										</a>
+		</div><!--/.page-header-->
+	</div>
+
+	<div class="table-header">
+		<{if $smarty.get.action=='search'}>
+            <span>
+				Results for "<{$searchKey}>"
+            </span>
+            <span class="span2 pull-right align-center">
+                <a href="./index.php?func=<{$smarty.get.func}>&action=list">
+                    <label class="badge badge-light">
+                        取消搜尋
+                    </label>
+                </a>
+            </span>
+		<{/if}>
+	</div>
+
+	<div  class="dataTables_wrapper" role="grid">
+		<div class="row-fluid">		
+			<div class="span6">
+				<div id="table_report_length" class="dataTables_length">
+					<label>Display 
+						<select  id="select_page_items" onChange="relocate(this);" size="1"  aria-controls="table_report">
+							<option value="10" selected="selected">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+						</select> records
+					</label>
+				</div>
+			</div>
+			<div class="span6 ">
+				<div class="dataTables_filter " id="table_report_filter">
+					<form class="form-search" name=search-form id=search-form ENCTYPE=multipart/form-data method="post" action="index.php?func=<{$smarty.get.func}>&action=search" >
+					<div class="control-group">	
+					<label  for="s_key">
+						<span class="input-icon">
+							<input type="text" name="s_key" aria-controls="table_report" placeholder="Search..." value="<{$searchKey}>">
+							<i class="icon-search" id="nav-search-icon"></i>
+						</span>
+					</label>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<table id="table_report" class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr role="row">
+					<th id="site_type_name" class="sortable" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending"  onclick="sort_table('<{$OrderUrl}>','site_type_name','<{$OrderSort}>');">名稱</th>					
+					<th >使用腳本類型</th>
+					<th style="width: 60px;">修改人員</th>
+					<th style="width: 30px;" class="center">狀態</th>
+					<th style="width: 150px;" >修改時間</th>
+					<th style="width: 100px;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<{foreach item=oSiteType from=$aAllSiteTypes}>
+				<tr>
+						<td>
+							<{$oSiteType->sName}>
+							</td>
+						<td>
+							<{foreach item=oScriptType from=$oSiteType->aScriptType() name=script_type}>
+								<{if $smarty.foreach.script_type.index != 0}>&nbsp;,<{/if}>
+								<{$oScriptType->sName}>
+							<{/foreach}>
+						</td> 
+						<{assign var=oLastUser value=$oSiteType->oLastUser()}>
+						<td><{$oLastUser->sName}></td> 
+						<td>
+							
+							<{if $oSiteType->bStatus == 1 }>
+								<span class="label label-large label-success arrowed arrowed-righ">開啟</span>
+							<{else}>
+								<span class="label label-large label-important arrowed arrowed-righ">關閉</span>
+							<{/if}>
+						</td>
+						<td><{$oSiteType->sLocalModifiedTime()}></td>
+					<td class="td-actions">
+						<div class="hidden-phone visible-desktop action-buttons">
+							<a class="green" href="./index.php?func=<{$smarty.get.func}>&action=edit&site_type_no=<{$oSiteType->iSiteTypeNo}>" title="修改">
+								<i class="icon-pencil bigger-130"></i>
+							</a>
+							<a class="orange" href="./index.php?func=<{$smarty.get.func}>&action=active&site_type_no=<{$oSiteType->iSiteTypeNo}>" title="設定狀態">
+								<i class="icon-flag bigger-130"></i>
+							</a>
+						</div>
+					</td>
+
+				</tr>
+				<{/foreach}>
+			</tbody>
+		</table>
+
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="dataTables_info" id="table_report_info">Showing <{$StartRow}> to <{$EndRow}> of <{$Total}> entries</div>
+			</div>
+				<div class="span6">
+					<div class="dataTables_paginate paging_bootstrap pagination">
+					<{$PageBar}>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
+
+<script>
+        	var _userPageItems = "<{$PageItem}>";
+        	var _userPageUrl = "<{$OrderUrl}>";
+		
+		for(var i=0 ; i<document.getElementById("select_page_items").options.length ; i++) {
+		        if(document.getElementById("select_page_items").options[i].value == _userPageItems) {
+		        	document.getElementById("select_page_items").selectedIndex = i;
+				break;
+			}
+		}
+		
+		function relocate(obj){ 
+                var val=obj.options[obj.selectedIndex].value;
+                var url_string=_userPageUrl;
+                var loc=url_string+'&items='+val;
+                document.location=loc;
+    	}
+
+ </script>
+<script type="text/javascript">
+	sort_table_style('<{$NowOrder}>','<{$NowSort}>');
+</script>
+<script>
+$(function() {
+	$('#search-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			s_key: 'required',
+			
+		},
+
+		messages: {
+			s_key: '請填入搜尋條件',
+			
+		},
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			$('.alert-error', $('.search-form')).show();
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+})
+</script>

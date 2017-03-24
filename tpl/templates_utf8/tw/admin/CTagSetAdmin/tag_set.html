@@ -1,0 +1,170 @@
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+	
+			<a href="#">標籤管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+	
+			<a href="<{$dataUrl}>">回列表</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+	
+			<a class="iframe cboxElement" href="<{$dataViewUrl}>">瀏覽</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">設定標籤</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+			
+			
+				
+				
+<div class="page-content">
+
+				
+				
+				
+				
+
+				
+				
+				
+				<div class="row-fluid">
+				<div class="span6">
+				 
+					
+					<form name="tag-form" id="tag-form" action="<{$tagSetSubmit}>" method="post"  enctype="multipart/form-data" class="form-horizontal"> 
+				
+					<legend >選取標籤</legend>
+					
+					
+					<div id="build">
+
+					  <div id="tag_target" class="form-horizontal form-fieldset " >
+						<fieldset >
+						  
+						  <div id="legend" rel="popover">
+							
+							<{foreach item=key name=foo from=$tagsData}>
+							<div data-id="<{$key->iTagNo}>" class="control-group component span2 alert alert-info" rel="popover" title="<{$key->sTagName}>" trigger="manual">
+		
+						  
+							<{$key->sTagName}>
+							<input type="hidden" element-type="hidden" name='tag[]' id='tag_no_<{$key->iTagNo}>' value='<{$key->iTagNo}>' >
+							
+
+							</div>
+							
+							<{/foreach}>
+
+						  </div>
+						</fieldset>
+					  </div>
+					</div>
+					<legend ></legend>
+					<div >
+					  <div class="form-horizontal tag-form">
+						<fieldset>
+						 
+							
+											  
+						</fieldset>
+						
+					  </div>
+					</div>
+					<div class="form-actions">
+						<input type="hidden"  name='tag_set'  value='1' >
+						<button class="btn btn-small btn-info" type="submit">
+							<i class="icon-ok bigger-110"></i>
+							送出
+						</button>
+						&nbsp; &nbsp; &nbsp;
+						<button class="btn btn-small" type="button"  onClick="javascript:location.reload()">
+							<i class="icon-undo bigger-110"></i>
+							重置
+						</button>
+
+						&nbsp; &nbsp; &nbsp;
+						<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+							<i class="icon-reply bigger-110"></i>
+							取消
+						</button>
+						
+					
+					</div>
+					</form>
+					
+					
+					
+	
+				</div>
+						
+				<div class="span6">
+					<legend >標籤</legend>
+					
+					
+				  <div id="tag_layout">
+					
+					
+					
+					
+				  </div>
+				</div> 
+				
+					
+					
+					
+					
+					
+			</div>
+</div>			
+			<script>getTagSelector("tag_layout","tag_target","tag_components","0")</script>
+
+<script src="../js/jquery.validate.min.js"></script>
+<script>
+/*
+$(function() {
+	jQuery.validator.addMethod("validateSelectTags", function(value, element) {
+		var selectTags = $("#tag-form input[name='tag\[\]']");
+		if(selectTags.length) return true;
+		return false;
+	}, "未選擇標籤");
+	$('#tag-form').validate({
+		ignore: [],
+		focusInvalid: false,
+		rules: {
+			
+			'tag_set':  { validateSelectTags : true }
+			
+		},
+		errorPlacement: function (error, element) {
+            		alert(error.text());
+        		},
+
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+})
+*/
+</script>						
+			

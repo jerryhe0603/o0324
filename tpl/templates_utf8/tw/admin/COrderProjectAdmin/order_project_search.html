@@ -1,0 +1,220 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=order_project&action=search">專案搜尋</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+<div class="page-content">
+	<div>
+		<form class="form-horizontal" method="post" action="index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>">
+			<div class="control-group">
+				<label class="control-label" for="project_id">專案編號</label>
+				<div class="controls">
+					<input id="project_id" name="project_id" value="<{$sProjectId}>">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="project_name">專案名稱</label>
+				<div class="controls">
+					<input id="project_name" name="project_name" value="<{$sProjectName}>">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="project_condition">專案狀態</label>
+				<div class="controls">
+					<select id="project_condition" name="project_condition">
+						<option value="-1">所有</option>
+						<{foreach item=sCondition key=iKey from=$aAllConditions}>
+							<option value="<{$iKey}>" <{if $iConditionNo == $iKey}>selected<{/if}>><{$sCondition}></option>
+						<{/foreach}>
+					</select>
+				</div>
+			</div>
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+			</div>
+		</form>
+	</div>
+	<div class="tabbable">
+		<ul class="nav nav-tabs" id="">
+			<{foreach item=sService key=index from=$aService}>
+			<li class="service <{if $index==4}>active<{/if}>">
+				<a data-toggle="tab">
+					<{$sService}>
+				</a>
+			</li>
+			<{/foreach}>			
+		</ul>
+		<div class="tab-content">
+			<table id="table_report" class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr role="row">
+						<th onclick="sort_table('<{$OrderUrl}>','management_id','<{$OrderSort}>');">體系</th>
+						<th onclick="sort_table('<{$OrderUrl}>','type','<{$OrderSort}>');">訂單類型</th>
+						<!--
+						<th onclick="sort_table('group_no','<{$OrderSort}>');">業助群組</th>
+						-->
+						<th onclick="sort_table('<{$OrderUrl}>','salesperson_no','<{$OrderSort}>');">業務</th>
+						<!--
+						<th onclick="sort_table('service_id','<{$OrderSort}>');">服務</th>
+						-->
+						<th onclick="sort_table('<{$OrderUrl}>','phase_no','<{$OrderSort}>');">訂單狀態</th>
+						<th onclick="sort_table('<{$OrderUrl}>','order_status_date','<{$OrderSort}>');">狀態日期</th>
+						<th onclick="sort_table('<{$OrderUrl}>','canceled','<{$OrderSort}>');">訂單取消</th>
+						<th onclick="sort_table('<{$OrderUrl}>','project_id','<{$OrderSort}>');">專案編號</th>
+						<th onclick="sort_table('<{$OrderUrl}>','project_name','<{$OrderSort}>');">專案名稱</th>
+						<th onclick="sort_table('<{$OrderUrl}>','cb_id','<{$OrderSort}>');">品牌</th>
+						<th onclick="sort_table('<{$OrderUrl}>','start_date','<{$OrderSort}>');">專案起始時間</th>
+						<th onclick="sort_table('<{$OrderUrl}>','end_date','<{$OrderSort}>');">專案結束時間</th>
+						<th >專案PM</th>
+						<th >報價PR總篇數/已執行篇數</th>
+						<th >委託篇數</th>
+						<th >回應率</th>
+						<th onclick="sort_table('<{$OrderUrl}>','condition_no','<{$OrderSort}>');" >美女隊狀態</th>
+						<!--
+						<th 波段標記</th>
+						-->
+						<th onclick="sort_table('<{$OrderUrl}>','status','<{$OrderSort}>');">顯示狀態</th>
+						<th onclick="sort_table('<{$OrderUrl}>','time_confirm','<{$OrderSort}>');">時程確認狀態</th>
+						<th 檢視/編輯</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					<{foreach item=oSearchTmp from=$aAllSearhTmp}>
+					<tr>
+						<{assign var=oManage value=$oSearchTmp->oManagement()}>
+						<td><{$oManage->sName}></td>
+						<{assign var=iType value=$oOrder->iType}>
+						<td><{$aType.$iType}></td>
+						<!--
+						<{*assign var=oGroup value=$oOrder->oGroup()*}>
+						<td><{$oGroup->sName}></td>
+						-->
+						<{assign var=oSalesperson value=$oSearchTmp->oSalesperson()}>
+						<td><{$oSalesperson->sName}></td>
+						<!--
+						<{assign var=iServiceId value=$oProject->iServiceId}>
+						<td><{$aService.$iServiceId}></td>
+						-->
+						<{assign var=iPhaseNo value=$oSearchTmp->iPhaseNo}>
+						<td><{$aOrderPhase.$iPhaseNo}></td>
+						<td><{$oSearchTmp->sOrderStatusDate}></td>
+						<{assign var=iCanceled value=$oSearchTmp->iCanceled}>
+						<td><{$aCancelScope.$iCanceled}></td>
+						<td><{$oSearchTmp->sId}></td>
+						<td><{$oSearchTmp->sName}></td>
+						<{assign var=oBrand value=$oSearchTmp->oCompanyBrand()}>
+						<td><{$oBrand->sName}></td>
+						<td><{$oSearchTmp->sStartDate}></td>
+						<td><{$oSearchTmp->sEndDate}></td>
+						<td>
+							<{foreach item=sUserName from=$oSearchTmp->aManageUser }>
+								<{$sUserName}><br>
+							<{/foreach}>
+						</td>
+						<td><{$oSearchTmp->iPRTotal}>/<{$oSearchTmp->iGetRunArticleCount()}></td>
+						<td><{$oSearchTmp->iExtraTotal}></td>
+						<td><{$oSearchTmp->iPromiseResRate}></td>
+						<td><span class="label label-large label-success arrowed arrowed-righ"><{$oSearchTmp->sCondition()}></span></td>
+						<!--<td></td>-->
+						<td>
+							<{if $oSearchTmp->bStatus == 1 }>
+								<span class="label label-large label-success arrowed arrowed-righ">是</span>
+							<{else}>
+								<span class="label label-large label-important arrowed arrowed-righ">否</span>
+							<{/if}>
+						</td>
+						<td>
+							<{if $oSearchTmp->bTimeConfirm ==1}>
+								<span class="label label-large label-success arrowed arrowed-righ">是</span>
+							<{else}>
+								<span class="label label-large label-important arrowed arrowed-righ">否</span>
+							<{/if}>	
+						</td>
+						<td class="td-actions">
+							<div class="hidden-phone visible-desktop action-buttons">
+								<a class="blue cbox" href="<{$sApiUrl}>&action=view_order&project_no=<{$oSearchTmp->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="檢視">
+									檢視
+								</a>
+								<a class="green cbox" href="<{$sApiUrl}>&action=edit_order&project_no=<{$oSearchTmp->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="編輯">
+									編輯
+								</a>
+													
+								
+								<a class="orange cbox" href="./index.php?func=order_project&action=edit_client&project_no=<{$oSearchTmp->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="設定前台權限">
+									設定前台權限
+
+								</a>
+								<a class="orange cbox" href="./index.php?func=order_project&action=edit_brand&project_no=<{$oSearchTmp->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="設定品牌">
+									設定品牌
+								</a>
+								<a class="pink cbox"   href="./index.php?func=order_project&action=edit_bizdev&project_no=<{$oSearchTmp->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="設定商一權限">
+									設定商一權限
+
+								</a>
+							</div>
+						</td>
+
+					</tr>
+					<{/foreach}>
+				</tbody>
+			</table>
+			<div class="row-fluid">
+				<div class="span6">
+					<div class="dataTables_info" id="table_report_info"> Search count: <{$Total}></div>
+				</div>
+				<div class="span6">
+					<div class="dataTables_paginate paging_bootstrap pagination">
+					
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div><!--/#page-content-->
+<script src="../js/jquery.colorbox-min.js"></script>
+<link rel="stylesheet" href="../css/colorbox.css">
+<script>
+/*
+reload_url=location.protocol+'//'+location.hostname+location.pathname+'?func=order_project&action=list&order_no=<{$oOrder->sOrderUuid}>';
+*/
+$(function(){
+	$('.cbox').colorbox({iframe:true,width:"100%", height:"100%"});
+});
+
+window.addEventListener("message", reload, false);
+function reload(event){
+	if(event.data=='reload'){
+		//window.location.href=reload_url;
+		/*
+		service_id=$('li.service.active').attr('id').split('_')[1];
+		vGetProjectList(service_id);
+		$.colorbox.close();
+		*/
+		console.log("reload");
+		location.href = "./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&reload=1";
+		// location.reload();
+	}
+	else if(event.data==''){
+		console.log("empty");
+		$.colorbox.close();
+	}
+}
+
+</script>

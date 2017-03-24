@@ -1,0 +1,71 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=order_group&action=list">業助群組</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active"><{$oOrderGroup->sName}></li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+	<a href="./index.php?func=<{$smarty.get.func}>&action=edit&group_no=<{$oOrderGroup->iGroupNo}>"
+		 class="btn btn-app btn-yellow btn-mini">
+		<i class="icon-pencil bigger-160"></i>
+		修改
+	</a>
+	<a href="./index.php?func=<{$smarty.get.func}>&action=edit_user&group_no=<{$oOrderGroup->iGroupNo}>"
+		 class="btn btn-app btn-pink btn-mini">
+		<i class="icon-group bigger-160"></i>
+		編輯成員
+	</a>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<div class="span9">
+			<h4 class="blue">
+			<{$oOrderGroup->sName}>
+			<{if $oOrderGroup->bStatus}>
+				<span class="label label-large label-success arrowed arrowed-righ">開啟</span>
+			<{else}>
+				<span class="label label-large label-important arrowed arrowed-righ">關閉</span>
+			<{/if}>
+			</h4>
+			<div class="profile-info-row">
+					<div class="profile-info-name">群組成員</div>
+					<div class="profile-info-value">
+						<{foreach item=oUser from=$oOrderGroup->aUser()}>
+						<span><{$oUser->sName}></span><br>
+						<{/foreach}>
+					</div>
+				</div>
+			<div class="widget-box transparent">
+				<div class="widget-header widget-header-small">
+					<h4 class="smaller">
+						<i class="icon-check bigger-110"></i>
+						敘述
+					</h4>
+				</div>
+				<div class="widget-body">
+					<div class="widget-main">
+						<p>
+							<{$oOrderGroup->sDesc|replace:' ':'&nbsp;'|nl2br}>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="hr hr-8 dotted"></div>
+		</div>		
+	</div>
+</div>	

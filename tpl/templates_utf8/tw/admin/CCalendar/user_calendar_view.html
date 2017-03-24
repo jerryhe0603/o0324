@@ -1,0 +1,1197 @@
+<link rel="stylesheet" href="../css/fullcalendar.css" />
+<link rel="stylesheet" href="../css/datepicker.css" />
+<link rel="stylesheet" href="../css/bootstrap-timepicker.css" />
+<link rel="stylesheet" href="../css/daterangepicker.css" />
+<link rel="stylesheet" href="../css/jquery.simplecolorpicker.css">
+<script src="../js/fullcalendar.min.js"></script>
+<script src="../js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="../js/date-time/bootstrap-timepicker.min.js"></script>
+<script src="../js/date-time/moment.min.js"></script>
+<script src="../js/date-time/daterangepicker.min.js"></script>
+<script src="../js/jquery.simplecolorpicker.js"></script>
+
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<{if $oUser}>
+			<li class="active"><{$oUser->sName}>的行事曆</li>
+		<{else}>
+			<li class="active">我的行事曆</li>
+		<{/if}>
+		
+	</ul><!--.breadcrumb-->
+</div>
+<div class="page-content">
+<div class="row-fluid">
+	<div class="span12">
+		<!-- PAGE CONTENT BEGINS -->
+		<div class="row-fluid">
+			<div class="span9">
+				<div class="space"></div>
+				<div id="calendar"></div>
+			</div>
+			<div class="span2">
+				
+				<div id="accordion">
+					<{if !$oUser}>
+					<a href="#" onClick="calendar_task_group_add();" class="blue">
+						<i class="icon-plus bigger-130"></i>新增我的行事曆
+					</a>
+					<{/if}>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a href="#collapse_1" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle collapsed">
+								常用事件
+							</a>
+						</div>
+
+						<div class="accordion-body in collapse" id="collapse_1">
+							<div class="accordion-inner">
+							<ul id="event_list" class="item-list"  >
+								<{foreach item=oEvent from=$aEvent}>
+								<li  class="item clearfix  ">
+									<label class="inline">
+										<input  data-event-no="<{$oEvent->iEventNo}>" type="checkbox" class="ace " checked>
+										<span class="lbl"> <{$oEvent->sName}></span>
+									</label>
+								</li>
+								<{/foreach}>
+							</ul>
+							</div>
+						</div>
+					</div>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a href="#collapse_2" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle collapsed">
+								銀河行事曆
+							</a>
+						</div>
+
+						<div class="accordion-body in collapse" id="collapse_2">
+							<div class="accordion-inner">
+							<ul class="item-list">
+
+								<li  class="item clearfix  iwant_calendar">
+									<label class="inline">
+										<input id="galaxy_event" data-url="../ajax/ajax.CCalendar.php?action=galaxy_event" type="checkbox" class="ace" checked>
+										<span class="lbl"> 銀河行事曆</span>
+
+									</label>
+									
+								</li>
+							</ul>
+							</div>
+						</div>
+					</div>
+					
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a href="#collapse_3" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle collapsed">
+								<{if $oUser}><{$oUser->sName}><{else}>我<{/if}>的行事曆
+							</a>
+						</div>
+
+						<div class="accordion-body in collapse" id="collapse_3">
+							<div class="accordion-inner">
+							<ul id="user_calendar_list" class="item-list" >
+								
+							</ul>
+
+							</div>
+						</div>
+					</div>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a href="#collapse_4" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle collapsed">
+								其他行事曆
+							</a>
+						</div>
+
+						<div class="accordion-body in collapse" id="collapse_4">
+							<div class="accordion-inner">
+							<ul id="other_calendar_list" class="item-list" >
+								
+							</ul>
+							
+							</div>
+						</div>
+					</div>
+				</div>
+
+				
+
+			</div>
+			
+		</div>
+
+		<!-- PAGE CONTENT ENDS -->
+	</div><!-- /.col -->
+</div><!-- /.row -->
+</div>
+<script type="text/javascript">
+			
+
+
+    
+
+
+
+
+
+$(document).ready(function() {
+	
+
+	$('#event_list input:checkbox').on('click', function(){
+		
+		var event_no = $(this).attr('data-event-no');
+		
+
+		if(this.checked) {
+			
+			$(this).closest('li').removeClass('selected');
+
+
+			$('#user_calendar_list li input').each(function(i, e) {
+				
+				calendar_source_get($(e).attr('data-url')+"&event_no="+event_no,$('#colorpicker_'+$(e).attr('data-group-uuid')).val(),true);
+
+			});
+			$('#other_calendar_list li input').each(function(i, e) {
+				calendar_source_get($(e).attr('data-url')+"&event_no="+event_no,$('#colorpicker_'+$(e).attr('data-group-uuid')).val(),true);
+
+			});
+
+
+		}else{
+			$(this).closest('li').addClass('selected');
+
+			
+			$('#user_calendar_list li input').each(function(i, e) {
+	
+				calendar_source_remove($(e).attr('data-url')+"&event_no="+event_no);
+
+			});
+			
+			$('#other_calendar_list li input').each(function(i, e) {
+	
+				calendar_source_remove($(e).attr('data-url')+"&event_no="+event_no);
+
+			});
+		}	
+
+
+	});
+
+	$('.iwant_calendar input:checkbox').on('click', function(){
+		if(this.checked) {
+			calendar_source_get($(this).attr('data-url'));
+			$(this).closest('li').removeClass('selected');
+		}else{
+			$(this).closest('li').addClass('selected');
+			calendar_source_remove($(this).attr('data-url'));
+			
+			
+		}	
+
+
+	});
+	$(document).on('click', '.calendar-visible', function(){
+		
+		if(this.checked) {
+
+			calendar_source_get($(this).attr('data-url'),$('#colorpicker_'+$(this).attr('data-group-uuid')).val());
+			$(this).closest('li').removeClass('selected');
+		}else{
+			$(this).closest('li').addClass('selected');
+			calendar_source_remove($(this).attr('data-url'));
+			
+			
+		}	
+
+
+	});
+
+	
+
+	/* initialize the calendar
+	-----------------------------------------------------------------*/
+
+	var calendar = $('#calendar').fullCalendar({
+		 buttonText: {
+			prev: '<i class="icon-chevron-left"></i>',
+			next: '<i class="icon-chevron-right"></i>'
+		},
+	
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'month,agendaWeek,agendaDay'
+		},
+		
+		
+		editable: <{if $oUser}>false<{else}>true<{/if}>,
+		droppable: <{if $oUser}>false<{else}>true<{/if}>, // this allows things to be dropped onto the calendar !!!
+		selectable: <{if $oUser}>false<{else}>true<{/if}>,
+		selectHelper: <{if $oUser}>false<{else}>true<{/if}>,
+
+		loading: function(bool,view) {
+			if (bool) {
+				calendar_loding(true);
+			}
+			else {
+				calendar_loding(false);
+			}
+		},
+		viewRender:function( view, element ){
+			//view 被改變,動態取得顯示日曆期間其他行事曆
+			$.ajax({
+				url: '../ajax/ajax.CCalendar.php?user_no=<{$iUserNo}>&action=else_group',
+				dataType: 'html',
+				data: {
+					// our hypothetical feed requires UNIX timestamps
+					start: Math.round(view.start.getTime() / 1000),
+					end: Math.round(view.end.getTime() / 1000)
+				},
+				success: function(responseText) {
+					var obj = jQuery.parseJSON(responseText);
+					
+					if(obj.errorMsg){
+						//console.log(obj.errorMsg);
+						alert(obj.errorMsg);
+						callback();
+						return ;
+
+					}
+
+					//remove source
+					$('#other_calendar_list li input').each(function(i, e) {
+						//刪除上個view的event
+						calendar_source_remove_previous($(e).attr('data-url'));
+					});
+
+					//清空右邊選單
+					$("#other_calendar_list").empty();
+					
+					//重建
+					if(obj.groups){
+
+						$.each(obj.groups, function(i,e) {
+							//calendar_source_remove_previous 是刪除上個view所以新增沒有ajax同步的問題
+							calendar_task_group_add_item("other_calendar_list",e.task_group_uuid,e.task_group_name);
+							
+						});
+						
+					}
+					//將目前的view.start end 暫存,再下一次calendar_source_remove_previous即可作為刪除上一次的view
+					previousStart = view.start;
+					previousEnd = view.end;
+					
+				}
+			});
+			//remove previous galaxy_event, and get new one
+			calendar_source_remove_previous("../ajax/ajax.CCalendar.php?action=galaxy_event");
+			if($('#galaxy_event').prop('checked')){
+				calendar_source_get("../ajax/ajax.CCalendar.php?action=galaxy_event");
+			}
+		},
+		eventRender: function(event, element) {
+		       
+			var html = "<div style='width:250px; word-break:normal;'>"+event.description+"<hr>";
+			if(event.task_user){
+				$.each(event.task_user, function(i, e) {
+					html += '<p>'+e.user_name+'</p>';	
+				});
+			}	
+			
+	       element.popover({
+	           html:true,
+	           trigger: 'hover',
+	           placement:'bottom',
+	           title : event.title,
+	           content: html,
+                                       container:'body'
+	        });
+		},
+		select: function( startDate, endDate, allDay, jsEvent, view ) {
+			
+			
+			var start =$.fullCalendar.formatDate(startDate,'yyyy-MM-dd'); 
+			var end =$.fullCalendar.formatDate(endDate,'yyyy-MM-dd'); 
+			
+
+			calendar_loding(true);
+
+			var form = $("<form class='form-horizontal' ENCTYPE=multipart/form-data method='post'></form>");
+			
+			var error = false;
+
+			var request = $.ajax({
+			  url: "../ajax/ajax.CCalendar.php?action=add&start="+start+"&end="+end,
+			  type: "GET",
+			  dataType: "html"
+			});
+			 
+			request.done(function( msg ) {
+				form.append(msg);
+			});
+			
+			request.fail(function( jqXHR, textStatus ) {
+				error = true;
+			  
+			});
+
+			calendar_loding(false);
+
+			if(error){
+				calendar.fullCalendar('unselect');
+				return false;
+			}
+			var div = bootbox.dialog({
+				message: form,
+			
+				buttons: {
+					
+					"close" : {
+						"label" : "<i class='icon-remove'></i> Close",
+						"className" : "btn-small"
+					} 
+				}
+
+			});
+		
+			form.on('submit', function(){
+				
+				var options = { 
+					beforeSubmit: function(formData, jqForm, options) { 
+						$('input').prop("disabled", true);
+						return true; 
+					}, 
+					success:function (responseText, statusText)  { 
+			  
+						$('input').prop("disabled", false);
+						
+						if(responseText.length){
+							
+							console.log(responseText);
+
+							var obj = jQuery.parseJSON(responseText);
+							
+							if(obj.errorMsg){
+								//console.log(obj.errorMsg);
+								alert(obj.errorMsg);
+								return true;
+
+							}
+
+							var backgroundColor = $('#colorpicker_'+obj.task_group_uuid).val();
+							calendar.fullCalendar('renderEvent',
+								{
+									id: obj.id,
+									title: obj.title,
+									start: obj.start,
+									end: obj.end,
+									allDay: obj.allDay,
+									backgroundColor:backgroundColor,
+									editable:obj.editable,
+									task_group_uuid:obj.task_group_uuid,
+									task_user:obj.task_user,
+									description:obj.description
+								},
+								true // make the event "stick"
+							);
+							
+						} 
+						div.modal("hide");       
+					},
+					url:"../ajax/ajax.CCalendar.php?action=add"      
+				}; 
+
+				$(this).ajaxSubmit(options); 
+				
+				// !!! Important !!! 
+				// always return false to prevent standard browser submit and page navigation 
+				return false; 
+			});
+			calendar.fullCalendar('unselect');
+			
+		}
+		,
+		eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+		       	var start =$.fullCalendar.formatDate(event.start,'yyyy-MM-dd'); 
+		       	var request = $.ajax({
+				  url: "../ajax/ajax.CCalendar.php?action=resize&task_no="+event.id+"&day="+dayDelta+"&minute="+minuteDelta+"&start="+start,
+				  type: "GET",
+				  dataType: "html"
+				});
+			request.done(function( msg ) {
+
+				var obj = jQuery.parseJSON(msg);
+				if(obj.errorMsg){
+					//console.log(obj.errorMsg);
+					alert(obj.errorMsg);
+					revertFunc();
+				}
+
+				
+			});
+
+		},
+		eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
+			var start =$.fullCalendar.formatDate(event.start,'yyyy-MM-dd'); 
+			var request = $.ajax({
+				  url: "../ajax/ajax.CCalendar.php?action=move&task_no="+event.id+"&day="+dayDelta+"&minute="+minuteDelta+"&allday="+allDay+"&start="+start,
+				  type: "GET",
+				  dataType: "html"
+				});
+			request.done(function( msg ) {
+
+				var obj = jQuery.parseJSON(msg);
+				if(obj.errorMsg){
+					//console.log(obj.errorMsg);
+					alert(obj.errorMsg);
+					revertFunc();
+				}
+
+				
+			});
+			
+		},
+		eventClick: function(calEvent, jsEvent, view) {
+
+			if(calEvent.url){
+
+				var div = bootbox.dialog({
+				message: "go "+calEvent.url,
+			
+				buttons: {
+					"yes" : {
+						"label" : "<i class='icon-ok'></i> yes",
+						"className" : "btn-small btn-success",
+						"callback": function() {
+							location.href=calEvent.url;
+							
+						}
+					} ,
+					"no" : {
+						"label" : "<i class='icon-remove'></i> no",
+						"className" : "btn-small btn-danger",
+						"callback": function() {
+							if(calEvent.editable)	
+								calendar_task_edit(calEvent);
+						}
+					} 
+				}
+
+				});
+				
+			}else{
+
+				if(calEvent.editable)	
+					calendar_task_edit(calEvent);
+			}
+
+
+			return false;
+			
+
+		}
+		
+	});
+	
+	
+	user_calendar_task_group_get();
+
+	
+
+});
+	var previousStart;//viewRender  最後儲存
+	var previousEnd;
+	function calendar_task_edit(calEvent){
+
+		calendar_loding(true);
+			var start =$.fullCalendar.formatDate(calEvent.start,'yyyy-MM-dd'); 
+
+			var form = $("<form class='form-horizontal' ENCTYPE=multipart/form-data method='post'></form>");
+			var error = false;
+
+			var request = $.ajax({
+			  url: "../ajax/ajax.CCalendar.php?action=edit&task_no="+calEvent.id +"&start="+start,
+			  type: "GET",
+			  dataType: "html"
+			});
+			 
+			request.done(function( msg ) {
+				form.append(msg);
+			});
+
+			request.fail(function( jqXHR, textStatus ) {
+				error = true;
+			});
+
+			
+			calendar_loding(false);
+			if(error){
+				return false;
+			}
+
+			
+			var div = bootbox.dialog({
+				message: form,
+			
+				buttons: {
+					"delete" : {
+						"label" : "<i class='icon-trash'></i> Delete Event",
+						"className" : "btn-small btn-danger",
+						"callback": function() {
+							var request = $.ajax({
+								  url: "../ajax/ajax.CCalendar.php?action=delete&task_no="+calEvent.id+"&start="+start,
+								  type: "GET",
+								  dataType: "html"
+								});
+							request.done(function( msg ) {
+			  
+								var obj = jQuery.parseJSON(msg);
+								if(obj.errorMsg){
+									//console.log(obj.errorMsg);
+									alert(obj.errorMsg);
+									return true;
+								}
+
+								$("#calendar").fullCalendar('removeEvents' , function(ev){
+
+									return (ev._id == calEvent._id);
+								})
+							});
+							
+						}
+					} ,
+					"close" : {
+						"label" : "<i class='icon-remove'></i> Close",
+						"className" : "btn-small"
+					} 
+				}
+
+			});
+			
+			form.on('submit', function(){
+				
+
+				var options = { 
+					beforeSubmit: function(formData, jqForm, options) { 
+						$('input').prop("disabled", true);
+						return true; 
+					}, 
+					success:function (responseText, statusText)  { 
+			  
+						$('input').prop("disabled", false);
+						
+						if(responseText.length){
+							
+							console.log(responseText);
+							var obj = jQuery.parseJSON(responseText);
+							
+							if(obj.errorMsg){
+								//console.log(obj.errorMsg);
+								alert(obj.errorMsg);
+								return true;
+
+							}
+							
+							calEvent.title = obj.title;
+							calEvent.start = obj.start;
+							calEvent.end = obj.end;
+							calEvent.allDay = obj.allDay;
+							calEvent.backgroundColor = $('#colorpicker_'+obj.task_group_uuid).val();
+							calEvent.editable = obj.editable;
+							calEvent.task_group_uuid = obj.task_group_uuid;
+							calEvent.task_user = obj.task_user;
+							calEvent.description = obj.description;
+							$("#calendar").fullCalendar('updateEvent',calEvent);
+							
+						} 
+						div.modal("hide");       
+					},
+					url:       "../ajax/ajax.CCalendar.php?action=edit&task_no="+calEvent.id+"&start="+start      
+				}; 
+
+				$(this).ajaxSubmit(options); 
+				
+				// !!! Important !!! 
+				// always return false to prevent standard browser submit and page navigation 
+				return false; 
+
+
+
+				
+				
+			});
+			
+			return false;
+
+
+	}
+
+	function calendar_loding(loading){
+
+		if (loading) {
+			$('#calendar').addClass("position-relative")
+			$('#calendar').append('<div class="widget-box-layer"><i class="icon-spinner icon-spin icon-2x white"></i></div>');
+			$('#accordion').addClass("position-relative")
+			$('#accordion').append('<div class="widget-box-layer"><i class="icon-spinner icon-spin icon-2x white"></i></div>');
+		}
+		else {
+
+			$('#calendar').find(".widget-box-layer").remove();
+			$('#calendar').removeClass("position-relative");
+			$('#accordion').find(".widget-box-layer").remove();
+			$('#accordion').removeClass("position-relative");
+		
+		}
+	}
+    	
+
+
+
+	function calendar_source_get(url,backgroundColor,unevent){
+
+		
+		/*$("#calendar").fullCalendar( 'addEventSource', 
+
+		{
+		           url:url,
+		           backgroundColor:backgroundColor,
+		          complete : function( jqXHR, textStatus ){
+		          		//完成之後 更新其他地方可在此加上
+
+		          }
+		}
+		);*/
+
+		calendar_loding(true);
+
+		var view = $('#calendar').fullCalendar('getView');
+		var request = $.ajax({
+			  url: url,
+			  type: "GET",
+			  dataType: "html",
+			  data: {
+					// our hypothetical feed requires UNIX timestamps
+					start: Math.round(view.start.getTime() / 1000),
+					end: Math.round(view.end.getTime() / 1000)
+				}
+			});
+		request.done(function( msg ) {
+			var obj = JSON.parse(msg);
+			if(obj.errorMsg){
+				//console.log(obj.errorMsg);
+				alert(obj.errorMsg);
+				return true;
+			}
+			
+
+			if(obj.events){
+
+				$.each(obj.events, function(i,e) {
+	
+					var current_event = $("#calendar").fullCalendar('clientEvents',e.id);
+					//是否存在
+					
+
+					 if(current_event && current_event.length == 1){
+					 	if(backgroundColor)
+					 	current_event[0].backgroundColor=backgroundColor;
+
+					 	//update
+					 	$("#calendar").fullCalendar('updateEvent',current_event[0]);
+					 }else{
+						if(backgroundColor)
+						e.backgroundColor=backgroundColor;
+						//add
+						//console.log(e);
+						$("#calendar").fullCalendar('renderEvent',
+							e,
+							true // make the event "stick"
+						);
+
+						
+					}
+
+				});
+				
+			}
+
+			if(!unevent){
+				
+				//remove unchecked event
+				$('#event_list li input').each(function(i, e) {
+					if(!$(e).prop('checked'))
+						calendar_source_remove(url+"&event_no="+$(e).attr('data-event-no'));
+
+				});
+				
+			}	
+
+			calendar_loding(false);
+		});
+		
+							
+		
+	}
+	
+	function calendar_source_remove_previous(url){
+	
+		
+
+		//$("#calendar").fullCalendar( 'removeEventSource', url);
+		//這是目前的view
+		var view = $('#calendar').fullCalendar('getView');
+		
+		//刪除上一次的view內容
+		if(!previousStart || !previousEnd) return;
+
+
+		/*console.log(view.start);
+		console.log(view.end);
+		console.log(previousStart);
+		console.log(previousEnd);
+		console.log("=============");
+		*/
+		
+		var request = $.ajax({
+			  url: url,
+			  type: "GET",
+			  dataType: "html",
+			  data: {
+					
+					// our hypothetical feed requires UNIX timestamps 3024000
+					start: Math.round(previousStart.getTime() / 1000),
+					end: Math.round(previousEnd.getTime() / 1000)
+				}
+			});
+		request.done(function( msg ) {
+
+			var obj = jQuery.parseJSON(msg);
+			if(obj.errorMsg){
+				//console.log(obj.errorMsg);
+				alert(obj.errorMsg);
+				return true;
+			}
+			if(obj.events){
+				
+				$.each(obj.events, function(i,e) {
+					$("#calendar").fullCalendar('removeEvents' , function(ev){
+				
+						return (ev.id == e.id);
+					})
+					
+				});
+				
+			}
+			
+		});
+
+	}
+
+	function calendar_source_remove(url){
+	
+		//$("#calendar").fullCalendar( 'removeEventSource', url);
+		calendar_loding(true);
+		var view = $('#calendar').fullCalendar('getView');
+		
+		var request = $.ajax({
+			  url: url,
+			  type: "GET",
+			  dataType: "html",
+			  data: {
+					// our hypothetical feed requires UNIX timestamps
+					start: Math.round(view.start.getTime() / 1000),
+					end: Math.round(view.end.getTime() / 1000)
+				}
+			});
+		request.done(function( msg ) {
+
+			var obj = jQuery.parseJSON(msg);
+			if(obj.errorMsg){
+				//console.log(obj.errorMsg);
+				alert(obj.errorMsg);
+				return true;
+			}
+			if(obj.events){
+				
+				$.each(obj.events, function(i,e) {
+					$("#calendar").fullCalendar('removeEvents' , function(ev){
+				
+						return (ev.id == e.id);
+					})
+					
+				});
+				
+			}
+			
+			calendar_loding(false);
+		});
+
+	}
+
+
+	function calendar_task_group_add_item(calendar_list,task_group_uuid,task_group_name){
+		
+		var option_size = $('select[id^="colorpicker"]').first().find('option').size();
+		var color = [];
+
+		for(var i = 0; i < option_size; i++) 
+			color.push(i);					
+		
+		$('select[id^="colorpicker"]').each(function(i, e) {
+
+			var pos = color.indexOf($(e).get(0).selectedIndex);
+			
+			if (pos > -1) 
+    				color.splice(pos, 1);
+
+		});
+		
+		//get source url
+		var url = "../ajax/ajax.CCalendar.php?user_no=<{$iUserNo}>&action=get_task&task_group_uuid="+task_group_uuid;
+		if(calendar_list=='user_calendar_list')
+			url += "&editable=1";
+		var html_control="";
+<{if !$oUser}>
+		if(calendar_list != "other_calendar_list"){
+			html_control ='<div class="pull-right action-buttons">'+
+				'<a  onClick="calendar_task_group_edit(\''+task_group_uuid+'\')" class="blue">'+
+					'<i class="icon-pencil bigger-130"></i>'+
+				'</a>'+
+				'<span class="vbar"></span>'+
+				'<a  onClick="calendar_task_group_remove(\''+task_group_uuid+'\')" class="red">'+
+					'<i class="icon-trash bigger-130"></i>'+
+				'</a>'+
+			'</div>';
+		}
+<{/if}>
+
+		var html = '<li id="'+task_group_uuid+'" class="item clearfix my_tasks">'+
+			'<label class="inline">'+
+				'<input data-url="'+url+'" data-group-uuid="'+task_group_uuid+'" type="checkbox" class=" ace calendar-visible" checked>'+
+				'<span class="lbl"> '+task_group_name+'</span>'+
+
+			'</label>'+
+			
+			'<div class="pull-right ">'+
+				
+				'<select id="colorpicker_'+task_group_uuid+'"  class="hide calendar-colorpicker " data-url="'+url+'">'+
+				 '<option value="#ac725e">#ac725e</option>'+
+					'<option value="#d06b64">#d06b64</option>'+
+					'<option value="#f83a22">#f83a22</option>'+
+					'<option value="#fa573c">#fa573c</option>'+
+					'<option value="#ff7537">#ff7537</option>'+
+					'<option value="#ffad46" >#ffad46</option>'+
+					'<option value="#42d692">#42d692</option>'+
+					'<option value="#16a765">#16a765</option>'+
+					'<option value="#7bd148">#7bd148</option>'+
+					'<option value="#b3dc6c">#b3dc6c</option>'+
+					'<option value="#fbe983">#fbe983</option>'+
+					'<option value="#fad165">#fad165</option>'+
+					'<option value="#92e1c0">#92e1c0</option>'+
+					'<option value="#9fe1e7">#9fe1e7</option>'+
+					'<option value="#9fc6e7">#9fc6e7</option>'+
+					'<option value="#4986e7">#4986e7</option>'+
+					'<option value="#9a9cff">#9a9cff</option>'+
+					'<option value="#b99aff">#b99aff</option>'+
+					'<option value="#c2c2c2">#c2c2c2</option>'+
+					'<option value="#cabdbf">#cabdbf</option>'+
+					'<option value="#cca6ac">#cca6ac</option>'+
+					'<option value="#f691b2">#f691b2</option>'+
+					'<option value="#cd74e6">#cd74e6</option>'+
+					'<option value="#a47ae2">#a47ae2</option>'+
+					'<option value="#555">#555</option>'+
+				'</select>'+	
+				
+			'</div>'+
+			html_control
+			+
+			
+			
+		'</li>';
+
+		$('#'+calendar_list).append(html);
+
+		var setcolor = 0;
+		
+		if(color.length){
+
+			setcolor = Math.floor((Math.random()*color.length));
+
+			
+		}
+		
+		
+		$('select[id="colorpicker_'+task_group_uuid+'"]').simplecolorpicker({
+		  picker: true
+		}).on('change', function() {
+			var url = $(this).attr('data-url');
+			var backgroundColor = $(this).val();
+			
+			//re get update
+			calendar_source_get(url,backgroundColor);
+			
+		});
+
+		
+		$('select[id="colorpicker_'+task_group_uuid+'"]').get(0).selectedIndex = color[setcolor];
+		$('select[id="colorpicker_'+task_group_uuid+'"]').simplecolorpicker('selectColor', $('select[id="colorpicker_'+task_group_uuid+'"]').val());
+
+		
+		
+		
+		calendar_source_get( url,$('select[id="colorpicker_'+task_group_uuid+'"]').val());
+
+		
+
+	}
+	
+
+	function calendar_task_group_add(){
+
+		
+
+		calendar_loding(true);
+
+		var form = $("<form class='form-horizontal' ENCTYPE=multipart/form-data method='post'></form>");
+		
+		var error = false;
+
+		var request = $.ajax({
+		  url: "../ajax/ajax.CCalendar.php?action=group_add",
+		  type: "GET",
+		  dataType: "html"
+		});
+		 
+		request.done(function( msg ) {
+		  	
+			
+
+			form.append(msg);
+		 
+		});
+		
+		request.fail(function( jqXHR, textStatus ) {
+			error = true;
+		  
+		});
+
+		calendar_loding(false);
+
+		if(error){
+			alert("連線有問題");
+			return false;
+		}
+		var div = bootbox.dialog({
+			message: form,
+		
+			buttons: {
+				
+				"close" : {
+					"label" : "<i class='icon-remove'></i> Close",
+					"className" : "btn-small"
+				} 
+			}
+
+		});
+	
+		form.on('submit', function(){
+			
+			var options = { 
+				beforeSubmit: function(formData, jqForm, options) { 
+					$('input').prop("disabled", true);
+					return true; 
+				}, 
+				success:function (responseText, statusText)  { 
+		  
+					$('input').prop("disabled", false);
+					
+					if(responseText.length){
+						
+						var obj = jQuery.parseJSON(responseText);
+						
+						if(obj.errorMsg){
+							//console.log(obj.errorMsg);
+							alert(obj.errorMsg);
+							return true;
+
+						}
+						calendar_task_group_add_item("user_calendar_list",obj.task_group_uuid,obj.task_group_name);
+						
+					} 
+					div.modal("hide");       
+				},
+				url:       "../ajax/ajax.CCalendar.php?action=group_add"      
+			}; 
+
+			$(this).ajaxSubmit(options); 
+			
+			return false;
+		});
+
+
+	}
+
+	function calendar_task_group_edit(task_group_uuid){
+
+		calendar_loding(true);
+
+		var form = $("<form class='form-horizontal' ENCTYPE=multipart/form-data method='post'></form>");
+		var error = false;
+
+		var request = $.ajax({
+		  url: "../ajax/ajax.CCalendar.php?action=group_edit&task_group_uuid="+task_group_uuid,
+		  type: "GET",
+		  dataType: "html"
+		});
+		 
+		request.done(function( msg ) {
+			form.append(msg);
+		});
+
+		request.fail(function( jqXHR, textStatus ) {
+			error = true;
+		});
+
+		
+		calendar_loding(false);
+		if(error){
+			alert("連線有問題");
+			return false;
+		}
+
+		
+		var div = bootbox.dialog({
+			message: form,
+		
+			buttons: {
+				
+				"close" : {
+					"label" : "<i class='icon-remove'></i> Close",
+					"className" : "btn-small"
+				} 
+			}
+
+		});
+		
+		form.on('submit', function(){
+			
+
+			var options = { 
+				beforeSubmit: function(formData, jqForm, options) { 
+					$('input').prop("disabled", true);
+					return true; 
+				}, 
+				success:function (responseText, statusText)  { 
+		  
+					$('input').prop("disabled", false);
+					
+					if(responseText.length){
+
+						var obj = jQuery.parseJSON(responseText);
+						
+						if(obj.errorMsg){
+							//console.log(obj.errorMsg);
+							alert(obj.errorMsg);
+							return true;
+						}
+						
+						$('#'+task_group_uuid + ' .lbl').text(obj.task_group_name);
+						
+					} 
+					div.modal("hide");       
+				},
+				url:    "../ajax/ajax.CCalendar.php?action=group_edit&task_group_uuid="+task_group_uuid      
+			}; 
+
+			$(this).ajaxSubmit(options); 
+			
+			return false;
+
+
+			
+			
+		});
+		
+			
+
+	}
+
+	function calendar_task_group_remove(task_group_uuid){
+
+		var div = bootbox.dialog({
+			message: "確定要移除此行事曆?</br>警告:將會移除所有此行事曆的工作",
+			buttons: {
+				"yes" : {
+							"label" : "<i class='icon-ok'></i> yes",
+							"className" : "btn-small btn-success",
+							"callback": function() {
+								var request = $.ajax({
+									url: "../ajax/ajax.CCalendar.php?action=group_delete&task_group_uuid="+task_group_uuid,
+									type: "GET",
+									dataType: "html"
+								});
+								request.done(function( msg ) {
+									var obj = jQuery.parseJSON(msg);
+									if(obj.errorMsg){
+										alert(obj.errorMsg);
+										return true;
+									}
+									$('#'+task_group_uuid).remove();
+									calendar_source_remove("../ajax/ajax.CCalendar.php?user_no=<{$iUserNo}>&action=get_task&task_group_uuid="+task_group_uuid);
+								});
+							}
+						},
+				"no" : {
+							"label" : "<i class='icon-remove'></i> no",
+							"className" : "btn-small btn-danger"
+						}
+				}
+		});
+
+		
+	}
+
+	function user_calendar_task_group_get(){
+
+		var view = $('#calendar').fullCalendar('getView');
+		var request = $.ajax({
+		  url: "../ajax/ajax.CCalendar.php?user_no=<{$iUserNo}>&action=user_group",
+		  type: "GET",
+		  dataType: "html"
+
+		});
+		 
+		request.done(function( msg ) {
+			var obj = jQuery.parseJSON(msg);
+			if(obj.length){
+				
+				$.each(obj, function(i,e) {
+
+					calendar_task_group_add_item("user_calendar_list",e.task_group_uuid,e.task_group_name);
+
+				});	
+
+
+
+			}
+		});
+
+
+	}
+
+	
+</script>
+

@@ -1,0 +1,271 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+			
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<li>
+			<a href="./index.php?func=user&action=list">人員管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			<{if $smarty.get.user_no}>
+			編輯
+			<{else}>
+			新增
+			<{/if}>
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			<{if $smarty.get.user_no}>
+			編輯人員
+			<{else}>
+			新增人員
+			<{/if}>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+			<!--PAGE CONTENT BEGINS HERE-->
+			
+			<!-- 提示訊息 start -->
+			<div class="alert alert-info">
+				<i class="icon-hand-right"></i>
+				請填寫以下資料，<i class="icon-asterisk red"></i> 為必填。
+				<button class="close" data-dismiss="alert">
+					<i class="icon-remove"></i>
+				</button>
+			</div>
+			<!-- 提示訊息 ended -->
+			
+			<!-- 警示訊息 start -->
+			<div id="msg_warn" class="error alert alert-danger" style="display:none;">
+				<i class="icon-remove-sign icon-large"></i>
+				<span></span>
+				<button class="close" data-dismiss="alert">
+					<i class="icon-remove"></i>
+				</button>
+			</div>
+			<!-- 警示訊息 ended -->
+
+			<div class="row">
+				<!-- user -->
+						<form class="form-horizontal" name="myForm2" id="myForm2" method="post" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>
+							<{if $oCUser}>
+								&user_no=<{$oCUser->iUserNo}>
+							<{/if}>
+							">
+							<input type="hidden" name="user_no" value="<{$oCUser->iUserNo}>" />
+							<div class="control-group">
+								<label class="control-label" for="user_name"><i class="icon-asterisk red"></i> 名稱</label>
+								<div class="controls">
+									<input type="text" name="user_name" id="user_name" value="<{$oCUser->sName}>" />
+								</div>
+							</div>	
+
+							<div class="control-group">
+								<label class="control-label" for="user_account"><i class="icon-asterisk red"></i> 帳號</label>
+								<div class="controls">
+									<input type="text" name="user_account" id="user_account" autocomplete="off" value="<{$oCUser->sAccount}>" />
+								</div>
+							</div>	
+
+							<div class="control-group">
+								<label class="control-label" for="new_password">密碼</label>
+								<div class="controls">
+									<input type="password" name="new_password" id="new_password" value="" />
+								</div>
+							</div>	
+
+							<div class="control-group">
+								<label class="control-label" for="confirm_password">確認密碼</label>
+								<div class="controls">
+									<input type="password" name="confirm_password" id="confirm_password" value="" />
+								</div>
+							</div>	
+							
+							<div class="control-group">
+								<label class="control-label">電話</label>
+								<div class="controls">
+									<span class="input-icon">
+										<input type="text" name="user_tel" placeholder="" maxlength="30" value="<{$oCUser->sTel}>" />
+										<i class="icon-phone"></i>
+									</span>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label">傳真</label>
+								<div class="controls">
+									<span class="input-icon">
+										<input type="text" name="user_fax" placeholder="" maxlength="30" value="<{$oCUser->sFax}>" />
+										<i class="icon-print"></i>
+									</span>	
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label">手機</label>
+								<div class="controls">
+									<span class="input-icon">
+										<input type="text" name="user_mobile" maxlength="10" placeholder="" value="<{$oCUser->sMobile}>" />
+										<i class="icon-mobile-phone"></i>
+									</span>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label class="control-label">Email</label>
+								<div class="controls">
+									<span class="input-icon">
+										<input type="text" name="user_email" placeholder="" value="<{$oCUser->sEmail}>" />
+										<i class="icon-envelope"></i>
+									</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">地區</label>
+								<div class="controls">
+									<div id="addr_data">
+										<input type="text" class="input-xxlarge" name="addr_id" placeholder="" value="<{$oCUser->sAddrId}>" />
+									</div>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">地址</label>
+								<div class="controls">
+									<span class="input-icon">
+										<input type="text" class="input-xxlarge" name="user_addr" placeholder="" value="<{$oCUser->sAddr}>" />
+										<i class="icon-map-marker"></i>
+									</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">部門</label>
+								<div class="controls">
+									<span class="input-icon">
+										<select id='dept_no' name='dept_no'>
+											<option>...</option>
+											<{foreach item=oCDept from=$aAllDept}>
+												<option value="<{$oCDept->iDeptNo}>" <{if $oCDept->iDeptNo==$oCUser->iDeptNo}>selected="selected"<{/if}>>
+													<{$oCDept->sName}>
+												</option>
+											<{/foreach}>
+										</select>
+									</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label">人員群組</label>
+								
+								<div class="controls">
+									<{foreach item=oCGroup from=$aAllGroup}>
+										<div>
+											<label class="inline">
+												<input type="checkbox" class="ace" name="group[]" <{if @array_key_exists($oCGroup->iGroupNo, $aUserGroup)}> checked <{/if}> value="<{$oCGroup->iGroupNo}>" />
+												<span class="lbl"> <{$oCGroup->sName}></span>
+											</label>
+										</div>	
+										<div class="space-4"></div>
+									<{/foreach}>		
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="form-field-checkbox-5">狀態</label>
+								<div class="controls">	
+									<{if $oCUser && $oCUser->bStatus == 0}>
+										<input type="checkbox" name="status" value="1" class="ace ace-switch ace-switch-7" />
+									<{else}>
+										<input type="checkbox" name="status" value="1" class="ace ace-switch ace-switch-7" checked />
+									<{/if}>
+									<span class="lbl"></span>		
+								</div>
+							</div>
+
+							<div class="clearfix form-actions">
+								<div class="col-md-offset-3 col-md-9">
+									<button class="btn btn-small btn-info" type="submit">
+										<i class="icon-ok bigger-110"></i>
+										送出
+									</button>
+
+									&nbsp; &nbsp; &nbsp;
+									<button class="btn btn-small" type="reset">
+										<i class="icon-undo bigger-110"></i>
+										重置
+									</button>
+
+									&nbsp; &nbsp; &nbsp;
+									<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+										<i class="icon-reply bigger-110"></i>
+										取消
+									</button>
+								</div>
+							</div>
+						</form>	
+
+				<!-- user -->	
+			</div>
+	</div>
+</div>
+
+<script src="../js/jquery.validate.min.js"></script>
+
+<script>
+$(function() {
+	$('.brand_select').chosen();
+	
+	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			user_name: 'required',
+			user_account: 'required',
+		},
+		messages: {
+			user_name: '請輸入名稱',
+			user_account: '請輸入帳號',
+		},
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+	
+});
+/*
+// 所在地區 (需要搭配 jQuery.)
+var ResetAddr2 = function(addr_id) { // 只顯示兩層, 使用方式: <div id="addr_data"></div>
+	var s_url = "../ajax/get_addr_select2.php?addr_id="+addr_id;
+	$.ajax({
+		url: s_url,	dataType: "text", type: "POST",
+		error: function(xhr) {
+			//alert('Ajax request 發生錯誤');
+			alert(xhr.status);
+		},
+		success: function(response) {
+			$("#addr_data").html(response);
+		}
+	});	
+}
+
+ResetAddr2(<{$oCUser->sAddrId}>);
+*/
+</script>

@@ -1,0 +1,152 @@
+<!--basic styles-->
+
+<link href="../css/bootstrap.min.css" rel="stylesheet" />
+<link href="../css/bootstrap-responsive.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/font-awesome.min.css" />
+
+<!--[if IE 7]>
+  <link rel="stylesheet" href="../css/font-awesome-ie7.min.css" />
+<![endif]-->
+
+<!--page specific plugin styles-->
+<link rel="stylesheet" href="../css/chosen.css">
+<!--fonts-->
+
+<!--ace styles-->
+
+<link rel="stylesheet" href="../css/ace.min.css" />
+<link rel="stylesheet" href="../css/ace-responsive.min.css" />
+<link rel="stylesheet" href="../css/ace-skins.min.css" />
+
+<!--[if lte IE 8]>
+  <link rel="stylesheet" href="../css/ace-ie.min.css" />
+<![endif]-->
+<link rel="stylesheet" href="../css/jquery-ui-1.10.3.full.min.css">
+<!--inline styles if any-->
+
+<script type="text/javascript">
+	window.jQuery || document.write("<script src='../js/jquery-1.9.1.min.js'>"+"<"+"/script>");
+</script>
+<script src="../js/bootstrap.min.js"></script>
+
+<!--<script src="../js/jquery-ui-1.10.3.custom.min.js"></script>-->
+<script src="../js/jquery-ui-1.10.3.full.min.js"></script>
+<script src="../js/jquery.ui.touch-punch.min.js"></script>
+<script src="../js/jquery.slimscroll.min.js"></script>
+<script src="../js/jquery.easy-pie-chart.min.js"></script>
+<script src="../js/jquery.sparkline.min.js"></script>
+<script src="../js/jquery.form.min.js"></script>
+<script src="../js/jquery.autosize-min.js"></script>
+<script src="../js/chosen.jquery.min.js"></script>
+<script src="../js/bootbox-4.0.0.min.js"></script>
+<!--ace scripts-->
+
+<script src="../js/ace-elements.min.js"></script>
+<script src="../js/ace.min.js"></script>
+
+
+<script type="text/javascript" src="../js/function_admin.js"></script>
+				
+<script>
+$(function() {
+$('textarea[class*=autosize]').autosize({append: "\n"});
+})
+</script>
+
+<style>
+input:not([type="image"]), textarea {
+box-sizing: content-box;
+}
+table {
+line-height: 20px;
+font-size: 13px;
+}
+</style>
+
+<link rel="stylesheet" href="../css/datepicker.css" />
+<link rel="stylesheet" href="../css/bootstrap-timepicker.css" />
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=order_group&action=list">業助群組</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			<{if $smarty.get.group_no}>
+			編輯群組
+			<{else}>
+			新增群組
+			<{/if}>
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			<{if $smarty.get.group_no}>
+			編輯群組
+			<{else}>
+			新增群組
+			<{/if}>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		<form class="form-horizontal" id="validation-form" method="post" action="index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}><{if $smarty.get.group_no}>&group_no=<{$oOrderGroup->iGroupNo}><{/if}>">
+			<input type="hidden" name="group_no" value="<{$oOrderGroup->iGroupNo}>">
+			<div class="control-group">
+				<label class="control-label" for="name">群組名稱</label>
+				<div class="controls">
+					<input type="text" name="name" id="name" value="<{$oOrderGroup->sName}>" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="desc">敘述</label>
+				<div class="controls">
+					<textarea id="desc"  name="desc" class="autosize-transition" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 50px;"><{$oOrderGroup->sDesc}></textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="form-field-checkbox-5">狀態</label>
+				<div class="controls">	
+					<input type="checkbox" name="status" value="1" class="ace-switch ace-switch-7" <{if $oOrderGroup->bStatus || !$smarty.get.group_no}>checked<{/if}>/>
+					<span class="lbl"></span>			
+				</div>
+			</div>
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small" type="reset">
+					<i class="icon-undo bigger-110"></i>
+					重置
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					取消
+				</button>
+			</div>
+		<form>	
+	</div>
+</div>	
+<script>
+$(function(){
+});
+</script>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+		<title>分派業務</title>
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" />
+		<script language="javascript" src="../js/jquery-2.0.3.min.js"></script>
+		<script language="JavaScript">
+		<!--
+			function closeWindow() {
+				var objmusical = document.getElementById('selmem');
+				var musical = objmusical.options[objmusical.selectedIndex].value;
+				opener.setValue(musical);
+				window.close();
+			}
+			
+			function toClear(obj) {
+				if (obj.id=="selmem") {
+					var objmusical = document.getElementById('seldept');
+					objmusical.value = 0;
+				} else if (obj.id=="seldept") {
+					var objmusical = document.getElementById('selmem');
+					objmusical.value = 0;
+				}
+			}
+		//-->		
+		</script>
+	</head>
+<body>
+	體系:
+	<select id="mm_id" name="mm_id" onChange="javascript:getParam(this.value,'team_id','team');">
+		<option value="0">請選擇</option>
+		<{foreach from=$mmData item="entry3" name="foo3"}>
+		<option value="<{$entry3.mm_id}>"><{$entry3.mm_name}></option>
+		<{/foreach}>
+	</select>
+	<span style="height:2px;"></span>
+	<br/>
+
+	團隊:
+	<select id="team_id" name="team_id" onChange="javascript:getParam(this.value,'co_id','company');">
+		<option value="0">請選擇</option>
+		<{foreach from=$teamData item="entry4" name="foo4"}>
+		<option value="<{$entry4.team_id}>"><{$entry4.team_name}></option>
+		<{/foreach}>
+	</select>
+	<span style="height:2px;"></span>
+	<br/>
+
+	代理商:
+	<select id="co_id" name="co_id" onChange="javascript:getParam(this.value,'selmem','saler');">
+		<option value="0">請選擇</option>
+		<{foreach from=$companyData item="entry5" name="foo5"}>
+		<option value="<{$entry5.co_id}>"><{$entry5.co_name}></option>
+		<{/foreach}>
+	</select>
+	<span style="height:2px;"></span>
+	<br/>
+
+	負責人員:
+	<select id='selmem' name='selmem' size='1'>
+		<option value='0'>請選擇</option>
+		<{foreach from=$memData item="entry" name="foo"}> 
+		<option value='<{$entry.user_no|escape}>'><{$entry.mm_name|escape}> - <{$entry.team_name|escape}> - <{$entry.team_type|escape}> - <{$entry.co_name|escape}> - <{$entry.role_name|escape}> - <{$entry.user_name|escape}></option>
+		<{/foreach}>
+	</select>
+	<span style="height:2px;"></span>
+	<br/>
+	<input type='button' name='btn' value='確定' onClick='closeWindow();'>
+
+<script type="text/javascript">
+<!--
+	function getParam(param, divID, param2) {
+		var sUrl = "../api/get_xml_data.php?keyid="+param+"&func="+param2;
+
+		$.ajax({
+			url: sUrl,
+			type: 'GET',
+			error: function(xml) {
+				alert("讀取 XML 錯誤: "+xml);
+			},
+			success: function(xml) {
+				//alert(xml);
+				$('#'+divID).html(""); // reset the list
+				$(xml).find('Matters').each(function(i) {
+					var id = $(this).children("itemkey").text(); // 取的子節點中的src
+					var val = $(this).children("item").text();
+					document.getElementById(divID).innerHTML += "<option value='"+id+"'>"+val+"</option>";
+				});
+			}
+		});
+
+		if (divID=='co_id') { // 如果選擇團隊, 顯示團隊兼職業務
+			// param: team_id, param2: teamsaler
+			var sUrl = "../api/get_xml_data.php?keyid="+param+"&func=teamsaler";
+
+			$.ajax({
+				url: sUrl,
+				type: 'GET',
+				error: function(xml) {
+					alert("讀取 XML 錯誤: "+xml);
+				},
+				success: function(xml) {
+					//alert(xml);
+					$('#selmem').html(""); // reset the list
+					$(xml).find('Matters').each(function(i) {
+						var id = $(this).children("itemkey").text(); // 取的子節點中的src
+						var val = $(this).children("item").text();
+						document.getElementById('selmem').innerHTML += "<option value='"+id+"'>"+val+"</option>";
+					});
+				}
+			});
+		
+		}
+
+	}
+//-->
+</script>
+
+
+</body>
+</html>

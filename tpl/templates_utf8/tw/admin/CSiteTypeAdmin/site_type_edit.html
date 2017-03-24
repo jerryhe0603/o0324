@@ -1,0 +1,143 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>			
+			網站管理
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=site_type&action=list">網站類型管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<{if $oSiteType}>
+			<li class="active">編修網站類型</li>
+		<{else}>
+			<li class="active">新增網站類型</li>
+		<{/if}>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			<{if $oSiteType}>
+			編修網站類型
+			<{else}>
+			新增網站類型
+			<{/if}>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		<form class="form-horizontal" id="validation-form" method="post" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}><{if $oSiteType}>&site_type_no=<{$oSiteType->iSiteTypeNo}><{/if}>">
+			<div class="control-group">
+				<label class="control-label" for="site_type_name">名稱</label>
+
+				<div class="controls">
+					<input type="text" name="site_type_name" id="site_type_name" value="<{$oSiteType->sName}>" />
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label" for="proxy_status">使用腳本類型</label>			
+				<div class="controls">
+					<select  multiple="" class="chzn-select" id="script_type_no" name="script_type_no[]" data-placeholder="Choose a Group...">
+						<option value=""></option>
+						<{foreach item=oScriptType from=$aAllScriptType}>
+						<option value="<{$oScriptType->iScriptTypeNo}>" <{if $oScriptType->bSelected}>selected<{/if}>><{$oScriptType->sName}></option>
+						<{/foreach}>
+					</select>
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label" for="site_type_sort">排序</label>
+				<div class="controls">
+					<input id="site_type_sort" name="site_type_sort" type="number"  value="<{$oSiteType->fSort}>">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="form-field-checkbox-5">狀態</label>
+				<div class="controls">	
+						<input type="checkbox" name="site_type_status" value="1" class="ace-switch ace-switch-7"  <{if !$oSiteType || $oSiteType->bStatus}>checked<{/if}>/>
+					<span class="lbl"></span>			
+				</div>
+			</div>
+			<{if $oSiteType}>
+			<input type="hidden" name="site_type_no" value="<{$oSiteType->iSiteTypeNo}>">
+			<{/if}>
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small" type="reset">
+					<i class="icon-undo bigger-110"></i>
+					重置
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					取消
+				</button>
+			</div>
+
+		<form>	
+	</div>
+</div>	
+
+<script src="../js/jquery.validate.min.js"></script>
+
+<script>
+$('.chzn-select').chosen();
+$(function() {
+	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			
+			site_type_name : 'required',
+			site_type_sort: {
+			      required: true,
+			      number: true
+			    },
+		},
+
+		messages: {
+			site_type_name: '請填入名稱',
+			site_type_sort: '請填入排序數字',
+
+		},
+
+		
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			$('.alert-error', $('.validation-form')).show();
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+})
+</script>
+
+

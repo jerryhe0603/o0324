@@ -1,0 +1,556 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<li>			
+			網站管理
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=site&action=list">站板管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=site&action=list">編修網站</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active"><{$site.site_title}></li>
+	</ul><!--.breadcrumb-->
+
+	<div class="nav-search" id="nav-search">
+		<form class="form-search" name=search-form id=search-form ENCTYPE=multipart/form-data method="post" action="index.php?func=site&action=search" >
+					<div class="control-group">	
+					<label  for="s_key">
+						<select name="s_terms" id="s_terms" >
+							<option value="site_title">名稱</option>
+							<option value="site_url">網址</option>
+						</select>
+						<span class="input-icon">
+							<input type="text" name="s_key" aria-controls="table_report" placeholder="Search..." value="<{$searchKey}>">
+							<i class="icon-search" id="nav-search-icon"></i>
+						</span>
+					</label>
+					</div>
+					</form>
+	</div><!--#nav-search-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			編修網站
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		<form class="form-horizontal" id="validation-form" method="post" action="<{$siteEditSubmit}>">
+			<div class="control-group">
+				<label class="control-label" for="site_title">名稱</label>
+
+				<div class="controls">
+					<input type="text" name="site_title" id="site_title" value="<{$site.site_title}>" />
+				</div>
+			</div>	
+
+			<div class="control-group">
+				<label class="control-label" for="site_url">網址</label>
+
+				<div class="controls">
+					<span class="input-icon input-icon-left">
+					<input type="url" name="site_url" id="site_url" value="<{$site.site_url}>">
+					<i class="icon-globe"></i>
+					</span>
+				</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="site_type_no">類型</label>
+
+				<div class="controls">
+					
+					
+					<select  class="chzn-select" id="site_type_no" name="site_type_no" data-placeholder="Choose a type...">
+						<option value=""></option>
+						<{foreach item=key from=$site_type_select}>
+						<option value="<{$key.site_type_no}>" <{if $key.selected}>selected<{/if}>><{$key.site_type_name}></option>
+						<{/foreach}>
+						
+					</select>
+			
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label" for="site_provide_mail">是否提供信箱</label>
+				<div class="controls">
+			
+					<input name="site_provide_mail"  id="site_provide_mail" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.site_provide_mail}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="site_mail_domain">信箱網域</label>
+				<div class="controls">
+					<{if $site.site_provide_mail == '1'}>
+						<input type="text" name="site_mail_domain" id="site_mail_domain" value="<{$site.site_mail_domain}>" />
+					<{else}>
+						<input type="text" name="site_mail_domain" id="site_mail_domain" value="<{$site.site_mail_domain}>" disabled />
+					<{/if}>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="member_site">註冊網站</label>
+				<div class="controls">
+					<input type="text" id="member_site" name="member_site" data-provide="typeahead" placeholder="enter site name..." autocomplete="off" value="<{$member_site_name}>">	
+					<span class="help-inline ">
+						<span class="middle">沒有的話 請填入"無"</span>
+					</span>				
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="site_level">級別</label>
+				<div class="controls">
+					<select id="site_level" name="site_level">
+						<option value="0" <{if $site.site_level == '0'}> selected <{/if}>>低</option>
+						<option value="1" <{if $site.site_level == '1'}> selected <{/if}>>中</option>
+						<option value="2" <{if $site.site_level == '2'}> selected <{/if}>>高</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="ISO">國別</label>
+				<div class="controls">
+					<{html_options name=ISO id=ISO  options=$country_select selected=$site.ISO}>
+					<script>
+						$('#ISO').chosen({search_contains: true});
+					</script>
+					
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="phone_certification">是否手機認證</label>
+				<div class="controls">
+			
+					<input name="phone_certification"  id="phone_certification" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.phone_certification}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="email_certification">是否信箱認證</label>
+				<div class="controls">
+			
+					<input name="email_certification"  id="email_certification" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.email_certification}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="register_verification">註冊是否認證碼</label>
+				<div class="controls">
+			
+					<input name="register_verification"  id="register_verification" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.register_verification}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="login_verification">登入是否認證碼</label>
+				<div class="controls">
+			
+					<input name="login_verification"  id="login_verification" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.login_verification}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="login_view">是否登入瀏覽</label>
+				<div class="controls">
+			
+					<input name="login_view"  id="login_view" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.login_view}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="article_order">討論串排序</label>
+				<div class="controls">
+					<select id="article_order" name="article_order">
+						<option value="0" <{if $site.article_order == '0'}> selected <{/if}>>新到舊</option>
+						<option value="1" <{if $site.article_order == '1'}> selected <{/if}>>舊到新</option>
+						
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="invite_code">邀請碼</label>
+				<div class="controls">
+			
+					<input name="invite_code"  id="invite_code" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.invite_code}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="mail_account_limit">限制註冊信箱</label>
+
+				<div class="controls">
+					
+					
+					<select  multiple="" class="chzn-select" id="mail_account_limit" name="mail_account_limit[]" data-placeholder="Choose a Mail...">
+						<option value=""></option>
+						<{foreach item=key from=$provide_mail_select}>
+						<option value="<{$key.site_no}>" <{if $key.selected}>selected<{/if}>><{$key.site_mail_domain}></option>
+						<{/foreach}>
+						
+					</select>
+			
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label" for="profile_photo">上傳大頭貼</label>
+				<div class="controls">
+					<select id="profile_photo" name="profile_photo">
+						<option value="0" <{if $site.profile_photo == '0'}> selected <{/if}>>否</option>
+						<option value="1" <{if $site.profile_photo == '1'}> selected <{/if}>>可</option>
+						<option value="2" <{if $site.profile_photo == '2'}> selected <{/if}>>一定要</option>
+						<option value="3" <{if $site.profile_photo == '3'}> selected <{/if}>>其他</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="html_code_support">支援語法</label>
+				<div class="controls">
+					<select id="html_code_support" name="html_code_support">
+						<option value="0" <{if $site.html_code_support == '0'}> selected <{/if}>>不</option>
+						<option value="1" <{if $site.html_code_support == '1'}> selected <{/if}>>html</option>
+						<option value="2" <{if $site.html_code_support == '2'}> selected <{/if}>>bbcode</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="body_embed_image">內文圖片</label>
+				<div class="controls">
+					<select id="body_embed_image" name="body_embed_image">
+						<option value="0" <{if $site.body_embed_image == '0'}> selected <{/if}>>無法得知</option>
+						<option value="1" <{if $site.body_embed_image == '1'}> selected <{/if}>>可外連</option>
+						<option value="2" <{if $site.body_embed_image == '2'}> selected <{/if}>>需上傳</option>
+						<option value="3" <{if $site.body_embed_image == '3'}> selected <{/if}>>無此功能</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="body_embed_vedio">內文影片</label>
+				<div class="controls">
+					<select id="body_embed_vedio" name="body_embed_vedio">
+						<option value="0" <{if $site.body_embed_vedio == '0'}> selected <{/if}>>無法得知</option>
+						<option value="1" <{if $site.body_embed_vedio == '1'}> selected <{/if}>>可外連</option>
+						<option value="2" <{if $site.body_embed_vedio == '2'}> selected <{/if}>>需上傳</option>
+						<option value="3" <{if $site.body_embed_vedio == '3'}> selected <{/if}>>無此功能</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="body_embed_link">內文連結</label>
+				<div class="controls">
+					<select id="body_embed_link" name="body_embed_link">
+						<option value="0" <{if $site.body_embed_link == '0'}> selected <{/if}>>無法得知</option>
+						<option value="1" <{if $site.body_embed_link == '1'}> selected <{/if}>>可外連</option>
+						<option value="2" <{if $site.body_embed_link == '2'}> selected <{/if}>>無此功能</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="post_edit">發文後編輯</label>
+				<div class="controls">
+			
+					<input name="post_edit"  id="post_edit" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.post_edit}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="post_del">發文後刪除</label>
+				<div class="controls">
+			
+					<input name="post_del"  id="post_del" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.post_del}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="reply_edit">回覆後編輯</label>
+				<div class="controls">
+			
+					<input name="reply_edit"  id="reply_edit" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.reply_edit}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="reply_del">回覆後刪除</label>
+				<div class="controls">
+			
+					<input name="reply_del"  id="reply_del" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.reply_del}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="reply_top">回覆後置頂</label>
+				<div class="controls">
+			
+					<input name="reply_top"  id="reply_top" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.reply_top}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="sign_function">簽名檔功能</label>
+				<div class="controls">
+					<select id="sign_function" name="sign_function">
+						<option value="0" <{if $site.sign_function == '0'}> selected <{/if}>>無</option>
+						<option value="1" <{if $site.sign_function == '1'}> selected <{/if}>>有</option>
+						<option value="2" <{if $site.sign_function == '2'}> selected <{/if}>>無法得知</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="sign_code_support">簽名檔語法</label>
+				<div class="controls">
+					<select id="sign_code_support" name="sign_code_support">
+						<option value="0" <{if $site.sign_code_support == '0'}> selected <{/if}>>不支援</option>
+						<option value="1" <{if $site.sign_code_support == '1'}> selected <{/if}>>html</option>
+						<option value="2" <{if $site.sign_code_support == '2'}> selected <{/if}>>bbcode</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="sign_image">簽名檔圖片</label>
+				<div class="controls">
+			
+					<input name="sign_image"  id="sign_image" class="ace-switch ace-switch-6" type="checkbox" value="1" <{if $site.sign_image}>checked<{/if}>>
+					<span class="lbl"></span>
+			
+
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="invite_friend">邀請好友</label>
+				<div class="controls">
+					<select id="invite_friend" name="invite_friend">
+						<option value="0" <{if $site.invite_friend == '0'}> selected <{/if}>>無</option>
+						<option value="1" <{if $site.invite_friend == '1'}> selected <{/if}>>有</option>
+						<option value="2" <{if $site.invite_friend == '2'}> selected <{/if}>>無法確定</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="form-field-checkbox-5">狀態</label>
+
+				<div class="controls">	
+					
+						<input type="checkbox" name="site_status" value="1" class="ace-switch ace-switch-7"  <{if $site.site_status}>checked<{/if}>/>
+					
+					<span class="lbl"></span>			
+				</div>
+			</div>
+			<input type="hidden" name="site_no" value="<{$site.site_no}>">
+			<input type="hidden" id="member_site_no" name="member_site_no" value="<{$site.member_site_no}>" />
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small" type="reset">
+					<i class="icon-undo bigger-110"></i>
+					重置
+				</button>
+
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					取消
+				</button>
+			</div>
+
+		<form>	
+	</div>
+</div>	
+
+<script src="../js/jquery.validate.min.js"></script>
+
+<script>
+$(function() {
+	var mail_domain = '<{$site.site_mail_domain}>';
+
+	$('#site_provide_mail').bind('change', function(){
+		
+		if($(this).is(':checked')){
+			$('#site_mail_domain').val(mail_domain);
+			$('#site_mail_domain').removeAttr('disabled');
+		}else {
+			
+			$('#site_mail_domain').val('');
+			$('#site_mail_domain').attr('disabled', 'disabled');
+		}
+	});
+
+	$('#dns_no').chosen({search_contains: true});
+
+	$('.chzn-select').chosen();
+
+
+	jQuery.validator.addMethod("validateSiteMailDomain", function(value, element) {
+	    if(!$('#site_provide_mail').is(':checked'))
+	    	return true;
+	    
+	    return CheckIsValidDomain(value);
+	    
+	}, "請填入信箱網域");
+
+	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			site_title: 'required',
+			site_url: 'required',
+
+			site_mail_domain : { validateSiteMailDomain : true },
+			site_type_no: 'required',
+		},
+
+		messages: {
+			site_title: '請填入名稱',
+			site_url: '請填入網址',
+			site_type_no: '請選擇類型',
+		},
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			$('.alert-error', $('.validation-form')).show();
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+})
+$(function() {
+	$('#search-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			s_key: 'required',
+			
+		},
+
+		messages: {
+			s_key: '請填入搜尋條件',
+			
+		},
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			$('.alert-error', $('.search-form')).show();
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+
+	var mapped = [];
+
+	$('#member_site').typeahead({
+		source: function(text, process) {	
+
+			if(!text) 
+				return;
+		
+			
+			var data = [];	
+
+			return $.ajax({
+				url: './get_site_for_member_site.php',
+				type: 'post',
+				data: {"text": text},
+				dataType: 'json',
+				success: function(json) {	
+
+					if(json.length) {	
+						for(var i = 0; i < json.length; i++) {
+							mapped[json[i].site_title] = json[i].site_no;
+							data.push(json[i].site_title);
+						}
+					}
+					//console.log(data);
+					return typeof json == 'undefined' ? false : process(data);
+				}
+			});
+		},
+		updater: function(item) {
+	    	//console.log(mapped[item]);
+			$('#member_site_no').val(mapped[item]);
+
+			return item;
+        },
+	});
+})
+</script>
+
+

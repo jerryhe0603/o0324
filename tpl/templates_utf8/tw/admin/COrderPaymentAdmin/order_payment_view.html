@@ -1,0 +1,131 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+            		<{if $sAdmin}>
+			<a href="./index.php?func=order&action=admin">所有訂單 </a>
+			<{else}>
+			<a href="./index.php?func=order&action=list">我的訂單 </a>
+			<{/if}>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>	
+			<a href="./index.php?func=order&action=view&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>">訂單:<{$oOrder->sName}></a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+        </li>
+        <li>	
+			<a href="./index.php?func=order_payment&action=list&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>">付款狀態列表</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+        </li>
+        <li class="active">付款流水號: <{$oOrderPayment->iPaymentId}></li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+	<a href="./index.php?func=<{$smarty.get.func}>&action=edit&order_no=<{$oOrder->sOrderUuid}>&payment_id=<{$oOrderPayment->iPaymentId}><{$sAdmin}>"
+		 class="btn btn-app btn-yellow btn-mini">
+		<i class="icon-pencil bigger-160"></i>
+		修改
+	</a>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<div class="span9">
+			<h4 class="blue">
+			<{if $oOrderPayment->bStatus == 1 }>
+				<span class="label label-large label-success arrowed arrowed-righ">有效</span>
+			<{else}>
+				<span class="label label-large label-important arrowed arrowed-righ">作廢</span>
+			<{/if}>
+			<{if $oOrderPayment->bPaid == 1 }>
+				<span class="label label-large label-info arrowed arrowed-righ">已付款</span>
+			<{else}>
+				<span class="label label-large label-warning arrowed arrowed-righ">未付款</span>
+			<{/if}>
+			</h4>
+
+			<div class="profile-user-info">
+				<div class="profile-info-row">
+					<div class="profile-info-name">預計付款日</div>
+					<div class="profile-info-value">
+						<span><{$oOrderPayment->sScheduleDate}></span>
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">付款日</div>
+					<div class="profile-info-value">
+						<span><{$oOrderPayment->sActualDate}></span>
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">發票號碼</div>
+					<div class="profile-info-value">
+						<span><{$oOrderPayment->sInvoiceNo}></span>
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">發票預計開立日期</div>
+
+					<div class="profile-info-value">
+						
+						<span><{$oOrderPayment->sInvoiceScheduleDate}></span>
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">發票開立日期</div>
+
+					<div class="profile-info-value">
+						
+						<span><{$oOrderPayment->sInvoiceActualDate}></span>
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name"> 建立日期 </div>
+
+					<div class="profile-info-value">
+						
+						<span><{$oOrderPayment->sLocalCreateTime()}></span>
+					</div>
+				</div>
+
+				<div class="profile-info-row">
+					<div class="profile-info-name"> 最後修改日期 </div>
+
+					<div class="profile-info-value">
+						<span><{$oOrderPayment->sLocalModifiedTime()}></span>
+					</div>
+				</div>
+			</div>
+			<div class="widget-box transparent">
+				<div class="widget-header widget-header-small">
+					<h4 class="smaller">
+						<i class="icon-check bigger-110"></i>
+						備註
+					</h4>
+				</div>
+				<div class="widget-body">
+					<div class="widget-main">
+						<p>
+							<{$oOrderPayment->sNote|replace:' ':'&nbsp;'|nl2br}>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="hr hr-8 dotted"></div>
+		</div>		
+	</div>
+</div>	

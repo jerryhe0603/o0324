@@ -1,0 +1,162 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<iframe id="SaveFrame" style="display:none;"></iframe>
+
+<link rel="stylesheet" href="../css/datepicker.css" />
+<script src="../js/bootstrap-datepicker.js"></script>
+
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" />
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+			
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=list&tab=oldcat">公司管理</a>
+			
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">公司匯入</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>匯入</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		
+		<!-- 提示訊息 start -->
+		<div class="alert alert-info">
+			<i class="icon-hand-right"></i>
+			匯入檔案之注意事項：<br/><br/>
+			１．匯入檔案副檔名為 .CSV 檔案。<br/>
+			２．檔案為可用 Excel 開啟的格式 ( 逗號分隔, ANSI, Big5，PS：請勿改為 UTF-8 格式 )。<br/>
+			３．CSV 檔案內要保留表頭。<br/>
+			４．匯入欄位如下：公司名稱、聯絡信箱、網址、縣市、地址、電話、傳真、聯絡人1、聯絡人1職稱、聯絡人2、聯絡人2職稱、備註。<br/>
+			５．必要欄位：公司名稱、網址，其他欄位可有可無。<br/>
+			６．請下載下方［範本 sample_cusimport.csv］修改後匯入。<br/>
+		</div>
+		<!-- 提示訊息 ended -->
+		
+		<div class="row">
+			<form name="myImportForm" id="myImportForm" class="form-horizontal" ENCTYPE="multipart/form-data" method="post" action="<{$CompanyImportSubmit}>" >
+				
+				<div class="control-group">
+					<label class="control-label" for="ind_id">產業別</label>
+					<div class="controls">
+						<select name="ind_id" id="ind_id">
+						  <option value="0">請選擇</option>
+						  <{foreach from=$IndustryData item="entry2" name="foo2"}>
+						  <option value="<{$entry2.ind_id|escape}>"><{$entry2.ind_name|escape}></option>
+						  <{/foreach}>
+						</select>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="level">等級</label>
+					<div class="controls">
+						<select name="level" id="level">
+							<option value="0">請選擇</option>
+							<option value="1">A</option>
+							<option value="2">B</option>
+							<option value="3">C</option>
+							<option value="4">D</option>
+							<option value="5">E</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="uploadfile">匯入檔案</label>
+					<div class="controls">
+						<div class="span4">
+							<input type="file" id="uploadfile" name="uploadfile" style="cursor:pointer;" placeholder="匯入檔案" />
+						</div>
+						<span class="space-2"></span>
+						<div class="help-inline">&nbsp; &nbsp; ( CSV檔,逗號分隔,ANSI,Big5 ) </div>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label">範本</label>
+					<div class="controls">
+						<button class="btn btn-link" type="button" onclick="javascript:location.href='sample_company_import.csv';">
+							sample_company_import.csv
+						</button>
+					</div>
+				</div>
+				
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<button class="btn btn-success" type="submit">
+							<i class="icon-ok bigger-110"></i>
+							匯入
+						</button>
+						
+						<button class="btn btn-primary" type="reset">
+							<i class="icon-undo bigger-110"></i>
+							重設
+						</button>
+						
+						<button class="btn btn-danger" type="button" onclick="javascript:history.go(-1);">
+							<i class="icon-remove bigger-110"></i>
+							取消
+						</button>
+					</div>
+				</div>
+
+			</form>
+		<!--PAGE CONTENT ENDS HERE-->
+		</div>
+	</div><!--/row-->
+</div><!--/#page-content-->
+
+<script language="JavaScript">
+
+// 所在地區 (需要搭配 jQuery.)
+	var ResetAddr2 = function(addr_id) { // 只顯示兩層, 使用方式: <div id="addr_data"></div>
+		var s_url = "../api/get_addr_select2.php?addr_id="+addr_id;
+		$.ajax({
+			url: s_url,	dataType: "text", type: "POST",
+			error: function(xhr) {
+				//alert('Ajax request 發生錯誤');
+				alert(xhr.status);
+			},
+			success: function(response) {
+				$("#addr_data").html(response);
+			}
+		});	
+	}
+	
+	ResetAddr2(0);
+	
+	$(function() { 
+		$('.date-picker').datepicker();
+		
+		$('#uploadfile').ace_file_input({
+			no_file:'No File ...',
+			btn_choose:'Choose',
+			btn_change:'Change',
+			droppable:false,
+			onchange:null,
+			thumbnail:false //| true | large
+			//whitelist:'gif|png|jpg|jpeg'
+			//blacklist:'exe|php'
+			//onchange:''
+			//
+		});
+
+	});
+
+</script>
+<{$userImportTplName}>

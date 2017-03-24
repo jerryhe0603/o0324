@@ -1,0 +1,214 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<{if $sAdmin}>
+			<a href="./index.php?func=order&action=admin">所有訂單 </a>
+			<{else}>
+			<a href="./index.php?func=order&action=list">我的訂單 </a>
+			<{/if}>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=order&action=view&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>">訂單:<{$oOrder->sName}></a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">發票列表</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="row-fluid">
+                        <div class="span1">
+                                <div class="page-header position-relative">
+                                            <a href="./index.php?func=<{$smarty.get.func}>&action=add&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>" class="btn btn-app btn-primary btn-mini ">
+                                                <i class="icon-plus bigger-160"></i>新增發票
+                                            </a>
+                                </div>
+                        </div>
+	</div>
+
+	<!--PAGE CONTENT BEGINS HERE-->
+	<!--/.page-header-->
+
+	<div class="table-header">
+	<{if $smarty.get.search=='1'}>
+                <span>
+		搜尋 "<{$searchKey}>"的結果
+                </span>
+                <span class="span2 pull-right align-center">
+                    <a href="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}><{$sAdmin}>">
+                        <label class="badge badge-light">
+                            取消搜尋
+                        </label>
+                    </a>
+                </span>
+	<{/if}>
+	</div>
+	<h3 class="header smaller lighter blue">訂單資訊</h3>
+	<table id="table_report" class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr role="row">
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">訂單編號</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">簽單客戶</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">服務客戶</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">客戶類型</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">體系</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1">接單負責人</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<{assign var=iType value=$oOrder->iType}>
+				<{assign var=oManagement value=$oOrder->oManagement()}>
+				<{assign var=oSalesperson value=$oOrder->oSalesperson()}>
+				<td><{$oOrder->sOrderNo}></td>
+                    			<td><{$oOrder->sContractClientName}></td>
+                    			<td><{$oOrder->sClientName}></td>
+                    			<td><{$aType.$iType|escape:'quotes'}></td>
+                   			<td><{$oManagement->sName}></td>
+           				<td><{$oSalesperson->sName}></td>
+			</tr>
+		</tbody>
+	</table>
+	<h3 class="header smaller lighter blue">發票資訊</h3>
+	<div  class="dataTables_wrapper" role="grid">
+		<div class="row-fluid">		
+			<div class="span6">
+				<div id="table_report_length" class="dataTables_length">
+					<label>顯示 
+						<select  id="select_page_items" onChange="relocate(this);" size="1"  aria-controls="table_report">
+							<option value="10" selected="selected">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+						</select> 筆資料
+					</label>
+				</div>
+			</div>
+			<!--
+			<div class="span6 ">
+				<div class="dataTables_filter " id="table_report_filter">
+					<form class="form-search" name=search-form id=search-form ENCTYPE=multipart/form-data method="post" action="index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&search=1" >
+					<div class="control-group">	
+					<label  for="s_key">
+						
+						<span class="input-icon">
+							<input type="text" name="s_key" aria-controls="table_report" placeholder="Search..." value="<{$searchKey}>">
+							<i class="icon-search" id="nav-search-icon"></i>
+						</span>
+					</label>
+					</div>
+					</form>
+				</div>
+			</div>
+			-->
+		</div>
+		<table id="table_report" class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr role="row">
+					<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="schedule_date" class="sortable" onclick="sort_table('<{$OrderUrl}>','schedule_date','<{$OrderSort}>');" >預計付款日</th>
+					<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="actual_date" class="sortable" onclick="sort_table('<{$OrderUrl}>','actual_date','<{$OrderSort}>');">付款日期</th>
+					<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="actual_date" class="sortable">付款狀態</th>
+                    				<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="status" class="sortable" onclick="sort_table('<{$OrderUrl}>','status','<{$OrderSort}>');">發票狀態</th>
+                   				 <th style="width: 100px;">檢視/編輯</th>
+				</tr>
+			</thead>
+			<tbody>
+				<{foreach item=oOrderPayment key=index from=$aOrderPayments}>
+				<tr>
+					<td><{$oOrderPayment->sScheduleDate}></td>
+					<td><{$oOrderPayment->sActualDate}></td>
+					<td>
+					<{if $oOrderPayment->bPaid == 1 }>
+						<span class="label label-large label-info arrowed arrowed-righ">已付款</span>
+					<{else}>
+						<span class="label label-large label-warning arrowed arrowed-righ">未付款</span>
+					<{/if}>
+					</td>
+					<td>
+					<{if $oOrderPayment->bStatus == 1 }>
+						<span class="label label-large label-success arrowed arrowed-righ">有效</span>
+					<{else}>
+						<span class="label label-large label-important arrowed arrowed-righ">作廢</span>
+					<{/if}>
+					</td>
+					<td class="td-actions">
+						<div class="hidden-phone visible-desktop action-buttons">
+							<a class="blue" href="./index.php?func=<{$smarty.get.func}>&action=view&order_no=<{$oOrderPayment->sOrderUuid}>&payment_id=<{$oOrderPayment->iPaymentId}><{$sAdmin}>" title="檢視">
+								檢視
+							</a>
+							<a class="green" href="./index.php?func=<{$smarty.get.func}>&action=edit&order_no=<{$oOrderPayment->sOrderUuid}>&payment_id=<{$oOrderPayment->iPaymentId}><{$sAdmin}>" title="編輯">
+								編輯
+							</a>
+						</div>
+					</td>
+				</tr>
+				<{/foreach}>
+			</tbody>
+		</table>
+
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="dataTables_info" id="table_report_info">Showing <{$StartRow}> to <{$EndRow}> of <{$Total}> entries</div>
+			</div>
+				<div class="span6">
+					<div class="dataTables_paginate paging_bootstrap pagination">
+					<{$PageBar}>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div><!--/row-->
+</div><!--/#page-content-->
+
+
+<script>
+        	var _PageItems = "<{$PageItem}>";
+        	var _PageUrl = "<{$OrderUrl}>";
+        
+        
+
+		
+		for(var i=0 ; i<document.getElementById("select_page_items").options.length ; i++) {
+
+		        if(document.getElementById("select_page_items").options[i].value == _PageItems) {
+
+		        	document.getElementById("select_page_items").selectedIndex = i;
+
+				break;
+
+			}
+
+		}
+
+		
+
+		function relocate(obj){ 
+
+                        var val=obj.options[obj.selectedIndex].value;
+
+                        var url_string=_PageUrl;
+
+                        var loc=url_string+'&items='+val;
+
+                        document.location=loc;
+
+            	}
+				
+
+ </script>
+<script>
+	sort_table_style('<{$NowOrder}>','<{$NowSort}>');
+</script>

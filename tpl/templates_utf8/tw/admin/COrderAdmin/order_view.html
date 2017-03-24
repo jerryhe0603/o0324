@@ -1,0 +1,254 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<{if $sAdmin}>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=admin">所有訂單 </a>
+			<{else}>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=list">我的訂單 </a>
+			<{/if}>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>	
+			<a href="./index.php?func=order&action=view&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>">訂單:<{$oOrder->sName}></a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+        </li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+	<{if $oOrder->iVerifyStatus!=1}>
+	<a href="./index.php?func=<{$smarty.get.func}>&action=edit&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>"
+		 class="btn btn-app btn-yellow btn-mini">
+		<i class="icon-pencil bigger-160"></i>
+		修改
+	</a>
+	<{/if}>
+	<{if $oOrder->iVerifyStatus==2}>
+	<a href="./index.php?func=order_payment&action=list&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>"
+		 class="btn btn-app btn-yellow btn-mini">
+		<i class="icon-credit-card bigger-160"></i>
+		發票
+	</a>
+	<a href="./index.php?func=order_project&action=list_by_order&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>"
+		 class="btn btn-app btn-yellow btn-mini">
+		<i class="icon-book bigger-160"></i>
+		專案管理
+	</a>
+	<{/if}>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<div class="">
+			<h4 class="blue">
+				<span class="middle"><{$oOrder->sName}></span>
+				<!--
+				<{if $oOrder->bStatus == 1 }>
+				<span class="label label-large label-success arrowed arrowed-righ">開啟</span>
+				<{else}>
+				<span class="label label-large label-important arrowed arrowed-righ">關閉</span>
+				<{/if}>
+				-->
+				<{if $oOrder->iVerifyStatus==2}>
+				<span class="label label-large label-success arrowed arrowed-righ">通過</span>
+				<{elseif $oOrder->iVerifyStatus==1}>
+				<span class="label label-large label-info arrowed arrowed-righ">待驗證</span>
+				<{elseif $oOrder->iVerifyStatus==0}>
+				<span class="label label-large label-important arrowed arrowed-righ">駁回</span>
+				<{/if}>
+			</h4>
+			<div class="">
+				<div class="profile-user-info">
+					<div class="profile-info-row">
+						<div class="profile-info-name">訂單編號</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sOrderNo}></span>
+						</div>
+					</div>
+					<{assign var=iType value =$oOrder->iType}>
+					<div class="profile-info-row">
+						<div class="profile-info-name">訂單類型</div>
+						<div class="profile-info-value">
+							<span><{$aType.$iType}></span>
+						</div>
+					</div>
+					<!--
+					<{*assign var=oGroup value =$oOrder->oGroup()*}>
+					<div class="profile-info-row">
+						<div class="profile-info-name">業助群組</div>
+						<div class="profile-info-value">
+							<span><{$oGroup->sName}></span>
+						</div>
+					</div>
+					-->
+					<div class="profile-info-row">
+						<div class="profile-info-name">簽單客戶</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sContractClientName}></span>
+						</div>
+					</div>
+					<{if $oOrder->iType!=1}>
+					<div class="profile-info-row">
+						<div class="profile-info-name">服務客戶</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sClientName}></span>
+						</div>
+					</div>
+					<{/if}>
+					<!--
+					<div class="profile-info-row">
+						<div class="profile-info-name">客戶類型</div>
+						<div class="profile-info-value">
+							<span><{$oContractClient->iCompanyType|escape:'quotes'|default:'<br>'}></span>
+						</div>
+					</div>
+					-->
+					<div class="profile-info-row">
+						<div class="profile-info-name">業務體系</div>
+						<div class="profile-info-value">
+						<{assign var=oManagement value=$oOrder->oManagement()}>
+							<span><{$oManagement->sName}></span>
+						</div>
+					</div>
+					<{if $oOrder->iType!=4}>
+					<div class="profile-info-row">
+						<div class="profile-info-name">接單負責人</div>
+						<div class="profile-info-value">
+						<{assign var=oSalesperson value=$oOrder->oSalesperson()}>
+							<span><{$oSalesperson->sName|default:'<br>'}></span>
+						</div>
+					</div>
+					<{/if}>
+					<div class="profile-info-row">
+						<div class="profile-info-name">公司聯絡人</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sContactUserName|default:'<br>'}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">統一編號</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->iTaxId|default:'<br>'}></span>
+						</div>
+					</div>
+					<!--
+					<div class="profile-info-row">
+						<div class="profile-info-name">簽單日期</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sSignDate}></span>
+						</div>
+					</div>
+					-->
+					<div class="profile-info-row">
+						<div class="profile-info-name">提案中</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sProposalDate}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">用印申請日</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sSealDate}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">用印次數</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->iSealTimes}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">回簽日</div>
+						<div class="profile-info-value">			
+							<span><{$oOrder->sSignBackDate}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">失敗(無回簽)</div>
+						<div class="profile-info-value">				
+							<span><{$oOrder->sFailDate}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">取消</div>
+						<div class="profile-info-value">	
+						<{assign var=iCanceled value=$oOrder->iCanceled}>
+							<span><{if $iCanceled>0}><{$oOrder->sCanceledDate}><{/if}>  <{$aCancelScope.$iCanceled}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">完工日</div>
+						<div class="profile-info-value">				
+							<span><{$oOrder->sCompletionDate}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">訂單開始日</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sStartDate}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">訂單結束日</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sEndDate}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">報價單編號</div>
+						<div class="profile-info-value">				
+							<span><{$oOrder->sQuotationNo|default:'<br>'}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name"> 建立日期 </div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sLocalCreateTime()}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name"> 最後修改日期 </div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sLocalModifiedTime()}></span>
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">產品</div>
+						<div class="profile-info-value">
+							<span><{$oOrder->sGetProductName()}></span>
+						</div>
+					</div>
+					<div class="widget-box transparent">
+						<div class="widget-header widget-header-small">
+							<h4 class="smaller">
+								<i class="icon-check bigger-110"></i>
+								備註
+							</h4>
+						</div>
+						<div class="widget-body">
+							<div class="widget-main">
+								<p>
+									<{$oOrder->sNote|replace:' ':'&nbsp;'|nl2br}>
+								</p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="hr hr-8 dotted"></div>
+				</div>
+			</div>	
+		</div>		
+	</div>
+</div>	

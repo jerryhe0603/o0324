@@ -1,0 +1,281 @@
+<script type="text/javascript" src="../js/element_mapping_selector.js"></script>
+
+    <style>
+     
+      #components{
+        min-height: 600px;
+      }
+      #target{
+        min-height: 200px;
+        border: 1px solid #ccc;
+        padding: 5px;
+      }
+      #target .component{
+        border: 1px solid #fff;
+      }
+      #temp{
+        width: 500px;
+        background: white;
+        border: 1px dotted #ccc;
+        border-radius: 10px;
+      }
+
+      .popover-content form {
+        width: 213px;
+      }
+      .popover-content form .btn{
+        margin-right: 10px
+      }
+      #source{
+        min-height: 500px;
+      }
+	  .validation-form {
+		min-height: 200px;
+        border: 1px solid #ccc;
+        padding: 5px;
+	  }
+    </style>
+    <div>
+        <div>
+            <h4 class="smaller">
+                <i class="icon-bell bigger-110"></i>
+                欄位提示工具( <span class="blue">已選</span> / <span class="red">未選</span> )
+            </h4>
+        </div>
+        <div style="border: 1px solid #ccc;padding: 5px;">
+            <div>
+                <span>使用腳本: </span>
+                    <select class="width-40" id="script_selector" name="script_selector">
+                        <option value="0">not selected</option>
+                        <{foreach item=oScript from=$aScript}>
+                        <option value="<{$oScript->iScriptNo}>"><{$oScript->sName}></option>
+                        <{/foreach}>
+                    </select>
+            </div>
+            <div class="clearfix">
+                <div id="require_element_mapping" >
+                    <span> </span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="row-fluid">
+        <div class="span6">
+          <div class="clearfix">
+		    <{$targetForm}>
+          </div>
+        </div>
+				
+        <div class="span6">
+            <div>
+                <h4 class="smaller">
+                    <i class="icon-bookmark bigger-110"></i>
+                    所有欄位 Drag & Drop Components
+                </h4>
+            </div>	
+        <div class="tabbable">
+            <ul class="nav nav-tabs" id="navtab">
+              <{foreach item=oPageType name=tabs from=$aPageType}>
+			  <li <{if $smarty.foreach.tabs.index == 0}>class="active"<{/if}>>
+			  	<a href="#page_type_<{$smarty.foreach.tabs.index}>" data-toggle="tab"><{$oPageType->sName}></a>
+			  </li>
+              <{/foreach}>
+            </ul>
+            <form class="form-horizontal" id="components">
+              <fieldset>
+                <div class="tab-content">
+				<{foreach item=oPageType name=tab_content from=$aPageType}>
+                  	<div class="tab-pane <{if $smarty.foreach.tab_content.index == 0}>active<{/if}>" id="page_type_<{$smarty.foreach.tab_content.index}>">
+					<{foreach item=oEleMap name=foo2 from=$oPageType->aElementMapping()}>
+					<{if $oEleMap->bStatus=='0'}>	<!--not use-->
+					<{elseif $oEleMap->sTagType == "text"}>
+					
+                    <div class="control-group component" data-rel="popover" title="<{$oEleMap->sName}>" trigger="manual"
+                      data-content="
+                       <div style='width: 500px;'> 
+							<{if $oEleMap->iTool == 1}>
+								<div id='zip_data'></div>
+								<SCRIPT language=javascript>
+								getZipCodeSelector('zip_data','','ZH','');
+								</SCRIPT>
+							<{else}>	
+							<input type='text' class='span6' name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_no_<{$oEleMap->iElementMappingNo}>' element-type='text'>
+							<{/if}>
+							<BR><BR>
+							<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>' class='ace ace-switch ace-switch-6' type='checkbox' checked >
+							<span class='lbl'></span>
+							
+							
+                          <hr/>
+                         
+                          <button type='button' class='btn btn-small btn-success' > <i class='icon-ok bigger-110'></i></button> <button type='button' class='btn btn-small btn-danger'> <i class='icon-reply bigger-110'></i></button>
+                        </div>
+                      "
+                      >
+					
+                      <!-- Text input-->
+                      <label class="control-label" for='element_mapping_no_<{$oEleMap->iElementMappingNo}>'><{$oEleMap->sName}></label>
+                      <div class="controls alert alert-info">
+                        <input class="span4 " element-type="text" type="text" name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_no_<{$oEleMap->iElementMappingNo}>' >
+						<BR><BR>
+						<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>' class='ace ace-switch ace-switch-6' type='checkbox' checked >
+						<span class='lbl'></span>
+						<button type="button" class="edit pull-right btn btn-mini btn-info" style="display: none;" ><i class="icon-edit  bigger-110 icon-only"></i></button>
+						
+					  </div>
+                    </div>
+					
+					<{elseif $oEleMap->sTagType == "textarea"}>
+					
+					<div class="control-group component"  data-rel="popover" title="<{$oEleMap->sName}>" trigger="manual"
+                      data-content="
+                        <div style='width: 500px;'>
+							<textarea type='text' class='span5' rows='6'  name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_no_<{$oEleMap->iElementMappingNo}>' element-type='textarea'></textarea>
+							<BR><BR>
+							<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>'  class='ace ace-switch ace-switch-6' type='checkbox' checked>
+							<span class='lbl'></span>
+                          <hr/>
+                          <button type='button' class='btn btn-small btn-success' > <i class='icon-ok bigger-110'></i></button> <button type='button' class='btn btn-small btn-danger'> <i class='icon-reply bigger-110'></i></button>
+                        </div>
+                      "
+                      >
+
+                      <!-- TextArea -->
+                      <label class="control-label" for='element_mapping_no_<{$oEleMap->iElementMappingNo}>'><{$oEleMap->sName}></label>
+                      <div class="controls alert alert-info">
+                        <textarea  class='span5' element-type="textarea" type="text" name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_no_<{$oEleMap->iElementMappingNo}>' rows="5" ></textarea>
+						<BR><BR>
+						<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>'  class='ace ace-switch ace-switch-6' type='checkbox' checked>
+						<span class='lbl'></span>
+						<button type="button" class="edit pull-right btn btn-mini btn-info" style="display: none;" ><i class="icon-edit  bigger-110 icon-only"></i></button>
+                      </div>
+                    </div>
+					
+					<{elseif $oEleMap->sTagType == "select"}>
+						
+						<div class="control-group component" data-rel="popover" title="<{$oEleMap->sName}>" trigger="manual"
+						  data-content="
+						  <div style='width: 300px;'>
+								<select class='span6' name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_no_<{$oEleMap->iElementMappingNo}>' element-type='option'>
+								  <{foreach item=oOption name=options from=$oEleMap->aOption}>
+								  <option value='<{$oOption->iElementOptionNo}>'><{$oOption->sName}></option>
+								  <{/foreach}>
+								</select>
+								<BR><BR>
+								<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>'  class='ace ace-switch ace-switch-6' type='checkbox' checked>
+							<span class='lbl'></span>
+							  <hr/>
+							  <button type='button' class='btn btn-small btn-success' > <i class='icon-ok bigger-110'></i></button> <button type='button' class='btn btn-small btn-danger'> <i class='icon-reply bigger-110'></i></button>
+						</div>
+						  "
+						  >
+
+						  <!-- Select Basic -->
+						  <label class="control-label"><{$oEleMap->sName}></label>
+						  <div class="controls alert alert-info">
+							<select class="span4 " element-type="option"  name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_no_<{$oEleMap->iElementMappingNo}>' >
+							  	<{foreach item=oOption name=options from=$oEleMap->aOption}>
+								  	<option value='<{$oOption->iElementOptionNo}>'><{$oOption->sName}></option>
+							  	<{/foreach}>
+							</select>
+							<BR><BR>
+							<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>'  class='ace ace-switch ace-switch-6' type='checkbox' checked>
+							<span class='lbl'></span>
+							<button type="button" class="edit pull-right btn btn-mini btn-info" style="display: none;" ><i class="icon-edit  bigger-110 icon-only"></i></button>
+						  </div>
+						</div>
+						
+					<{elseif $oEleMap->sTagType == "checkbox"}>
+					
+					<div class="control-group component" data-rel="popover" title="<{$oEleMap->sName}>" trigger="manual"
+                      data-content="
+		<div style='width: 300px;'>	 	
+						 	<{foreach item=oOption name=options from=$oEleMap->aOption}>
+							<label  for='element_mapping_option_no<{$oOption->iElementOptionNo}>'>
+							
+							<input class='ace' type='checkbox' value='<{$oOption->iElementOptionNo}>' name='element_mapping_option_no_<{$oEleMap->iElementMappingNo}>[]' id='element_mapping_option_no_<{$oOption->iElementOptionNo}>' element-type='checkbox'>	
+							<span class='lbl'>
+							<{$oOption->sName}>
+							</span>
+							</label>
+							<{/foreach}>
+							<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>'  class='ace ace-switch ace-switch-6' type='checkbox' checked>
+							<span class='lbl'></span>
+							
+                          <hr/>
+                          <button type='button' class='btn btn-small btn-success' > <i class='icon-ok bigger-110'></i></button> <button type='button' class='btn btn-small btn-danger'> <i class='icon-reply bigger-110'></i></button>
+                      </div>
+                      "
+                      >
+                      <label class="control-label"><{$oEleMap->sName}></label>
+                      <div class="controls alert alert-info"  >
+
+                        <!-- Multiple Checkboxes -->
+                        <input type="hidden" name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_no_<{$oEleMap->iElementMappingNo}>' value='<{$oEleMap->iElementMappingNo}>'>
+                        <{foreach item=oOption name=options from=$oEleMap->aOption}>
+						<label  for='element_mapping_option_no<{$oOption->iElementOptionNo}>'>
+						<input  class="ace" element-type="checkbox" type='checkbox'  value='<{$oOption->iElementOptionNo}>' name='element_mapping_option_no_<{$oEleMap->iElementMappingNo}>[]' id='element_mapping_option_no_<{$oOption->iElementOptionNo}>'>	
+						<span class='lbl'>
+							<{$oEleMap->sName}>
+						</span>
+						</label>
+						<{/foreach}>
+						
+						<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>'  class='ace ace-switch ace-switch-6' type='checkbox' checked>
+						<span class='lbl'></span>
+						<button type="button" class="edit pull-right btn btn-mini btn-info" style="display: none;" ><i class="icon-edit  bigger-110 icon-only"></i></button>
+                      </div>
+                    </div>
+					
+					<{elseif $oEleMap->sTagType == "radio"}>
+					
+					<div class="control-group component" data-rel="popover" title="<{$oEleMap->sName}>" trigger="manual"
+                      data-content="
+			<div style='width: 300px;'>				
+							<{foreach item=oOption name=options from=$oEleMap->aOption}>
+							<label >
+							<input  class='ace' type='radio' value='<{$oOption->iElementOptionNo}>' name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_option_no_<{$oOption->iElementOptionNo}>' element-type='radio'>	
+							<span class='lbl'>
+							<{$oOption->sName}>
+							</span>
+							</label>
+							<{/foreach}>
+							<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>'  class='ace ace-switch ace-switch-6' type='checkbox' checked>
+							<span class='lbl'></span>
+                          <hr/>
+                          <button type='button' class='btn btn-small btn-success' > <i class='icon-ok bigger-110'></i></button> <button type='button' class='btn btn-small btn-danger'> <i class='icon-reply bigger-110'></i></button>
+                      </div>
+                      " 
+                      >
+                      <label class="control-label"><{$oEleMap->sName}></label>
+                      <div class="controls alert alert-info">
+
+                        <!-- Multiple Radios -->
+                        <{foreach item=oOption name=options from=$oEleMap->aOption}>
+						<label >
+						<input  class="ace"  element-type="radio" type='radio' <{if $smarty.foreach.options.index == 0}>checked <{/if}> value='<{$oOption->iElementOptionNo}>' name='element_mapping_no_<{$oEleMap->iElementMappingNo}>' id='element_mapping_option_no_<{$oOption->iElementOptionNo}>'  >
+						<span class='lbl'><{$oOption->sName}></span>
+						</label>
+						<{/foreach}>
+						<input element-type='switch' name='fields_status_<{$oEleMap->iElementMappingNo}>' id='fields_status_<{$oEleMap->iElementMappingNo}>'  class='ace ace-switch ace-switch-6' type='checkbox' checked>
+						<span class='lbl'></span>
+						<button type="button" class="edit pull-right btn btn-mini btn-info" style="display: none;" ><i class="icon-edit  bigger-110 icon-only"></i></button>
+                      </div>
+                    </div>
+					<{/if}>
+					<{/foreach}>
+					</div>
+				<{/foreach}>
+				</div>
+            </fieldset>
+          </form>
+	</div>
+    </div>
+</div> <!-- row -->
+          
+
+		
+
+    

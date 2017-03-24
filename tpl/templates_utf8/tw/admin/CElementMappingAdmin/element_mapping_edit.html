@@ -1,0 +1,133 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>			
+			網站管理
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=element_mapping&action=list">欄位關聯管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			<{if $smarty.get.element_mapping_no}>
+			編輯
+			<{else}>
+			新增
+			<{/if}>
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			<{if $smarty.get.element_mapping_no}>
+			編輯欄位
+			<{else}>
+			新增欄位
+			<{/if}>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		<form class="form-horizontal" id="validation-form" method="post" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}><{if $smarty.get.element_mapping_no}>&element_mapping_no=<{$oEleMap->iElementMappingNo}><{/if}>">
+			<{if $smarty.get.element_mapping_no}>
+				<input type="hidden" name="element_mapping_no" value="<{$oEleMap->iElementMappingNo}>" />
+			<{/if}>
+
+			<div class="control-group">
+				<label class="control-label" for="element_mapping_name">名稱</label>
+
+				<div class="controls">
+					<input type="text" name="element_mapping_name" id="element_mapping_name" value="<{$oEleMap->sName}>" />
+				</div>
+			</div>	
+
+			<div class="control-group">
+				<label class="control-label" for="element_mapping_page_type">頁面類型</label>
+				<div class="controls">
+					<select  multiple="multiple" id="page_type" name="page_type[]" data-placeholder="Choose page type...">
+						<option value=""></option>
+						<{foreach item=oPageType from=$aAllPageType}>
+						<option value="<{$oPageType->iPageTypeNo}>" <{if $oPageType->bSelected}>selected<{/if}>><{$oPageType->sName}></option>
+						<{/foreach}>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="form-field-checkbox-5">狀態</label>
+
+				<div class="controls">	
+					<{if $script && $script.script_status == 0}>
+						<input type="checkbox" name="element_mapping_status" value="1" class="ace-switch ace-switch-7" />
+					<{else}>
+						<input type="checkbox" name="element_mapping_status" value="1" class="ace-switch ace-switch-7" checked />
+					<{/if}>
+					<span class="lbl"></span>		
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small" type="reset">
+					<i class="icon-undo bigger-110"></i>
+					重置
+				</button>
+
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					取消
+				</button>
+			</div>
+
+			<input type="hidden" name="element_mapping_no" value="<{$smarty.get.element_mapping_no}>" />
+		<form>	
+	</div>
+</div>
+
+<script src="../js/jquery.validate.min.js"></script>
+
+<script>
+$(function() {
+	$('#page_type').chosen({placeholder: "請選擇頁面類型", search_contains: true});
+
+	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			element_mapping_name: 'required',
+		},
+		messages: {
+			element_mapping_name: '請輸入名稱',
+		},
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+})
+</script>

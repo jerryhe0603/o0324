@@ -1,0 +1,311 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<{if $sAdmin}>
+			<a href="./index.php?func=order&action=admin">所有訂單</a>
+			<{else}>
+            		<a href="./index.php?func=order&action=list">我的訂單</a>
+            		<{/if}>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>	
+			<a href="./index.php?func=order&action=view&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>">訂單:<{$oOrder->sName}></a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+        </li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<{assign var=oLastUser value=$oOrder->oLastUser()}>
+	<div class="alert alert-info">最後由<{$oLastUser->sName}>於<{$oOrder->sLocalModifiedTime()}>修改</div>
+	<form method="post" action="index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>">
+		<table id="table_report" class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr role="row">
+					<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" id="type" style="width:100px;">項目名稱</th>
+					<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" id="type" style="width:80px;">核可<br><a onclick="checkAll(true);">全選</a> / <a onclick="checkAll(false);">全取消</a></th>
+					<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" id="type">內容</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>報價單編號</td>
+					<td class="verify_column" data-checkbox-name="quotation_no"></td>
+					<td><{$oOrder->sQuotationNo}></td>
+				</tr>
+				<tr>
+					<td>訂單編號</td>
+					<td class="verify_column" data-checkbox-name="order_id"></td>
+					<td><{$oOrder->sOrderNo}></td>
+				</tr>
+				<tr>
+					<td>訂單名稱</td>
+					<td class="verify_column" data-checkbox-name="name"></td>
+					<td><{$oOrder->sName}></td>
+				</tr>
+				<tr>
+					<td>訂單類型</td>
+					<td class="verify_column" data-checkbox-name="type"></td>
+					<{assign var=iType value =$oOrder->iType}>
+					<td><{$aType.$iType}></td>
+				</tr>
+				<!--
+				<tr>
+					<td>業助群組</td>
+					<{*assign var=oGroup value =$oOrder->oGroup()*}>
+					<td><{$oGroup->sName}></td>
+					<td class="verify_column" data-checkbox-name="group_no"></td>
+				</tr>
+				-->
+				<tr>
+					<td>簽單客戶</td>
+					<td class="verify_column" data-checkbox-name="contract_client_name"></td>
+					<td><{$oOrder->sContractClientName}></td>
+				</tr>
+				<tr>
+					<td>服務客戶</td>
+					<td class="verify_column" data-checkbox-name="client_name"></td>
+					<td><{$oOrder->sClientName}></td>
+				</tr>
+				<tr>
+					<td>業務體系</td>
+					<td class="verify_column" data-checkbox-name="management_id"></td>
+					<{assign var=oManagement value=$oOrder->oManagement()}>
+					<td><{$oManagement->sName}></td>
+				</tr>
+				<tr>
+					<td>接單負責人</td>
+					<td class="verify_column" data-checkbox-name="salesperson_no"></td>
+					<{assign var=oSalesperson value=$oOrder->oSalesperson()}>
+					<td><{$oSalesperson->sName|default:'<br>'}></td>
+				</tr>
+				<tr>
+					<td>公司聯絡人</td>
+					<td class="verify_column" data-checkbox-name="contact_user_no"></td>
+					<td><{$oOrder->sContactUserName|default:'<br>'}></td>
+				</tr>
+				<tr>
+					<td>統一編號</td>
+					<td></td>
+					<td><{$oOrder->iTaxId}></td>
+				</tr>
+				<tr>
+					<td>訂單開始日</td>
+					<td class="verify_column" data-checkbox-name="start_date"></td>
+					<td><{$oOrder->sStartDate}></td>
+				</tr>
+				<tr>
+					<td>訂單結束日</td>
+					<td class="verify_column" data-checkbox-name="end_date"></td>
+					<td><{$oOrder->sEndDate}></td>
+				</tr>
+				<tr>
+					<td>提案中</td>
+					<td class="verify_column" data-checkbox-name="proposal_date"></td>
+					<td><{$oOrder->sProposalDate}></td>
+				</tr>
+				<tr>
+					<td>用印申請日</td>
+					<td class="verify_column" data-checkbox-name="seal_date"></td>
+					<td><{$oOrder->sSealDate}></td>
+				</tr>
+				<tr>
+					<td>用印次數</td>
+					<td class="verify_column" data-checkbox-name="seal_times"></td>
+					<td><{$oOrder->iSealTimes}></td>
+				</tr>
+				<tr>
+					<td>回簽日</td>
+					<td class="verify_column" data-checkbox-name="sign_back_date"></td>
+					<td><{$oOrder->sSignBackDate}></td>
+				</tr>
+				<tr>
+					<td>失敗(無回簽)</td>
+					<td class="verify_column" data-checkbox-name="fail_date"></td>
+					<td><{$oOrder->sFailDate}></td>
+				</tr>
+				<tr>
+					<td>取消</td>
+					<td class="verify_column" data-checkbox-name="canceled"></td>
+					<{assign var=iCanceled value=$oOrder->iCanceled}>
+					<td><{if $iCanceled>0}><{$oOrder->sCanceledDate}><{/if}>  <{$aCancelScope.$iCanceled}></td>
+				</tr>
+				<tr>
+					<td>完工日</td>
+					<td class="verify_column" data-checkbox-name="completion_date"></td>
+					<td><{$oOrder->sCompletionDate}></td>
+				</tr>
+				<tr>
+					<td>備註</td>
+					<td class="" data-checkbox-name="note"></td>
+					<td><{$oOrder->sNote}></td>
+				</tr>
+				<tr>
+					<td>產品</td>
+					<td class="verify_column" data-checkbox-name="product_no"></td>
+					<td><{$oOrder->sGetProductName()}></td>
+				</tr>
+			</tbody>
+		</table>
+		<!--
+		<button class="btn btn-small btn-info">
+					<i class="icon-exchange bigger-110"></i>
+					驗證創世紀公司資料
+		</button>
+		-->
+		<{if $bContractClientVerified == 0}>
+			<p>
+				<a class="green cbox" href="http://<{$sGenesisServer}>/admin/api.company_admin_view.php?co_id=<{$oOrder->iContractClientNo}>&sid=<{$PHPSESSID}>" title="驗證簽單客戶公司資料">
+					驗證簽單客戶公司資料(直客訂單的"簽單客戶"即"服務客戶")
+				</a>
+				<input type="hidden" value="0" id="contract_client_data" name="contract_client_data">
+			</p>
+		<{else}>
+			<input type="hidden" value="1" id="contract_client_data" name="contract_client_data">
+		<{/if}>
+		<{if !$bClientVerified&&$oOrder->iType!=1}>
+			<p>
+				<a class="green cbox" href="http://<{$sGenesisServer}>/admin/api.company_admin_view.php?co_id=<{$oOrder->iClientNo}>&sid=<{$PHPSESSID}>" title="驗證服務客戶公司資料">
+					驗證服務客戶公司資料
+				</a>
+				<input type="hidden" value="0" id="client_data" name="client_data" >
+			</p>
+		<{/if}>
+		<div class="form-actions">
+			<button class="btn btn-small btn-info" type="submit">
+				<i class="icon-ok bigger-110"></i>
+				送出
+			</button>
+			&nbsp; &nbsp; &nbsp;
+			<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+				<i class="icon-reply bigger-110"></i>
+				取消
+			</button>
+		</div>
+	</form>
+</div>	
+<script src="../js/jquery.colorbox-min.js"></script>
+<link rel="stylesheet" href="../css/colorbox.css">
+<script>
+	$(function(){
+		$('.cbox').colorbox({iframe:true,width:"100%", height:"100%"});
+		$('form').submit(function(){
+			var all_verified=true;
+			var bContractClientVerified  = <{$bContractClientVerified}>;
+			
+			if(bContractClientVerified == 0) {
+				updateContractClientVerifiedStatus();
+				if($('#contract_client_data').val()!=1)
+					all_verified=false;
+			}
+			
+
+			var iOrderType 	= <{$oOrder->iType}>;
+			var bClientVerified 	= <{$bClientVerified}>;
+
+			 //尚未驗證過 且 訂單類別!=直客 
+			if(bClientVerified == false && iOrderType != 1) { 
+				updateClientVerifiedStatus();
+				if($('#client_data').val()!=1)
+					all_verified=false;
+			}
+
+			//format post value for later setting erroneous items
+			$('input[type="checkbox"]').each(function(){
+				$this=$(this);
+				//if it's verified, set value to 1
+				if($this.is(':checked')){
+					$this.val(1);
+				}else {
+					//if not, post 0 to the item by creating input with value 0;
+					$this.before( '<input type="hidden" value="0" name="'+$this.attr('name')+'">' );
+					all_verified=false;
+				}			
+			});
+
+			var msg="";
+			if(all_verified){
+				msg="核可";
+			}else{
+				msg="駁回";
+			}
+			if(!confirm("確認"+msg+"此訂單?")){
+				event.preventDefault();
+			}
+		});
+		
+		var jErroItems = <{$jErroneousItems}>;
+		if(jErroItems== null){
+			$('.verify_column').each(function(){
+				$this=$(this);
+				var name=$this.data('checkbox-name');
+				$this.append('<input type="checkbox" value="1" name="'+name+'" class="ace-switch ace-switch-7"><span class="lbl"></span>');
+			});	
+		}else{
+			$.each(jErroItems,function(index,name){
+				$('td[data-checkbox-name="'+name+'"]').append('<input type="checkbox" value="1" name="'+name+'" class="ace-switch ace-switch-7"><span class="lbl"></span>');
+			});
+		}
+	});
+
+	function updateContractClientVerifiedStatus(){
+		$.ajax({
+			url: '../ajax/ajax.CCompany.php',
+			type: 'post',
+			dataType: 'json',
+			data:{'verified':1, 'co_id':'<{$oOrder->iContractClientNo}>'},
+			async:false,
+			cache:false,
+			success: function(html) {
+				if(html==1){
+					$('#contract_client_data').val(1);
+				}
+			}
+		});
+	}
+
+	function updateClientVerifiedStatus(){
+		$.ajax({
+			url: '../ajax/ajax.CCompany.php',
+			type: 'post',
+			dataType: 'json',
+			data:{'verified':1, 'co_id':'<{$oOrder->iClientNo}>'},
+			async:false,
+			cache:false,
+			success: function(html) {
+				if(html==1){
+					$('#client_data').val(1);
+				}
+			}
+		});
+	}
+
+	function checkAll(status){
+		$('#table_report input[type="checkbox"]').prop('checked', status);
+	}
+
+
+	//close color box
+	CloseColorBox();
+	function CloseColorBox(){
+		window.addEventListener("message", receiveMessage, false);        
+		function receiveMessage (event) {
+			// console.log(event);
+			msg = event.data;
+			if(msg=="close")
+				$.colorbox.close();
+		}
+	}
+</script>

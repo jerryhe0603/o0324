@@ -1,0 +1,319 @@
+<style>
+	.ddl {font-size:9pt;padding:2px;height:24px;line-height:24px;width:auto;}
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">公司管理</li>
+	</ul><!--.breadcrumb-->
+
+	<div class="nav-search" id="nav-search">
+		<form class="form-search" name="search-form" id="search-form" method="post" action="./index.php?func=<{$smarty.get.func}>&action=search&items=<{$iPageItems}>">
+			<div class="control-group">	
+				<label for="s_key">				
+					<{html_options name=s_terms id=s_terms options=$searchOption selected=$searchTerm}>
+					<span class="input-icon">
+						<input type="text" name="s_key" aria-controls="table_report" placeholder="Search..." value="<{$searchKey}>">
+						<i class="icon-search" id="nav-search-icon"></i>
+					</span>
+				</label>
+			</div>
+		</form>
+	</div><!--#nav-search-->
+</div>
+
+<div class="page-content">
+	<!--PAGE CONTENT BEGINS HERE-->
+	<div class="row-fluid">
+		<div class="page-header position-relative">
+			<a href="./index.php?func=<{$smarty.get.func}>&action=edit" class="btn btn-primary btn-mini ">
+				<i class="icon-plus bigger-100"></i>
+				新增
+			</a>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=import" class="btn btn-warning btn-mini">
+				<i class="icon-signin bigger-100"></i>
+				匯入公司名單
+			</a>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=export" class="btn btn-success btn-mini">
+				<i class="icon-signout bigger-100"></i>  
+				匯出公司名單
+			</a>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=distribute" class="btn btn-pink btn-mini">
+				<i class="icon-truck bigger-100"></i>
+				派發公司名單
+			</a>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=phone_poll" class="btn btn-mini">
+				<i class="icon-phone-sign  bigger-100"></i>
+				派發內部電訪名單
+			</a>
+		</div><!--/.page-header-->
+	</div>
+	
+	<div class="row-fluid">
+		<div class="row-fluid">
+			<form class="form-inline" name="search_form" id="search_form" ENCTYPE="multipart/form-data" method="post" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&tab=<{$smarty.get.tab}>&items=<{$iPageItems}>" >
+				<div class="control-group">
+					<select name="s_terms" class="ddl">
+						<option value="co_name">名稱</option>
+						<option value="co_id">序號</option>
+						<option value="tax_id">統一編號</option>
+					</select>
+					<input name="s_key" type="text" style="font-size:9pt;padding:1px;" />
+				</div>	
+				<div class="control-group">
+					<label class="control-label" for="ind_id3" style="font-size:9pt;padding-top:3px;">產業類別</label>
+					<select name="ind_id" id="ind_id3" class="ddl">
+						<option value="">請選擇</option>
+						<{foreach from=$IndustryData item="entry2" name="foo2"}> 
+							<option value="<{$entry2->ind_id|escape}>"><{$entry2->ind_name|escape}></option>
+						<{/foreach}>
+					</select>
+				</div>
+				<div class="control-group">
+					<label class="control-label" style="font-size:9pt;padding-top:3px;">客戶狀態</label>
+					<select name="visit_status" style="font-size:9pt;" class="ddl">
+						<option value="">請選擇</option>
+						<option value="0">待開發</option>
+						<option value="1">電訪中</option>
+						<option value="2">直訪中</option>
+						<option value="3">同意購買</option>
+						<option value="4">拒絕購買</option>
+						<option value="5">無效資料</option>
+						<option value="6">已成交</option>
+					</select>
+				</div>
+				<div class="control-group">
+					<label class="control-label" style="font-size:9pt;padding-top:3px;">負責業務</label>
+					<select name="user_no" class="ddl">
+						<option value="0" style="font-size:9pt;">請選擇</option>
+						<option value="-1">-</option>
+						<{foreach from=$UserData item="entry3" name="foo3"}> 
+							<option value="<{$entry3->user_no|escape}>"><{$entry3->user_name|escape}></option>
+						<{/foreach}>
+					</select>
+				</div>
+				<div class="control-group">
+					<label class="control-label" style="font-size:9pt;padding-top:3px;">報備業務</label>
+					<select name="cf_user_no" class="ddl">
+						<option value="" style="font-size:9pt;">請選擇</option>
+						<{foreach from=$FilingUserData item="entry4" name="foo4"}>
+							<option value="<{$entry4->user_no|escape}>"><{$entry4->user_name|escape}></option>
+						<{/foreach}>
+					</select>
+					<button type="submit" class="btn btn-purple btn-mini">
+						Search<i class="icon-search icon-on-right bigger-110"></i>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<div class="row-fluid">
+		<div class="tabbable">
+			<ul class="nav nav-tabs" id="myTab4">
+				<li> 
+					<a href="./index.php?func=company&action=list">基本資料</a>
+				</li>
+				<li class="<{if $smarty.get.tab=='oldcat'}>active<{/if}>">
+					<a href="./index.php?func=company&action=list&tab=oldcat">貓舍</a>
+				</li>
+			</ul>
+		
+			<div class="tab-content no-border" style="padding:12px 0;">
+				<div id="user" class="tab-pane">
+					<p>
+						<div class="row-fluid">
+							base
+						</div>
+					</p>
+				</div>	
+		
+				<div id="oldcat" class="tab-pane <{if $smarty.get.tab=='oldcat'}>active<{/if}>">
+					<div class="dataTables_wrapper" role="grid">		
+						<div class="row-fluid">		
+							<div class="span6">
+								<div id="table_report_length" class="dataTables_length">
+									<label>
+										每頁 
+										<select  id="select_page_items" onChange="relocate(this);" size="1"  aria-controls="table_report">
+											<option value="5" <{if $PageItem==5}>selected<{/if}> >5</option>
+											<option value="10" <{if $PageItem==10}>selected<{/if}> >10</option>
+											<option value="20" <{if $PageItem==20}>selected<{/if}> >20</option>
+											<option value="30" <{if $PageItem==30}>selected<{/if}> >30</option>
+											<option value="40" <{if $PageItem==40}>selected<{/if}> >40</option>
+											<option value="50" <{if $PageItem==50}>selected<{/if}> >50</option>
+											<option value="60" <{if $PageItem==60}>selected<{/if}> >60</option>
+											<option value="70" <{if $PageItem==70}>selected<{/if}> >70</option>
+											<option value="80" <{if $PageItem==80}>selected<{/if}> >80</option>
+											<option value="90" <{if $PageItem==90}>selected<{/if}> >90</option>
+											<option value="100" <{if $PageItem==100}>selected<{/if}> >100</option>
+										</select> 筆
+									</label>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="dataTables_filter" id="table_report_info">顯示 <{$StartRow}> 至 <{$EndRow}> 筆，共 <{$Total}> 筆</div>
+							</div>
+						</div>
+
+						<table id="table_report" class="table table-striped table-bordered table-hover dataTable">
+							<thead>
+								<tr role="row">		
+									<th class="sorting" onclick="sort_table('<{$OrderUrl}>','co_id','<{$OrderSort}>');" id="co_id">序號</th>
+									<th id="mm_id">體系</th>	
+									<th id="addr_id">地區</th>	
+									<th id="ind_id">產業</th>
+									<th id="tag">標籤</th>									
+									<!--<th id="level" nowrap>等級</th>-->
+									<th class="sorting" id="co_nickname" onclick="sort_table('<{$OrderUrl}>','co_nickname','<{$OrderSort}>');">名稱</th>
+									<th class="sorting" onclick="sort_table('<{$OrderUrl}>','co_name','<{$OrderSort}>');" id="co_name">發票<br>抬頭</th>
+									<th class="sorting" id="cb_name" onclick="sort_table('<{$OrderUrl}>','cb_name','<{$OrderSort}>');">品牌</th>
+									<th id="co_tel">公司<br>電話</th>
+									<th id="user_name">負責<br>業務</th>
+									<th id="filing_name">報備<br>人員</th>
+									<!--<th id="event_count" nowrap>活動<br>次數</th>-->
+									<th id="visit_status" nowrap>客戶<br>狀態</th>
+									<th id="run_day" nowrap>進行<br>天數</th>
+									<!--<th id="tax_id" nowrap>統一<br>編號</th>-->
+									
+									<th id="cancel_note">取消<br>原因</th>
+									<th id="cancel_created">取消<br>日期</th>
+									<th id="saled_user_name">派發過<br>之業務</th>
+									
+									
+									<th class="sorting" onclick="sort_table('<{$OrderUrl}>','flag','<{$OrderSort}>');" id="flag">狀態</th>
+									<th class="sorting" onclick="sort_table('<{$OrderUrl}>','edit_user_no','<{$OrderSort}>');" id="edit_user_no">編修者</th>
+									<th class="sorting" onclick="sort_table('<{$OrderUrl}>','modified','<{$OrderSort}>');" id="modified">編修<br>日期</th>	
+									<th class="sorting" onclick="sort_table('<{$OrderUrl}>','created','<{$OrderSort}>');" id="created">建立<br>日期</th>	
+									<th></th>
+								</tr>
+							</thead>
+							<tfoot></tfoot>
+							<tbody>
+								<{foreach item=key from=$aCompanys}>
+								<tr>					
+									<td><{$key->co_id}></td>
+									<td><{$key->sGetManagementName($key->co_id) }></td>
+									<td><{$key->sGetCompanyArea($key->co_id) }></td>
+									<td><{$key->sGetIndustryName($key->co_id) }></td>
+									<td><{$key->sGetTagName($key->co_id) }></td>
+									
+									<td><a class="blue" href="javascript:popup('./company_admin_view.php?co_id=<{$key->co_id}>',600,450);"><{$key->co_nickname}></a></td>
+									<td><{$key->co_name}></td>
+									<td><{$key->sGetCompanyBrand($key->co_id) }></td>
+									<td><{$key->sGetCompanyTel($key->co_id,1) }></td>
+									<td><{$key->sGetSalerName($key->co_id) }></td>
+									<td><{$key->sGetFilingName($key->co_id) }></td>
+								
+									<td><{$key->sGetVisitStatusName($key->co_id) }></td>
+									<td><{$key->iGetCompanyRunDay($key->co_id) }></td>
+								
+									<{assign var=cancelrow value=$key->oGetSalerCancelCompanyRow($key->co_id) }>
+									<td><{$cancelrow->cancel_note}></td>
+									<td><{$cancelrow->created}></td>
+									<td><{$key->sGetDistributedSalerByCoId($key->co_id) }></td>
+									
+									<td>
+										<{if $key->flag == 1 }>
+										<a class="orange" title="停業" href="./index.php?func=<{$smarty.get.func}>&action=active&tab=oldcat&co_id=<{$key->co_id}>">
+											<span class="label label-success arrowed-righ">營業中</span>	
+										</a>
+										<{else}>
+										<a class="orange" title="營業中" href="./index.php?func=<{$smarty.get.func}>&action=active&tab=oldcat&co_id=<{$key->co_id}>&flag=1">
+											<span class="label label-important arrowed-righ">停業</span>
+										</a>
+										<{/if}>
+									</td>
+									<td><{$key->sGetEditUserName($key->edit_user_no) }></td> 								
+									<td><{$key->modified|date_format:"%Y-%m-%d"}></td> 								
+									<td><{$key->created|date_format:"%Y-%m-%d"}></td> 								
+
+									<td class="td-actions">
+										<div class="hidden-phone visible-desktop action-buttons">
+											
+											<a class="green" href="./index.php?func=<{$smarty.get.func}>&action=edit&co_id=<{$key->co_id}>">
+												<i class="icon-pencil bigger-130"></i>
+												編輯
+											</a>
+											
+											<a class="red" href="./index.php?func=<{$smarty.get.func}>&action=del&tab=oldcat&co_id=<{$key->co_id}>" onclick="return confirm('確定刪除嗎?');">
+												<i class="icon-trash bigger-130"></i>
+												刪除
+											</a>
+											
+											<a class="red" href="./index.php?func=<{$smarty.get.func}>&action=extend&tab=oldcat&co_id=<{$key->co_id}>" onclick="return confirm('確定延長嗎?');">
+												<i class="icon-retweet bigger-130"></i>
+												延長90天
+											</a>
+											
+										
+											
+											<a class="grey" href="./index.php?func=<{$smarty.get.func}>&action=add_comment&tab=oldcat&co_id=<{$key->co_id}>">
+												<i class="icon-comments bigger-130"></i>
+												新增拜訪紀錄
+											</a>
+											
+											<a class="yellow" href="javascript:popup('./index.php?func=<{$smarty.get.func}>&action=history&co_id=<{$key->co_id}>',600,600);">
+												<i class="icon-tasks bigger-130"></i>
+												拜訪紀錄
+											</a>
+											<{if $key->visit_status!=4 && $key->visit_status!=5 && $key->visit_status!=6}>
+											<a class="green" href="./index.php?func=<{$smarty.get.func}>&action=executed&tab=oldcat&co_id=<{$key->co_id}>" onclick="return confirm('確定成交嗎?');">
+												<i class="icon-check  bigger-130"></i>
+												已成交
+											</a>
+											<{else}>
+											<a class="grey" href="./index.php?func=<{$smarty.get.func}>&action=reuse&tab=oldcat&co_id=<{$key->co_id}>" onclick="return confirm('確定重新開發嗎?');">
+												<i class="icon-check-empty bigger-130"></i>
+												待開發
+											</a>
+											<{/if}>
+											
+											<a class="blue" href="./index.php?func=tag&action=set&func_name=company&table_name=company&table_no=<{$key->co_id}>">
+												<i class="icon-tags bigger-130"></i>
+												標籤
+											</a>
+											
+											<a class="orange" href="./index.php?func=<{$smarty.get.func}>&action=userlist&co_id=<{$key->co_id}>">
+												<i class="icon-user bigger-130"></i>
+												聯絡人[]
+											</a>
+											
+				
+										</div>
+									</td>
+								</tr>
+								<{/foreach}>
+							</tbody>
+						</table>
+
+						<div class="row-fluid">
+							<div class="span12">
+								<div class="dataTables_paginate paging_bootstrap pagination">
+									<{$PageBar}>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div><!--/#page-content-->
+
+<script type="text/javascript">
+	sort_table_style2('<{$NowOrder}>','<{$NowSort}>');
+	function relocate(obj){ 
+	    var val = obj.options[obj.selectedIndex].value;
+	    var url_string = "<{$OrderUrl}>";
+	    var loc = url_string+'&items='+val+'&tab=oldcat';
+	    document.location = loc;
+	}
+</script>

@@ -1,0 +1,218 @@
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" />
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+			
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<li>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=contact">公司人員管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			<{if $smarty.get.co_id}>
+			編輯
+			<{else}>
+			新增
+			<{/if}>
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			<{if $smarty.get.co_id}>
+			編輯公司人員
+			<{else}>
+			新增公司人員
+			<{/if}>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		
+		<!-- 提示訊息 start -->
+		<div class="alert alert-info">
+			<i class="icon-hand-right"></i>
+			1. 請填寫以下資料，<i class="icon-asterisk red"></i> 為必填。<br/>
+			2. 公司人員帳號，請先至使用者管理新增。
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 提示訊息 ended -->
+		
+		<!-- 警示訊息 start -->
+		<div id="msg_warn" class="error alert alert-danger" style="display:none;">
+			<i class="icon-remove-sign icon-large"></i>
+			<span></span>
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 警示訊息 ended -->
+		
+		<div class="row">
+			<!-- company -->
+			<form class="form-horizontal" name="myForm2" id="myForm2" method="post" action="./index.php?func=<{$smarty.get.func}>&action=edit">
+				
+				<div class="control-group">
+					<label class="control-label" for="co_name"><i class="icon-asterisk red"></i> 公司人員姓名</label>
+
+					<div class="controls">
+						<input type="text" name="co_name" id="co_name" value="<{$company.co_name}>" />
+					</div>
+				</div>	
+
+				<div class="control-group">
+					<label class="control-label" for="co_title"> 公司職稱(經理、CEO)</label>
+
+					<div class="controls">
+						<input type="text" name="co_title" id="co_title" value="<{$company.co_title}>" />
+					</div>
+				</div>	
+
+				<div class="control-group">
+					<label class="control-label" for="co_call">公司稱呼(先生、小姐)</label>
+
+					<div class="controls">
+						<input type="text" name="co_call" id="co_call" value="<{$company.co_call}>" />
+					</div>
+				</div>	
+
+				<div class="control-group">
+					<label class="control-label" for="note">備註</label>
+					<div class="controls">
+						<textarea type="text" name="note" id="note" style="margin:0px; height:196px; width:503px;"><{$company.note}></textarea>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="form-field-checkbox-5">狀態</label>
+					<div class="controls">	
+						<{if $company && $company.flag == 0}>
+							<input type="checkbox" name="flag" value="1" class="ace ace-switch ace-switch-7" />
+						<{else}>
+							<input type="checkbox" name="flag" value="1" class="ace ace-switch ace-switch-7" checked />
+						<{/if}>
+						<span class="lbl"></span>		
+					</div>
+				</div>
+
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<button class="btn btn-small btn-info" type="submit">
+							<i class="icon-ok bigger-110"></i>
+							送出
+						</button>
+
+						&nbsp; &nbsp; &nbsp;
+						<button class="btn btn-small" type="reset">
+							<i class="icon-undo bigger-110"></i>
+							重置
+						</button>
+
+						&nbsp; &nbsp; &nbsp;
+						<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+							<i class="icon-reply bigger-110"></i>
+							取消
+						</button>
+					</div>
+				</div>
+
+				<input type="hidden" name="co_id" value="<{$smarty.get.co_id}>" />
+			</form>	
+			<!-- user -->	
+		</div>
+		<!--PAGE CONTENT BEGINS HERE-->
+	</div>
+	
+</div>	
+
+<script src="../js/jquery.validate.min.js"></script>
+
+<script>
+$(function() {
+
+	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			co_name: 'required',
+		},
+		messages: {
+			co_name: '請輸入公司名稱',
+		},
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+	
+});
+
+<!-- 表格 Ajax 檢查, form 需加上 class='ajaxcheckform' (需要 jQuery) -->
+
+$('form.ajaxcheckform').on('submit', function() {
+
+	var thatForm = $(this),
+		url = thatForm.attr('action'),
+		type = thatForm.attr('method'),
+		data = {};
+		
+
+	var res = url.split("?");
+	if (res.length > 1)
+		url = url+'&js_valid=1&time='+Math.floor(Math.random()*10000);
+	else 
+		url = url+'?js_valid=1&time='+Math.floor(Math.random()*10000);
+	
+
+	thatForm.find('[name]').each(function(index, value) {
+		var that = $(this),
+			name = that.attr('name'),
+			value = that.val();
+			
+		data[name] = value;	
+	});
+
+	$.ajax({
+		url: url,
+		type: type,
+		data: data,
+		success: function(response) {
+			if (response.length == 0) {
+				alert('Success');
+				//thatForm.preventDefault();
+				thatForm.unbind('submit');
+				thatForm.submit();
+				return true;
+			} else {
+				$("#msg_warn").show();
+				$("#msg_warn").html(response);
+			//	$("#myModal_body").html(responseText);
+			//	$("#myModal").modal();
+				
+				//responseText = responseText.replace(/<br>/ig, "\n");
+				//alert(responseText);
+			}
+		}
+	});
+	
+	return false;
+});
+</script>

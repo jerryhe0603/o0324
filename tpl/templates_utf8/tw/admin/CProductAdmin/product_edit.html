@@ -1,0 +1,125 @@
+<link rel="stylesheet" href="../css/datepicker.css" />
+<link rel="stylesheet" href="../css/bootstrap-timepicker.css" />
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<li>
+            <a href="./index.php?func=<{$smarty.get.func}>&action=list">產品列表</a>
+            <span class="divider">
+                    <i class="icon-angle-right"></i>
+            </span>
+		</li>
+		<li class="active">編修產品</li>
+	</ul><!--.breadcrumb-->
+
+	
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			編修產品
+			<small>
+				<i class="icon-double-angle-right"></i>
+				編修產品基本資料
+			</small>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		
+		<!-- 提示訊息 start -->
+		<div class="alert alert-info">
+			1. 請填寫以下資料，<i class="icon-asterisk red"></i> 為必填。<br>
+			2. 排序：數字越小越前面
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 提示訊息 ended -->
+				
+		<!-- 警示訊息 start -->
+		<div class="msg-warn" id="msg_warn" style="padding: 8px 20px 8px 40px;background: url('../image/icon_alert.gif') no-repeat scroll 10px center #FFFFCC;margin-bottom:5px;display: none;border-color: #FFCC00;border-image: none;border-style: solid;border-width: 1px 1px 1px 5px;color: #333333;"></div>
+		<!-- 警示訊息 ended -->
+		
+		<form class="form-horizontal" id="myForm" method="post" enctype="multipart/form-data" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&product_no=<{$oCProduct->product_no}>">
+			<input type="hidden" name="product_no" value="<{$oCProduct->product_no}>">
+			
+			<div class="control-group">
+				<label class="control-label" for="product_name"><i class="icon-asterisk red"></i> 產品名稱</label>
+				<div class="controls">
+					<input type="text" name="product_name" id="product_name" value="<{$oCProduct->product_name}>" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="product_order">排序</label>
+				<div class="controls">
+					<input type="text" name="product_order" id="product_order" value="<{$oCProduct->product_order}>" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="form-field-checkbox-5">狀態</label>
+				<div class="controls">	
+					<input type="checkbox" name="flag" id="flag" value="1" class="ace-switch ace-switch-7" <{if $oCProduct->flag || !$smarty.get.product_no}>checked<{/if}> />
+					<span class="lbl"></span>			
+				</div>
+			</div>
+			
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small" type="reset">
+					<i class="icon-undo bigger-110"></i>
+					重置
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					取消
+				</button>
+			</div>
+		<form>	
+	</div>
+</div>	
+
+<script src="../js/jquery.validate.min.js"></script>
+<script src="../js/date-time/bootstrap-datepicker.min.js"></script>
+<script>
+$(function() {
+	$('#search-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {s_key: 'required',},
+
+		messages: {	s_key: '請填入段落名稱',},
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			$('.alert-error', $('.search-form')).show();
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+});
+</script>

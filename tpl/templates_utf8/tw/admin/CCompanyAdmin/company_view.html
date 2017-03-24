@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<HTML lang="en">
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>公司瀏覽</TITLE>
+	<!--basic styles-->
+	<link href="../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../css/bootstrap-responsive.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../css/font-awesome.min.css" />
+	<!--[if IE 7]>
+	  <link rel="stylesheet" href="../css/font-awesome-ie7.min.css" />
+	<![endif]-->
+	<!--page specific plugin styles-->
+	<!--fonts-->
+	<!--ace styles-->
+	<link rel="stylesheet" href="../css/ace.min.css" />
+	<link rel="stylesheet" href="../css/ace-responsive.min.css" />
+	<link rel="stylesheet" href="../css/ace-skins.min.css" />
+	<!--[if lte IE 8]>
+	  <link rel="stylesheet" href="../css/ace-ie.min.css" />
+	<![endif]-->
+</HEAD>
+<body>
+
+<{*<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" />*}>
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb" style="margin-left:12px;">
+		<li>
+			<i class="icon-home home-icon"></i>
+			首頁
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			公司管理
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+
+		</li>
+		<li class="active">公司瀏覽</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header">
+		<table class="table table-striped table-bordered table-hover" width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr> 
+			  <th>公司序號</th>
+			  <td><{$company->co_id}></td>
+			</tr>
+			
+			<tr>
+			  <th>名稱</th>
+			  <td><{$company->co_nickname}></tD>
+			</tr>
+			
+			<tr>
+			  <th>體系</th>
+			  <td><{$company->sGetManagementName($company->co_id) }></tD>
+			</tr>
+			
+			<tr>
+			  <th>地區</th>
+			  <td><{$company->sGetCompanyArea($company->co_id) }></tD>
+			</tr>
+			
+			<tr>
+			  <th>產業</th>
+			  <td><{$company->sGetIndustryName($company->co_id) }></tD>
+			</tr>
+			
+			<tr>
+			  <th>負責業務</th>
+			  <td><{$company->sGetSalerName($company->co_id) }></tD>
+			</tr>
+			
+			<tr>
+			  <th>報備人員</th>
+			  <td><{$company->sGetFilingName($company->co_id) }></tD>
+			</tr>
+			
+			<tr>
+			  <th>拜訪狀態</th>
+			  <td><{$company->sGetVisitStatusName($company->co_id) }></tD>
+			</tr>
+			
+			<tr>
+			  <th>進行天數</th>
+			  <td><{$company->iGetCompanyRunDay($company->co_id) }></tD>
+			</tr>
+			
+			<tr>
+			  <th>取消原因</th>
+			  <td><{$cancelrow->cancel_note}></tD>
+			</tr>
+
+			<tr>
+			  <th>取消日期</th>
+			  <td><{$cancelrow->created}></tD>
+			</tr>
+
+			<tr>
+			  <th>派發過業務</th>
+			  <td><{$company->sGetDistributedSalerByCoId($company->co_id,'、') }></tD>
+			</tr>
+
+			<tr>
+			  <th>客戶類型</th>
+			  <td>
+				
+				<{assign var='name' value=$oCCompanyOldcatRow->co_type}>
+				<{$gCoType[$name]}>
+			  </td>
+			</tr>
+
+			<tr>
+			  <th>等級</th>
+			  <td>
+			  <{if $oCCompanyOldcatRow->level==1}>A
+			  <{elseif $oCCompanyOldcatRow->level==2}>B
+			  <{elseif $oCCompanyOldcatRow->level==3}>C
+			  <{elseif $oCCompanyOldcatRow->level==4}>D
+			  <{elseif $oCCompanyOldcatRow->level==5}>E
+			  <{else}>-<{/if}>
+			  </td>
+			</tr>
+
+			<tr>
+			  <th>所屬公司名稱</th>
+			  <td><{$parentcompany->co_nickname}></tD>
+			</tr>
+			
+			<tr> 
+			  <th>公司英文名稱</th>
+			  <td><{$company->co_name_en}></td>
+			</tr>
+			
+			<tr>
+			  <th>發票抬頭</th>
+			  <td><{$company->co_name}></td>
+			</tr>
+			
+			<tr>
+			  <th>代表人</th>
+			  <td><{$company->co_LastUser}></td>
+			</tr>
+			
+			<tr>
+			  <th>設立年(民國)</th>
+			  <td><{$company->co_first_year}></td>
+			</tr>
+			
+			<tr>
+			  <th>資本額(新台幣)</th>
+			  <td><{$company->co_capital}></td>
+			</tr>
+			
+			<tr>
+			  <th>統一編號</th>
+			  <td><{$company->tax_id}></td>
+			</tr>
+			
+			<tr>
+			  <th>結帳日</th>
+			  <td><{$company->payment_day}></td>
+			</tr>
+			
+			<tr>
+			  <th>公司聯絡人</th>
+			  <td>
+			    <table width="100%">
+					<tr>
+					  <th>職稱</th>
+					  <th>職位</th>
+					  <th>姓名</th>
+					  <th>部門</th>
+					  <th>品牌</th>
+					  <th>電話</th>
+					  <th>電子郵件</th>
+					  <th>地址</th>
+					  <th>帳號</th>
+					  <th>狀態</th>
+					  <th>備註</th>
+					</tr>
+					<{foreach from=$CompanyUserData item=entry name=foo}>
+					<tr>
+					  <td><{$entry->co_title}></td>
+					  <td><{$entry->co_call}></td>
+					  <td><{$entry->user_name}> &nbsp;</td>
+					  <td><{$entry->cd_name}></td>
+					  <td><{$entry->cb_name}></td>
+					  <td><{$entry->ct_tel}></td>
+					  <td><{$entry->ct_email}></td>
+					  <td><{$entry->ct_addr}></td>
+					  <td><{$entry->user_account}></td>
+					  <td><{$entry->all_status}></td>
+					  <td><{$entry->note}></td>
+					</tr>
+					<{/foreach}>
+				</table>
+			  </td>
+			</tr>
+			
+			<tr>
+			  <th>公司電話</th>
+			  <td>
+			    <table width="100%">
+					<tr>
+					  <th>類別</th>
+					  <th>電話</th>
+					</tr>
+					<{foreach from=$CompanyTelData item="entry" name="foo"}>
+					<tr>
+					  <td><{$entry.teltype_name}></td>
+					  <td><{$entry.co_tel}></td>
+					</tr>
+					<{/foreach}>
+				</table>
+			  </td>
+			</tr>
+			
+			<tr>
+			  <th>公司Email</th>
+			  <td>
+			    <table width="100%">
+					<tr>
+					  <th>類別</th>
+					  <th>Email</th>
+					</tr>
+					<{foreach from=$CompanyEmailData item="entry2" name="foo2"}>
+					<tr>
+					  <td><{$entry2.emailtype_name}></td>
+					  <td><{$entry2.co_email}></td>
+					</tr>
+					<{/foreach}>
+				</table>
+			  </td>
+			</tr>
+		
+			<tr>
+			  <th>公司網址</th>
+			  <td>
+			    <table width="100%">
+					<tr>
+					  <th>類別</th>
+					  <th>網址</th>
+					</tr>
+					<{foreach from=$CompanyWwwData item="entry6" name="foo6"}>
+					<tr>
+					  <td><{$entry6.wwwtype_name}></td>
+					  <td><{$entry6.co_www}></td>
+					</tr>
+					<{/foreach}>
+				</table>
+			  </td>
+			</tr>
+			
+			<tr>
+			  <th>公司地址</th>
+			  <td>
+			    <table width="100%">
+					<tr>
+					  <th>類別</th>
+					  <th>3+2郵遞區號</th>
+					  <th>地區</th>
+					  <th>地址</th>
+					</tr>
+					<{foreach from=$CompanyAddressData item="entry3" name="foo3"}>
+					<tr>
+					  <td><{$entry3.addrtype_name}></td>
+					  <td><{$entry3.zipcode}></td>
+					  <td><{$entry3.addr_code}></td>
+					  <td><{$entry3.co_addr}></td>
+					</tr>
+					<{/foreach}>
+				</table>
+			  </td>
+			</tr>
+			
+			<tr>
+			  <th>公司部門</th>
+			  <td>
+			    <table width="100%">
+					<tr>
+					  <th>部門</th>
+					</tr>
+					<{foreach from=$CompanyDeptData item="entry4" name="foo4"}>
+					<tr>
+					  <td><{$entry4.cd_name}></td>
+					</tr>
+					<{/foreach}>
+				</table>
+			  </td>
+			</tr>
+			
+			<tr>
+			  <th>公司品牌</th>
+			  <td>
+			    <table width="100%">
+					<tr>
+					  <th>品牌</th>
+					</tr>
+					<{foreach from=$CompanyBrandData item="entry5" name="foo5"}>
+					<tr>
+					  <td><{$entry5.cb_name}></td>
+					</tr>
+					<{/foreach}>
+				</table>
+			  </td>
+			</tr>
+			
+			<tr> 
+			  <th>備註</th>
+			  <td><{$company->note}></td>
+			</tr>
+			
+			<tr>
+			  <th>建立日期</th>
+			  <td><{$company->created}></td>
+			</tr>
+			
+			<tr>
+			  <th>編修日期</th>
+			  <td><{$company->modified}></td>
+			</tr>
+
+			<tr>
+			  <th>狀態</th>
+			  <td>
+				<{if $company->flag == 1 }>
+				開啟
+				<{else}>
+				關閉
+				<{/if}>
+			  </td>
+			</tr>
+
+		  </table>
+	</div>
+</div>
+
+	<!-- Here is the footer  -->
+	<{$userViewTplName}>
+	<!--inline styles if any-->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript">
+	<{literal}>
+		window.jQuery || document.write("<script src='../js/jquery-1.9.1.min.js'>"+"<"+"/script>");
+	<{/literal}>
+	</script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="../js/jquery.ui.touch-punch.min.js"></script>
+	<script src="../js/jquery.slimscroll.min.js"></script>
+	<script src="../js/jquery.easy-pie-chart.min.js"></script>
+	<script src="../js/jquery.sparkline.min.js"></script>
+	<script src="../js/flot/jquery.flot.min.js"></script>
+	<script src="../js/flot/jquery.flot.pie.min.js"></script>
+	<script src="../js/flot/jquery.flot.resize.min.js"></script>
+	<!--ace scripts-->
+	<script src="../js/ace-elements.min.js"></script>
+	<script src="../js/ace.min.js"></script>
+	<script type="text/javascript" src="../js/function_admin.js"></script>
+</body>
+</HTML>

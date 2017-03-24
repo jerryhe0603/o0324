@@ -1,0 +1,238 @@
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" />
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=list&tab=oldcat">公司名單管理</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">派發公司名單</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<form class="form-inline" name="myFormApp" id="myFormApp" ENCTYPE="multipart/form-data" method="post" action="<{$disributeSubmit}>" >
+
+<div class="page-content">
+	<div class="page-header">
+	
+		<button class="btn btn-app btn-mini btn-danger" name="btn1" id="btn1" type="submit">
+			<i class="icon-signin bigger-160"></i>
+			回收
+		</button>
+		
+		<button class="btn btn-app btn-mini btn-pink" type="button" name="btn2" id="btn2" onClick="javascript:popup('./index.php?func=<{$smarty.get.func}>&action=select_sale',400,300);">
+			<i class="icon-truck bigger-160"></i>
+			分派
+		</button>
+		
+	</div><!--/.page-header-->
+	
+	<div class="row-fluid">
+		<div class="col-xs-12">
+		<!--PAGE CONTENT BEGINS HERE-->
+			<div class="widget-main">
+				<div class="span8">
+					
+					<div class="control-group">
+						<label class="control-label">名稱</label>
+						<input name="s_key" type="text" style="font-size:9pt;padding:1px;" />
+					</div>	
+					
+					<div class="control-group">
+						<label class="control-label" for="mmid">體系</label>
+						<select name="mmid" id="mmid">
+							<option value="999">請選擇</option>
+							<option value="-1">-</option>
+							<{foreach from=$managementData item="entry5" name="foo5"}>
+								<option value="<{$entry5.mm_id|escape}>"><{$entry5.mm_name|escape}></option>
+							<{/foreach}>
+						</select>
+					</div>
+					
+					<div class="control-group">
+						<label class="control-label" for="userno">負責業務</label>
+						<select name="userno" id="userno">
+							<option value="999">請選擇</option>
+							<option value="-1">-</option>
+							<{foreach from=$UserData item="entry2" name="foo2"}>
+								<option value="<{$entry2.user_no|escape}>"><{$entry2.user_name|escape}></option>
+							<{/foreach}>
+						</select>
+					</div>
+					
+					<div class="control-group">
+						<label class="control-label" for="ind_id3">產業類別</label>
+						<select name="ind_id" id="ind_id3">
+								<option value="999">請選擇</option>
+							<{foreach from=$indData item="entry3" name="foo3"}>
+								<option value="<{$entry3.ind_id|escape}>"><{$entry3.ind_name|escape}></option>
+							<{/foreach}>
+						</select>
+						<button type="submit" name="search" id="search" class="btn btn-purple btn-mini">
+							Search
+							<i class="icon-search icon-on-right bigger-110"></i>
+						</button>
+					</div>
+					
+					<input type="hidden" name="btn3" value=""/>
+					<input type="hidden" name="user_no" value=""/>
+					<input type="hidden" name="dept_id" value=""/>
+					<div class="space-4"></div>
+				</div>
+				<div align="right" class="span4 dataTables_length">
+					<label>
+					共 <{$userTotal}> 筆 每頁
+					<select size="1" id="select_page_items" onChange="relocate(this);">
+					  <option value="5">5</option>
+					  <option value="10">10</option>
+					  <option value="20">20</option>
+					  <option value="30">30</option>
+					  <option value="40">40</option>
+					  <option value="50">50</option>
+					  <option value="60">60</option>
+					  <option value="70">70</option>
+					  <option value="80">80</option>
+					  <option value="90">90</option>
+					  <option value="100">100</option>
+					</select>
+
+					<script>
+						var _userPageItems = "<{$userPageItems}>";
+						var _userPageUrl = "<{$userPageUrl}>";
+					for(var i=0 ; i<document.getElementById("select_page_items").options.length ; i++) {
+						if(document.getElementById("select_page_items").options[i].value == _userPageItems) {
+							document.getElementById("select_page_items").selectedIndex = i;
+							break;
+						}
+					}
+
+					function relocate(obj){ 
+						var val=obj.options[obj.selectedIndex].value;
+						var url_string=_userPageUrl;
+						var loc=url_string+'&items='+val;
+						document.location=loc;
+					}
+					</script>
+					筆
+						
+					</label>	
+				</div>
+			</div>
+			
+			<table class="table table-striped table-bordered table-hover dataTable" id="table_report">
+			  <thead>
+			  <tr>
+				<th style="text-align:center;"><label><input type="checkbox" class="ace" name="all" title="勾選/全部取消" onClick="cutall(this);"><span class="lbl"></span></label></th>
+				<th class="sorting" id="co_id"><a href="javascript:sort_table('<{$userOrderUrl}>','co_id','<{$userOrderSort}>');">公司編號</a></th>
+				<th id="mm_id">體系</th>
+				<th id="addr_id">地區</th>
+				<th id="ind_id">產業別</th>
+				<th id="level">等級</th>
+				<th class="sorting" id="co_nickname"><a href="javascript:sort_table('<{$userOrderUrl}>','co_nickname','<{$userOrderSort}>');">名稱</a></th>
+				<th id="co_tel">公司電話</th>
+				<th>聯絡人</th>
+				<{*<th class="sorting" id="addr"><a href="javascript:sort_table('<{$userOrderUrl}>','addr','<{$userOrderSort}>');">地址</a></th>*}>
+				<th id="visit_status">客戶狀態</th>
+				<{*<th>分派單位別</th>*}>
+				<th>目前負責業務</th>
+				<th>報備人員</th>
+			  </tr>
+			  </thead>
+			  <tfoot></tfoot>
+			  <tbody>
+					<{foreach from=$CompanyData item="entry4" name="foo4"}> 
+				  <tr> 
+					<td style="text-align:center;">
+					  <label>
+					    <input type="checkbox" class="ace" name="chk[]" id="chk[]" value="<{$entry4.co_id|escape}>">
+						<span class="lbl"></span>
+					  </label>
+					</td>
+					<td align="center"><{$entry4.co_id|escape}></td>
+					<td align="center"><{$entry4.mm_name|escape}></td>
+					<td align="center"><{$entry4.addr_city_name|escape}></td>
+					<td align="center"><{$entry4.ind_name|escape}></td>
+					<td align="center">
+						<{if $entry4.oldcat.level==1}>A
+						<{elseif $entry4.oldcat.level==2}>B
+						<{elseif $entry4.oldcat.level==3}>C
+						<{elseif $entry4.oldcat.level==4}>D
+						<{elseif $entry4.oldcat.level==5}>E
+						<{else}>-<{/if}>
+					</td>
+					<td id="co_nickname_<{$entry4.co_id|escape}>"><{$entry4.co_nickname|escape}></td>
+					<td align="center" id="co_tel_<{$entry4.co_id|escape}>"><{$entry4.co_tel|escape}></td>
+					<td align="center" id="cc_name_<{$entry4.cc_id|escape}>"><{$entry4.cc_name|escape}></td>
+					<{*<td align="center" id="addr_<{$entry4.cus_id|escape}>"><{$entry4.addr|escape}></td>*}>
+					<td align="center">
+					  <{if $entry4.visit_status==0}>待開發
+					  <{elseif $entry4.visit_status==1}>電訪中
+					  <{elseif $entry4.visit_status==2}>直訪中
+					  <{elseif $entry4.visit_status==3}>同意購買
+					  <{elseif $entry4.visit_status==4}>拒絕購買
+					  <{elseif $entry4.visit_status==5}>無效資料
+					  <{elseif $entry4.visit_status==6}>已成交
+					  <{else}>-<{/if}>
+					</td>
+					<{*<td align="center"><{$entry4.dept_name|escape}></td>*}>
+					<td align="center"><{$entry4.user_name|escape}></td>
+					<td align="center"><{$entry4.cf_name|escape}></td>
+				  </tr>
+				<{/foreach}>
+			</tbody>
+			</table>
+			<div>
+				<div class="dataTables_paginate paging_bootstrap pagination"><{$userPageBar}></div>
+			</div>
+			
+		<!--PAGE CONTENT ENDS HERE-->
+		</div>
+	</div><!--/row-->
+</div><!--/#page-content-->
+
+</form>
+
+<script type="text/javascript">
+	sort_table_style2('<{$userNowOrder}>','<{$userNowSort}>');
+</script>
+	
+<{$userEditJs}>
+
+<script>
+<!--
+	function cutall(chk) {
+		var bchk = chk.checked;
+		var frm = document.forms[0].elements;
+		for (var i=0;i<frm.length;i++) {
+			if (frm[i].type=="checkbox") {
+				frm[i].checked = bchk;
+			}
+		}
+	}
+
+	function setValue( str ) { // 分派
+		//alert(str);
+		document.myFormApp.btn3.value = "dist";
+		document.myFormApp.user_no.value = str;
+		document.myFormApp.submit();
+	}
+
+	function setValue2( str ) {
+		//alert(str);
+		document.myFormApp.btn3.value = "dist2";
+		document.myFormApp.dept_id.value = str;
+		document.myFormApp.submit();
+	}
+
+//-->		
+</script>

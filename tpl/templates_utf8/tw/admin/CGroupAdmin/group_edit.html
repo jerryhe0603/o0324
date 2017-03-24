@@ -1,0 +1,182 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<li>
+			<a href="./index.php?func=group&action=list">群組管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			<{if $smarty.get.group_no}>
+			編輯
+			<{else}>
+			新增
+			<{/if}>
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			<{if $smarty.get.group_no}>
+			編輯群組
+			<{else}>
+			新增群組
+			<{/if}>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		<form class="form-horizontal" name="myForm2" id="myForm2" method="post" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>
+				<{if $oCGroup}>
+					&group_no=<{$oCGroup->iGroupNo}>
+				<{/if}>
+				">
+			<div class="control-group">
+				<label class="control-label" for="name">名稱</label>
+
+				<div class="controls">
+					<input type="text" name="group_name" id="name" value="<{$oCGroup->sName}>" />
+				</div>
+			</div>	
+
+			<div class="control-group">
+				<label class="control-label" for="desc">描述</label>
+
+				<div class="controls">
+					<input type="text" name="group_desc" id="desc" value="<{$oCGroup->sDesc}>" />
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label" for="classify">群組權限</label>
+				<div class="controls">	
+					<div class="span6">				
+						<div class="tabbable">
+							<ul class="nav nav-tabs" id="myTab">
+								<{foreach item=oCCategory name=foo from=$aCategories}>
+									<{if $smarty.foreach.foo.index == 0}>
+										<li class="active">
+									<{else}>
+										<li>
+									<{/if}>		
+											<a data-toggle="tab" href="#category_<{$oCCategory->iCategoryNo}>">
+												<{$oCCategory->sName}>
+											</a>
+										</li>
+								<{/foreach}>
+							</ul>
+							<div class="tab-content">	
+								<{foreach item=oCCategory name=foo1 from=$aCategories}>
+										<div id="category_<{$oCCategory->iCategoryNo}>" class="tab-pane in <{if $smarty.foreach.foo1.index == 0}> active<{/if}> ">		
+											<div class="span12">							
+			<div id="accordion_<{$oCCategory->iCategoryNo}>" class="accordion">
+				<{foreach item=oChildCCate name=foo2 from=$oCCategory->aChildCategory}>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a href="#collapse_<{$oChildCCate->iCategoryNo}>" data-parent="#accordion_<{$oCCategory->iCategoryNo}>" data-toggle="collapse" class="accordion-toggle collapsed">
+								<{$oChildCCate->sName}>
+							</a>
+						</div>
+
+						<div class="accordion-body in collapse" id="collapse_<{$key2.category_no}>">
+							<div class="accordion-inner">
+								<{foreach item=oCRule name=foo3 from=$oChildCCate->aCRule}>
+									<label>
+										<input type="checkbox" name="rule[]" class="inp-text" <{if @array_key_exists($oCRule->iRuleNo, $aGroupRule) }> checked <{/if}> value="<{$oCRule->iRuleNo}>" size="16" />
+										<span class="lbl"> <{$oCRule->sName}></span>
+									</label>								
+								<{/foreach}>
+							</div>
+						</div>
+					</div>
+				<{/foreach}>
+			</div>
+											</div>
+
+										</div>
+
+								<{/foreach}>
+							</div>
+						</div>	
+					</div>		
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="form-field-checkbox-5">狀態</label>
+
+				<div class="controls">	
+					<{if $oCGroup && $oCGroup->bStatus == 0}>
+						<input type="checkbox" name="group_status" value="1" class="ace-switch ace-switch-7" />
+					<{else}>
+						<input type="checkbox" name="group_status" value="1" class="ace-switch ace-switch-7" checked />
+					<{/if}>
+					<span class="lbl"></span>		
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small" type="reset">
+					<i class="icon-undo bigger-110"></i>
+					重置
+				</button>
+
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					取消
+				</button>
+			</div>
+
+			<input type="hidden" name="group_no" value="<{$smarty.get.group_no}>" />
+		<form>	
+	</div>
+</div>	
+
+<script src="../js/jquery.validate.min.js"></script>
+
+<script>
+$(function() {
+	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+			group_name: 'required',
+			group_desc: 'required',
+		},
+
+		messages: {
+			group_name: '請填入名稱',
+			group_desc: '請填入描述',
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+})
+</script>
+
+

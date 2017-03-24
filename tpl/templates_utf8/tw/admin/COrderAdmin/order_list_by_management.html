@@ -1,0 +1,134 @@
+<table id="table_report" class="table table-striped table-bordered table-hover">
+	<thead>
+		<tr role="row">
+			<{if $smarty.get.verify_status ==1}>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="modify_time" onclick="sort_table('modify_time','<{$OrderSort}>');"  >上次編輯</th>
+			<{/if}>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="type" onclick="sort_table('quotation_no','<{$OrderSort}>');"  >報價單編號</th>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="order_id"    onclick="sort_table('order_id','<{$OrderSort}>');">訂單編號</th>
+			<!--
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="management" onclick="sort_table('management_id','<{$OrderSort}>');"  >業務體系</th>
+			-->
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="type" onclick="sort_table('type','<{$OrderSort}>');"  >訂單類型</th>
+			<!--
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="group_no" onclick="sort_table('group_no','<{$OrderSort}>');"  >群組名稱</th>
+			-->
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="contract_client_no" onclick="sort_table('contract_client_no','<{$OrderSort}>');"  >公司名稱</th>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="name" class="sortable" onclick="sort_table('name','<{$OrderSort}>');" >訂單名稱</th>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="salesperson_no" onclick="sort_table('salesperson_no','<{$OrderSort}>');"  >接單業務</th>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="start_date" class="sortable" onclick="sort_table('start_date','<{$OrderSort}>');" >訂單起始日期</th>
+		           <th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="end_date" class="sortable" onclick="sort_table('end_date','<{$OrderSort}>');" >訂單結束日期</th>
+		           <th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="project_progress"  onclick="sort_table('project_progress','<{$OrderSort}>');" >專案執行狀況</th>
+		           <th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="payment_progress" onclick="sort_table('payment_progress','<{$OrderSort}>');"  >付款狀況</th>
+		           <th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="phase_no" class="sortable" onclick="sort_table('phase_no','<{$OrderSort}>');">狀態</th>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="canceled" class="sortable" onclick="sort_table('canceled','<{$OrderSort}>');" >取消</th>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="completed" class="sortable" onclick="sort_table('completed','<{$OrderSort}>');" >完工</th>
+			<th class="sorting" role="columnheader" tabindex="0"  rowspan="1" colspan="1" aria-label="activate to sort column ascending" id="order_note" class="sortable" onclick="sort_table('note','<{$OrderSort}>');">訂單備註</th>
+		           <th >檢視/編輯</th>
+		</tr>
+	</thead>
+	<tbody>
+		<{foreach item=oOrder key=index from=$aOrders}>
+				<tr>
+					<{if $smarty.get.verify_status ==1}>
+					<td><{$oOrder->sLocalModifiedTime()}></td>
+					<{/if}>
+					<td><{$oOrder->sQuotationNo}></td>
+                    				<td>
+                    				<{if !isset($smarty.get.verify_status)}>
+                    				<{if $oOrder->iVerifyStatus==0}><i class="icon-asterisk red"></i><{elseif $oOrder->iVerifyStatus==1}><i class="icon-asterisk blue"></i><{elseif $oOrder->iVerifyStatus==2}><i class="icon-asterisk green"></i><{/if}>
+                    				<{/if}>
+                    				<{$oOrder->sOrderNo}></td>
+                    				<!--
+                    				<{assign var=oManagement value=$oOrder->oManagement()}>
+                    				<td><{$oManagement->sName}></td>
+                    				-->
+                    				<{assign var=iType value =$oOrder->iType}>
+                    				<td><{$aType.$iType}></td>
+                    				<!--
+                    				<{*assign var=oGroup value=$oOrder->oGroup()*}>
+                    				<td><{$oGroup->sName}></td>
+                    				-->
+                    				<td><{$oOrder->sContractClientName}></td>
+                    				<td><{$oOrder->sName}></td>
+                    				<{assign var=oSalesperson value=$oOrder->oSalesperson()}>
+                    				<td><{$oSalesperson->sName}></td>
+					<td><{$oOrder->sStartDate}></td>
+					<td><{$oOrder->sEndDate}></td>
+					<td><{$oOrder->sProjectProgress}></td>
+					<td><{$oOrder->sPaymentProgress}></td>
+					<td>
+					<{assign var=iPhaseNo value=$oOrder->iPhaseNo}>
+					<{assign var=sField value=$aOrderPhaseField.$iPhaseNo}>
+						<span class="label label-large label-success arrowed arrowed-righ"><{$aOrderPhase.$iPhaseNo}></span><br>
+						<{$oOrder->$sField}>
+					</td>
+					<{assign var=iCanceled value=$oOrder->iCanceled}>
+					<td><{$aCancelScope.$iCanceled}><br><{if $iCanceled>0}><{$oOrder->sCanceledDate}><{/if}></td>
+					<td><{if $oOrder->bIsCompleted()}>完工<br><{$oOrder->sCompletionDate}><{/if}></td>
+					<td><{$oOrder->sNote|mb_substr:0:15:'UTF-8'}></td>
+					<td class="td-actions">
+						<div class="hidden-phone visible-desktop action-buttons">
+							<a class="blue" href="./index.php?func=<{$smarty.get.func}>&action=view&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>" title="檢視">
+								檢視
+							</a>
+							<{if $oOrder->iVerifyStatus!=1}>
+							<a class="green" href="./index.php?func=<{$smarty.get.func}>&action=edit&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>" title="編輯">
+								編輯
+							</a>
+							<{/if}>
+							<{if $sAdmin && $oOrder->iVerifyStatus==1}>
+							<a class="red" href="./index.php?func=<{$smarty.get.func}>&action=verify&order_no=<{$oOrder->sOrderUuid}>" title="驗證">
+								驗證
+							</a>
+							<{/if}>
+							<{if $oOrder->iVerifyStatus==2}>
+							<a class="pink" href="./index.php?func=order_payment&action=list&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>" title="發票">
+								發票
+							</a>
+							<a class="grey" href="./index.php?func=order_project&action=list_by_order&order_no=<{$oOrder->sOrderUuid}><{$sAdmin}>" title="專案">
+								專案
+							</a>
+							<{/if}>
+						</div>
+					</td>
+				</tr>
+				<{/foreach}>
+
+	</tbody>
+</table>
+
+<div class="row-fluid">
+	<div class="span6">
+		<div class="dataTables_info" id="table_report_info">Showing <{$StartRow}> to <{$EndRow}> of <{$Total}> entries</div>
+	</div>
+	<div class="span6">
+		<div class="dataTables_paginate paging_bootstrap pagination">
+		<{$PageBar}>
+		</div>
+	</div>
+</div>
+<script>
+function sort_table(order,sort){
+	//insert a history state for revisit
+	history.pushState({},'','');
+	//update order list
+	vGetOrderList(<{$smarty.get.management_id}>, <{$iPg}>, order, sort, '', <{$smarty.get.search|default:0}>);
+}
+function vPageBarModifier(management_id){
+	//fetch page buttons
+	var button=$('.dataTables_paginate').find('a');
+
+	button.click(function(){
+		event.preventDefault();
+		//get targeted page no
+		var href=$(this).attr('href');
+		var re = new RegExp("&page=([0-9]*)");
+		var result=re.exec(href);
+		//insert a history state for revisit
+		history.pushState({},'','');
+		//update order list
+		vGetOrderList(management_id, result[1] , '<{$NowOrder}>', '<{$NowSort}>', '',<{$smarty.get.search|default:0}>);	
+	});
+}
+</script>

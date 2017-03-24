@@ -1,0 +1,342 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" />
+<link rel="stylesheet" href="../css/datepicker.css" />
+<script src="../js/bootstrap-datepicker.js"></script>
+
+<script language="JavaScript">
+<!--
+	function show_detail(opt) {
+		//alert(opt);
+		if (opt==1) {
+			document.getElementById('opt1').style.display="block";
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt5').style.display="block";
+			toClean();
+		} else if (opt==2) {
+			document.getElementById('opt2').style.display="block";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt5').style.display="block";
+			toClean();
+		} else if (opt==3) {
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt5').style.display="none";
+			toClean();
+		} else if (opt==4) {
+			document.getElementById('opt3').style.display="block";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt5').style.display="none";
+			toClean();
+		} else if (opt==5) {
+			document.getElementById('opt4').style.display="block";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt5').style.display="none";
+			toClean();
+		}
+	}
+	
+	function toClean() {
+		// 清除所有的聯繫細項
+		var thisForm = document.myVisitForm;
+		//alert(thisForm.elements.length);
+		for (var i = 0; i < thisForm.elements.length; i++ ) {
+			if (thisForm.elements[i].name=='visit_detail[]') {
+				//alert(thisForm.elements[i].name);
+				if (thisForm.elements[i].type == 'checkbox') {
+					thisForm.elements[i].checked = false;
+				}
+				if (thisForm.elements[i].type == 'radio') {
+					thisForm.elements[i].checked = false;
+				}
+			}	
+		}
+	}
+	
+	function tosb(obj) {
+		// 檢測是否有選取拜訪狀態
+		var bFlag = false;
+		var iStatus = 0;
+	
+		for(var i=0;i<obj.visit_status.length;i++) {
+			if(obj.visit_status[i].checked) {
+				bFlag = true;
+				iStatus = obj.visit_status[i].value;
+				break;
+			}
+		}
+		if (!bFlag) {
+			alert("請選擇拜訪狀態");
+			return bFlag;
+		}
+		// 檢測聯繫細項是否有顯示及選取
+		bFlag = false;
+		if (iStatus==3) {
+			bFlag = true;
+		} else {
+			for (var i = 0; i < obj.elements.length; i++ ) {
+				if (obj.elements[i].name=='visit_detail[]') {
+					if (obj.elements[i].checked == true) {
+						bFlag = true;
+						break;
+					}
+				}
+			}
+		}
+		if (!bFlag) {
+			alert("請選擇聯繫細項");
+			return bFlag;
+		}
+		return bFlag;
+	}
+	
+	$(function() { 
+		$('.date-picker').datepicker();
+	});
+
+	
+//-->		
+</script>
+
+<div id="breadcrumbs" class="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+				
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=list">公司管理</a>
+				
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=list&goid=<{$company.co_id}>"><{$company.co_name}></a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		
+		<li>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=userlist&co_id=<{$company.co_id}>">聯絡人列表</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		
+		<li class="active"><{if $smarty.get.user_no}>編輯<{else}>新增<{/if}>聯絡人</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1><{if $smarty.get.user_no}>編輯<{else}>新增<{/if}>聯絡人
+			<small>
+				<i class="icon-double-angle-right"></i>
+				<{if $smarty.get.user_no}>編輯<{else}>新增<{/if}>公司聯絡人
+			</small>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!-- 提示訊息 start -->
+		<div class="alert alert-info">
+			<i class="icon-hand-right"></i>
+			請填寫以下資料，<i class="icon-asterisk red"></i> 為必填。
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 提示訊息 ended -->
+		
+		<!-- 警示訊息 start -->
+		<div id="msg_warn" class="error alert alert-danger" style="display:none;">
+			<i class="icon-remove-sign icon-large"></i>
+			<span></span>
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 警示訊息 ended -->
+	
+			<!--PAGE CONTENT BEGINS HERE-->
+			<form name="myVisitForm" id="myVisitForm" class="form-horizontal" ENCTYPE="multipart/form-data" method="post" action="<{$csAddSubmit}>" onsubmit="return tosb(this);">
+				<input type="hidden" name="token" value="<{$token|escape}>" />
+				<input type="hidden" name="user_no" value="<{$user.user_no}>" />
+				
+				<div class="control-group">
+					<label class="control-label" for="user_name"><i class="icon-asterisk red"></i> 名稱</label>
+					<div class="controls">
+						<input type="text" name="user_name" id="user_name" value="<{$user.user_name}>" />
+					</div>
+				</div>	
+
+				<div class="control-group">
+					<label class="control-label" for="user_account"> 帳號</label>
+					<div class="controls">
+						<input type="text" name="user_account" id="user_account" class="input-xlarge" autocomplete="off" value="<{$user.user_account}>" />
+					</div>
+				</div>	
+
+				<div class="control-group">
+					<label class="control-label" for="new_password">密碼</label>
+					<div class="controls">
+						<input type="text" name="new_password" id="new_password" class="input-xxlarge" value="<{$user.new_password}>" />
+					</div>
+				</div>	
+
+				<div class="control-group">
+					<label class="control-label" for="confirm_password">確認密碼</label>
+					<div class="controls">
+						<input type="text" name="confirm_password" id="confirm_password" class="input-xxlarge" value="<{$user.confirm_password}>" />
+					</div>
+				</div>	
+
+				<div class="control-group">
+					<label class="control-label">部門</label>
+					<div class="controls">
+						<select id="cd_id" name="cd_id">
+						<{foreach from=$CoDeptOption item="entry5"}>
+							<option value="<{$entry5.cd_id}>" <{if $entry5.cd_id==$user.company_dept.0.cd_id}>selected<{/if}>><{$entry5.cd_name}></option>
+						<{/foreach}>
+						</select>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label">品牌</label>
+					<div class="controls">
+						<select  multiple="" class="brand_select" id="cb_id" name="cb_id[]" data-placeholder="選擇公司品牌...">
+							<{foreach from=$CoBrandOption item="entry6"}>
+							<option value="<{$entry6.cb_id}>" <{if $entry6.selected}>selected<{/if}>><{$entry6.cb_name}></option>
+							<{/foreach}>
+						</select>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="co_title"> 職稱(經理、CEO)</label>
+
+					<div class="controls">
+						<input type="text" name="co_title" id="co_title" value="<{$user.company.co_title}>" />
+					</div>
+				</div>	
+
+				<div class="control-group">
+					<label class="control-label" for="co_call">稱呼(先生、小姐)</label>
+
+					<div class="controls">
+						<input type="text" name="co_call" id="co_call" value="<{$user.company.co_call}>" />
+					</div>
+				</div>	
+				
+				<div class="control-group">
+					<label class="control-label">電話/手機/傳真</label>
+					<div class="controls">
+						<div id="contact_tel"></div>
+						<script>SelectCoContactTel();</script>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label">電子郵件</label>
+					<div class="controls">
+						<div id="contact_email"></div>
+						<script>SelectCoContactEmail();</script>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label">地址</label>
+					<div class="controls">
+						<div id="contact_address"></div>
+						<script>SelectCoContactAddress();</script>
+					</div>
+				</div>
+
+
+				<div class="control-group">
+					<label class="control-label" for="note">備註</label>
+					<div class="controls">
+						<textarea type="text" name="note" id="note" style="margin:0px; height:196px; width:503px;" /><{$user.company.note}></textarea>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="form-field-checkbox-5">狀態</label>
+					<div class="controls">	
+						<{if $user && $user.company && $user.company.status == 0}>
+							<input type="checkbox" name="status" value="1" class="ace ace-switch ace-switch-7" />
+						<{else}>
+							<input type="checkbox" name="status" value="1" class="ace ace-switch ace-switch-7" checked />
+						<{/if}>
+						<span class="lbl"></span>		
+					</div>
+				</div>
+
+				
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<button class="btn btn-success" type="submit">
+							<i class="icon-ok bigger-110"></i>
+							<{if $smarty.get.user_no}>更新<{else}>新增<{/if}>
+						</button>
+						
+						<button class="btn btn-primary" type="reset">
+							<i class="icon-undo bigger-110"></i>
+							重設
+						</button>
+						
+						<button class="btn btn-danger" type="button" onclick="javascript:history.go(-1);">
+							<i class="icon-remove bigger-110"></i>
+							取消
+						</button>
+					</div>	
+				</div>
+			</form>
+		
+	</div><!--/row-->
+</div><!--/#page-content-->
+
+<script>
+
+$(function() {
+	$('.brand_select').chosen();
+});
+
+// 所在地區 (需要搭配 jQuery.)
+var ResetAddr3 = function(addr_id) { // 只顯示兩層, 使用方式: <div id="addr_data"></div>
+	var s_url = "../api/ajax.get_addr_select3.php?addr_id="+addr_id;
+	$.ajax({
+		url: s_url,	dataType: "text", type: "POST",
+		error: function(xhr) {
+			//alert('Ajax request 發生錯誤');
+			alert(xhr.status);
+		},
+		success: function(response) {
+			$("#addr_data").html(response);
+		}
+	});	
+}
+ResetAddr3(<{$user.addr_id}>);
+
+
+ 
+</script>
+
+<{$userEditJs}>
+<{$csAddTplName}>

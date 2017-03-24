@@ -1,0 +1,351 @@
+<link href="../js/select2-3.5.1/select2.css" rel="stylesheet"/>
+<script src="../js/select2-3.5.1/select2.js"></script>
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+        <li>
+            <a href="./index.php?func=plan&action=list">課表列表</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+        <{if $smarty.get.action=='edit'}>
+        <li>
+        	<a href="./index.php?func=<{$smarty.get.func}>&action=view&plan_no=<{$oPlan->iPlanNo}>">
+        		課表:<{$oPlan->sName}>
+        	</a>
+            <span class="divider">
+                <i class="icon-angle-right"></i>
+            </span>
+        </li>    
+		<li class="active">編修課表</li>
+		<{else}>
+			<li class="active">新增課表</li>
+		<{/if}>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			<{if $smarty.get.action=='edit'}>
+				編修課表
+			<{else}>
+				新增課表
+			<{/if}>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		<form class="form-horizontal" id="validation-form" method="post" 
+				action="index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>
+						<{if $smarty.get.plan_no}>&plan_no=<{$oPlan->iPlanNo}><{/if}>">
+			<input type="hidden" id="project_no" value="<{$oProject->sProjectUuid}>"/>
+            <input type="hidden" id="plan_no" value="<{$oPlan->iPlanNo}>"/>
+			<div class="control-group">
+				<label class="control-label" for="plan_name">名稱</label>
+				<div class="controls">
+					<input type="text" name="plan_name" id="plan_name" value="<{$oPlan->sName}>" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label"for="plan_desc">描述</label>
+				<div class="controls">
+					<textarea id="plan_desc"  name="plan_desc" class="autosize-transition" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 50px;"><{$oPlan->sDesc}></textarea>
+				</div>				
+			</div>
+
+			<!--typeahead select site -->
+			<div class="control-group">
+				<label class="control-label"for="site_no">目標網站</label>
+				<div class="controls">
+					<{if $oPlan}>
+		                <{assign var=oSite value=$oPlan->oSite()}>
+		                <input id='site' type="text" class="width-40" data-provide="typeahead" placeholder="enter some name..." autocomplete="off" value="<{$oSite->sTitle}>">
+		                <input type="hidden" id="site_no" name="site_no" value="<{$oSite->iSiteNo}>" />
+	                <{else}>
+	                	<input id='site' type="text" class="width-40" data-provide="typeahead" placeholder="enter some name..." autocomplete="off">
+	                	<input type="hidden" id="site_no" name="site_no" value="" />
+	                <{/if}>
+	            </div>
+			</div>
+
+			<!-- float nubers of script selector start-->
+			<div class="control-group" id="script_area" hidden>
+                <label class="control-label">使用腳本</label>
+                <div class="controls">
+                    <label id="add_selector"class="badge badge-primary bigger-110">增加腳本</label>
+                </div>
+            </div>
+
+			<!-- float nubers of script selector end-->
+
+			<div class="form-actions">
+				<button class="btn btn-small btn-info" type="submit">
+					<i class="icon-ok bigger-110"></i>
+					送出
+				</button>
+
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small" type="reset">
+					<i class="icon-undo bigger-110"></i>
+					重置
+				</button>
+
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					取消
+				</button>
+			</div>
+
+		<form>	
+	</div>
+</div>	
+
+<script src="../js/jquery.validate.min.js"></script>
+
+<script>
+$('#validation-form').on('reset',function(){
+    window.setTimeout(function(){
+    	resetScriptArea();
+    	$('#script_area').hide();
+    },0);
+})
+
+var board_option = '<option></option>';
+var default_script_option = '<option></option>';
+
+function resetScriptArea(){
+	$('.set_row').remove();
+	 var html = '<div class="controls set_row" id="set_row_1" style="margin-bottom: 5px;">'+
+                 	'<span class="label label-large">腳本1</span> '+
+                	'<select class="board_selector" id="board_selector_1" style="width:200px;">'+
+                	'</select> '+
+                	'<select class="script_selector" id="script_selector_1" name="order_script[]"">'+
+                	'</select> '+
+                	'<input class="interval" name="script_interval[]" placeholder="輸入間隔時數"/> '+
+                    '<i class="icon-minus" id="remove_1"></i>'+
+            	'</div>';
+    $('#script_area').append(html);
+    removeLisenter(1);
+}
+
+function siteTypeAhead() {
+    var mapped = [];
+    $('#site').typeahead({
+            source: function(text, process) {   
+                if(!text) 
+                    return;
+                var data = [];  
+                return $.ajax({
+                        url: '../ajax/ajax.CSite.php?action=typeahead',
+                        type: 'post',
+                        data: {"text": text},
+                        dataType: 'json',
+                        success: function(json) {   
+                            if(json.length) {   
+                                for(var i = 0; i < json.length; i++) {
+                                        mapped[json[i].site_title] = json[i].site_no;
+                                        data.push(json[i].site_title);
+                                }
+                                return typeof process(data);
+                            }
+                        }
+                });
+            },
+            updater: function(item) {
+            	//show script_area
+            	$('#script_area').show();
+            	
+            	//set site_no
+            	var site_no = mapped[item];
+            	$('#site_no').val(site_no);	//hidden input
+
+            	//reset all script setting
+            	resetScriptArea();
+
+            	//get script with not boards, and let them become default options
+            	getDefaultScripts(site_no);
+
+            	//get board by site_no
+            	getBoards(site_no);
+
+                return item;
+            }
+    });
+}
+
+function getBoards(site_no){
+	console.log('get boards by site_no:' + site_no);
+	board_option = '<option></option>';	//clear previous boards
+	$.ajax({
+        url:'../ajax/ajax.CBoard.php?action=by_site',
+        type:'post',
+        data:{'site_no':site_no,
+    			},
+        dataType:'json',
+        success:function(json){
+            //console.log(json);
+            for (var i =  0; i < json.length; i++) {
+            	board_option += '<option value="'+json[i].board_no+'">'+json[i].board_title+'</option>';
+            };
+            boardSelect2(1);
+        }
+    });
+}
+
+function getDefaultScripts(site_no){
+	console.log('get default script by site_no: ' + site_no);
+	default_script_option = '<option></option>';
+
+	//ajax get script without board_no and insert into default_script
+	$.ajax({
+        url:'../ajax/ajax.CScript.php?action=by_site',
+        type:'post',
+        data:{'text':site_no},
+        dataType:'json',
+        success:function(json){
+            for(key in json){
+                var script_no=json[key]['script_no'];
+                default_script_option+='<option value="'+script_no+'">'+json[key]['script_name']+'</option>';
+            }
+            scriptSelect2(1);
+        }
+    });
+}
+
+function scriptSelect2(order_count){
+	console.log('scriptSelect2 of row:'+order_count);
+	$('#script_selector_'+order_count).html(default_script_option);
+	$('#script_selector_'+order_count).select2({
+	    placeholder: "選擇腳本",
+	    width: "200px",
+	    allowClear: true
+	});
+}
+
+function boardSelect2(order_count){
+	console.log('boardSelect2 of row:'+order_count);
+	$('#board_selector_'+order_count).html(board_option);
+	$('#board_selector_'+order_count).select2({
+	    placeholder: "版面(可不選)",
+	    width: "200px",
+	    allowClear: true
+	});
+    boardChangeLisenter(order_count);
+}
+
+function boardChangeLisenter(order_count){
+	//board_selector on change
+	$('#board_selector_'+order_count).on('change',function(){
+		console.log('board_selector changed');
+		var order_count = this.id.split('_')[2];
+		var board_no = this.options[this.selectedIndex].value;
+		getScripts(order_count,board_no);
+	});
+}
+
+function getScripts(order_count,board_no){
+	console.log('get scripts for row:' + order_count + ' by board_no: ' + board_no);
+	
+	//reset script option in case selected board has no associated script
+	$('#script_selector_'+order_count).html(default_script_option);
+
+	var selected_boards = [];
+	selected_boards.push(board_no);
+
+	$.ajax({
+        url: '../ajax/ajax.CScript.php?action=by_board', //type=3 equals to post
+        type: 'post',
+        data: {"text": selected_boards},
+        dataType: 'json',
+        success: function(json) {
+        	console.log(json);
+            var str = '<option></option>';
+            for(var i =0; i < json.length; i++) {
+                str += "<option value="+json[i]['script_no']+">"+json[i]['script_name']+"</option>";
+            }
+            $('#script_selector_'+order_count).html(str);
+        }
+    });
+}
+
+function removeLisenter(order_count){
+    $('#remove_'+order_count).on('click',function(){
+    	console.log('remove_'+order_count);
+    	/*
+        $(this).parent().remove();
+        var elements = document.getElementsByClassName('set_row');
+        for (var i = 0; i < elements.length; i++) {
+            $(elements[i]).attr('id','board_input_'+(i+1));
+        };
+        */
+    });
+}
+
+$(function() {
+
+	//site selector
+	siteTypeAhead();
+
+	//add_selector
+	$('#add_selector').on('click',function() {
+    	console.log('addSelector');
+    	
+        var order_count = $('#script_area .set_row').length + 1;
+
+        var html = '<div class="controls set_row" id="set_row_'+order_count+'"" style="margin-bottom: 5px;">'+
+	                 	'<span class="label label-large">腳本'+order_count+'</span> '+
+	                	'<select class="board_selector" id="board_selector_'+order_count+'" style="width:200px;">'+
+	                	'</select> '+
+	                	'<select class="script_selector" id="script_selector_'+order_count+'" name="order_script[]"">'+
+	                	'</select> '+
+	                	'<input class="interval" name="script_interval[]" placeholder="輸入間隔時數"/> '+
+	                	'<i class="icon-minus" id="remove_'+order_count+'"></i>'+
+                	'</div>';
+        $('#script_area').append(html);
+
+        //Select2
+        boardSelect2(order_count);
+        scriptSelect2(order_count);
+        removeLisenter(order_count);
+    });
+
+ 	$('#validation-form').validate({
+		errorElement: 'span',
+		errorClass: 'help-inline',
+		focusInvalid: false,
+		rules: {
+                                    plan_name: 'required',
+                                    plan_desc: 'required',
+		},
+
+		messages: {
+                                    plan_name: '請填入名稱',
+                                    plan_desc: '請填入描述',
+		},
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			$('.alert-error', $('.validation-form')).show();
+		},
+
+		highlight: function (e) {
+			$(e).closest('.control-group').removeClass('info').addClass('error');
+		},
+
+		success: function (e) {
+			$(e).closest('.control-group').removeClass('error').addClass('info');
+			$(e).remove();
+		},
+	});
+})
+</script>

@@ -1,0 +1,273 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">公司管理</li>
+	</ul><!--.breadcrumb-->
+
+	<div class="nav-search" id="nav-search">
+
+		<form class="form-search" name="search-form" id="search-form" method="post" action="./index.php?func=<{$smarty.get.func}>&action=search">
+			<div class="control-group">	
+				<label for="s_key">				
+					<{html_options name=s_terms id=s_terms options=$searchOption selected=$searchTerm}>
+					<span class="input-icon">
+						<input type="text" name="s_key" aria-controls="table_report" placeholder="Search..." value="<{$searchKey}>">
+						<i class="icon-search" id="nav-search-icon"></i>
+					</span>
+				</label>
+			</div>
+		</form>
+
+	</div><!--#nav-search-->
+</div>
+
+<div class="page-content">
+	<!--PAGE CONTENT BEGINS HERE-->
+	<div class="row-fluid">
+		<div class="page-header position-relative">
+			<a href="./index.php?func=<{$smarty.get.func}>&action=edit" class="btn btn-app btn-primary btn-mini">
+				<i class="icon-plus bigger-160"></i>
+				新增
+			</a>
+		</div><!--/.page-header-->
+	</div>
+	
+	<div class="row-fluid">
+		<div class="row-fluid">
+			<form class="form-inline" name="search_form" id="search_form" ENCTYPE="multipart/form-data" method="post" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&tab=<{$smarty.get.tab}>&items=<{$iPageItems}>" >
+				<div class="control-group">
+					<select name="s_terms" class="ddl">
+						<option value="co_name">名稱</option>
+						<option value="co_id">序號</option>
+						<option value="tax_id">統一編號</option>
+					</select>
+					<input name="s_key" type="text" style="font-size:9pt;padding:1px;" />
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" style="font-size:9pt;padding-top:3px;">地區</label>
+					<select name="area_id" class="ddl">
+						<option value="0" style="font-size:9pt;">請選擇</option>
+						<{foreach from=$AreaData key="myid4" item="foo4"}>
+							<option value="<{$myid4}>"><{$foo4}></option>
+						<{/foreach}>
+					</select>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" style="font-size:9pt;padding-top:3px;" for="tag_no">標籤</label>
+					<select name="tag_no[]" id="tag_no" class="ddl" multiple=multiple>
+						<option value="0" style="font-size:9pt;">請選擇</option>
+						<{foreach from=$TagData item="entry4" name="foo4"}>
+							<option value="<{$entry4.tag_no|escape}>"><{$entry4.tag_name|escape}></option>
+						<{/foreach}>
+					</select>
+					<button type="submit" class="btn btn-purple btn-mini">
+						Search<i class="icon-search icon-on-right bigger-110"></i>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	
+	<div class="row-fluid">
+		<div class="tabbable">
+		
+			<ul class="nav nav-tabs" id="myTab4">
+				<li class="active">
+					<a href="./index.php?func=company&action=list">基本資料</a>
+				</li>
+				
+				<li class="<{if $smarty.get.tab=='oldcat'}>active<{/if}>">
+					<a href="./index.php?func=company&action=list&tab=oldcat">貓舍</a>
+				</li>
+			</ul>
+		
+			<div class="tab-content no-border">
+				<div id="user" class="tab-pane active">
+					<p>
+						<div class="row-fluid">
+							<div class="table-header">
+								<{if $smarty.get.action=='search'}>
+								Results for "<{$searchKey}>"
+								<{/if}>
+							</div>
+
+							<div class="dataTables_wrapper" role="grid">		
+								<div class="row-fluid">		
+								
+									<div class="span6">
+										<div id="table_report_length" class="dataTables_length">
+											<label>每頁 
+												<select  id="select_page_items" onChange="relocate(this);" size="1"  aria-controls="table_report">
+													<option value="5" <{if $PageItem==5}>selected<{/if}> >5</option>
+													<option value="10" <{if $PageItem==10}>selected<{/if}> >10</option>
+													<option value="20" <{if $PageItem==20}>selected<{/if}> >20</option>
+													<option value="30" <{if $PageItem==30}>selected<{/if}> >30</option>
+													<option value="40" <{if $PageItem==40}>selected<{/if}> >40</option>
+													<option value="50" <{if $PageItem==50}>selected<{/if}> >50</option>
+													<option value="60" <{if $PageItem==60}>selected<{/if}> >60</option>
+													<option value="70" <{if $PageItem==70}>selected<{/if}> >70</option>
+													<option value="80" <{if $PageItem==80}>selected<{/if}> >80</option>
+													<option value="90" <{if $PageItem==90}>selected<{/if}> >90</option>
+													<option value="100" <{if $PageItem==100}>selected<{/if}> >100</option>
+												</select> 筆
+											</label>
+										</div>
+									</div>
+									<div class="span6">
+										<div class="dataTables_filter" id="table_report_info">顯示 <{$StartRow}> 至 <{$EndRow}> 筆，共 <{$Total}> 筆</div>
+									</div>
+								</div>
+
+								<table id="table_report" class="table table-striped table-bordered table-hover dataTable">
+									<thead>
+										<tr role="row">		
+											<th class="sorting" id="co_id" onclick="sort_table('<{$OrderUrl}>','co_id','<{$OrderSort}>');">序號</th>	
+											<th id="area_id">區域</th>
+											<th id="tag">標籤</th>
+											<th class="sorting" id="co_nickname" onclick="sort_table('<{$OrderUrl}>','co_nickname','<{$OrderSort}>');">名稱</th>
+											<th class="sorting" id="co_name" onclick="sort_table('<{$OrderUrl}>','co_name','<{$OrderSort}>');">發票抬頭</th>
+											<th id="cb_name">品牌</th>
+											<th id="co_tel">電話</th>
+											<th id="co_addr">地址</th>
+											<th class="sorting" id="flag" onclick="sort_table('<{$OrderUrl}>','flag','<{$OrderSort}>');">狀態</th>
+											<th class="sorting" id="edit_user_no" onclick="sort_table('<{$OrderUrl}>','edit_user_no','<{$OrderSort}>');">編修者</th>
+											<th class="sorting" id="modified" onclick="sort_table('<{$OrderUrl}>','modified','<{$OrderSort}>');">編修日期</th>
+											<!--<th class="sorting" id="payment_day" onclick="sort_table('<{$OrderUrl}>','payment_day','<{$OrderSort}>');">結帳日</th>	-->
+											<!--<th class="sorting" id="co_name_en" onclick="sort_table('<{$OrderUrl}>','co_name_en','<{$OrderSort}>');">英文名稱</th>-->
+											<!--<th class="sorting" id="tax_id" onclick="sort_table('<{$OrderUrl}>','tax_id','<{$OrderSort}>');">統一編號</th>-->	
+											<!--<th class="sorting" id="created" onclick="sort_table('<{$OrderUrl}>','created','<{$OrderSort}>');">建立日期</th>-->	
+											<th>
+											</th>
+										</tr>
+									</thead>
+									<tfoot></tfoot>
+									<tbody>
+										<{foreach item=key from=$aCompanys}>
+										<tr>
+											<td><{$key->co_id}></td>
+											<td>
+												<{$key->sGetCompanyArea($key->co_id)}>
+									
+
+											</td>
+											<td><{$key->sGetTagName($key->co_id) }></td>
+											<td><{$key->co_nickname}></td>
+											<td><{$key->co_name}></td>
+											<td><{$key->sGetCompanyBrand($key->co_id) }></td>
+											<td><{$key->sGetCompanyTel($key->co_id,1) }></td>
+											<td><{$key->sGetCompanyAddr($key->co_id,1) }></td>
+											
+											<td>
+												<{if $key->flag == 1 }>
+												<a class="orange" title="停業" href="./index.php?func=<{$smarty.get.func}>&action=active&co_id=<{$key->co_id}>">
+													<span class="label label-large label-success arrowed arrowed-righ">
+														營業中
+													</span>	
+												</a>
+												<{else}>
+												<a class="orange" title="營業中" href="./index.php?func=<{$smarty.get.func}>&action=active&co_id=<{$key->co_id}>&flag=1">
+													<span class="label label-large label-important arrowed arrowed-righ">
+														停業
+													</span>
+												</a>
+												<{/if}>
+											</td>
+											<td><{$key->sGetEditUserName($key->edit_user_no) }></td>
+											<td><{$key->modified}></td>
+											<!--<td><{$key->payment_day}></td>-->
+											<!--<td><{$key->co_name_en}></td>-->
+											<!--<td><{$key->tax_id}></td>-->
+											<!--<td><{$key->created}></td>-->								
+
+											<td class="td-actions">
+												<div class="hidden-phone visible-desktop action-buttons">
+													
+													<a class="blue" href="javascript:popup('./company_admin_view.php?co_id=<{$key->co_id}>',600,450);">
+														<i class="icon-zoom-in bigger-130"></i>
+														瀏覽
+													</a>
+
+													<a class="green" href="./index.php?func=<{$smarty.get.func}>&action=edit&co_id=<{$key->co_id}>">
+														<i class="icon-pencil bigger-130"></i>
+														編輯
+													</a>
+													
+													<a class="red" href="./index.php?func=tag&action=set&func_name=company&table_name=company&table_no=<{$key->co_id}>">
+														<i class="icon-tags bigger-130"></i>
+														標籤
+													</a>
+													
+													<a class="orange" href="./index.php?func=<{$smarty.get.func}>&action=userlist&co_id=<{$key->co_id}>">
+														<i class="icon-user bigger-130"></i>
+														聯絡人[<{$key->contact_total|default:0}>]
+													</a>
+													
+													<a class="red" href="./index.php?func=<{$smarty.get.func}>&action=del&co_id=<{$key->co_id}>" onclick="return confirm('確定刪除嗎?');">
+														<i class="icon-trash bigger-130"></i>
+														刪除
+													</a>
+													
+													<!--<a class="blue" href="./index.php?func=<{$smarty.get.func}>&action=contact&co_id=<{$key->co_id}>">
+														<i class="icon-user bigger-130"></i>
+														人員
+													</a>-->
+						
+												</div>
+											</td>
+
+										</tr>
+										<{/foreach}>
+									</tbody>
+								</table>
+
+								<div class="row-fluid">
+									<div class="span12">
+										<div class="dataTables_paginate paging_bootstrap pagination">
+											<{$PageBar}>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+							
+						</div>
+					</p>
+				</div>	
+		
+				<div id="oldcat" class="tab-pane <{if $smarty.get.tab=='iwant'}>active<{/if}>">
+					<p>
+						<div class="row-fluid">
+						OLDCAT
+						</div>
+					</p>
+				</div>
+			
+			</div>
+		
+		</div>
+	</div>
+	
+</div><!--/#page-content-->
+
+<script type="text/javascript">
+	//sort_table_style2('<{$NowOrder}>','<{$NowSort}>');
+	function relocate(obj){ 
+	    var val = obj.options[obj.selectedIndex].value;
+	    var url_string = "<{$OrderUrl}>";
+	    var loc = url_string+'&items='+val;
+	    document.location = loc;
+	}
+	$(function() {
+		$('#tag_no').chosen({placeholder: "請選擇標籤", search_contains: true});
+	});
+</script>

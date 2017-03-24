@@ -1,0 +1,169 @@
+
+	
+
+
+	
+			
+         
+    <form class="form-horizontal">
+        <fieldset>
+                
+		<ul class="breadcrumb">
+		 
+		 <li><a href="javascript:void(0)" onClick="getTagSelector('<{$layout_element}>','<{$target_element}>','<{$component_element}>',0)" >root </a><span class="divider">/ </span></li>
+		 
+		 <{if $parentTagData}><li class="active"><a href="javascript:void(0)" onClick="getTagSelector('<{$layout_element}>','<{$target_element}>','<{$component_element}>',<{$parentTagData.tag_no}>)" ><{$parentTagData.tag_name}></a> <span class="divider">/</span></li><{/if}>
+		</ul>		
+		<div class="row-fluid">
+		
+
+		
+
+
+		<section id="<{$component_element}>" class="">
+		       	
+			<{if $parentTagData}>
+		
+			<{if $parentTagData.tag_select}>
+				<div class="ui-draggable control-group component span2 alert alert-info" rel="popover" title="<{$parentTagData.tag_name}>" trigger="manual">
+			
+			  <!-- Text input-->
+		
+				<{$parentTagData.tag_name}>
+				<input type="hidden" element-type="hidden" name='tag[]' id='tag_no_<{$parentTagData.tag_no}>' value='<{$parentTagData.tag_no}>' >
+				
+
+				</div>
+			<{/if}>
+			<{/if}>
+
+		            <{foreach item=key name=foo from=$tagData}>
+		          
+		                <{if $key.view}>
+		
+				<div  class=" control-group span2 alert alert-warning"  title="<{$key.tag_name}>" >
+				
+				  <!-- Text input-->
+				  
+
+					
+					
+					<a href="javascript:void(0)" onClick="getTagSelector('<{$layout_element}>','<{$target_element}>','<{$component_element}>',<{$key.tag_no}>)" ><{$key.tag_name}></a>
+					
+				</div>
+				
+				<{else}>
+				
+				<div data-id="<{$key.tag_no}>" class=" ui-draggable control-group component span2 alert alert-info" rel="popover" title="<{$key.tag_name}>" trigger="manual">
+				
+				  <!-- Text input-->
+			
+					<{$key.tag_name}>
+					<input type="hidden" element-type="hidden" name='tag[]' id='tag_no_<{$key.tag_no}>' value='<{$key.tag_no}>' >
+					
+
+				</div>
+				
+				<{/if}>
+
+
+		           
+		            <{/foreach}>		
+		        </ul>
+		  </section>
+
+
+
+		
+		
+		
+					
+		
+		
+		
+		
+		
+		</div>		
+        </fieldset>
+    </form>
+
+          
+<script>
+
+
+
+		// jQuery UI Draggable
+		$("#<{$component_element}> div").draggable({
+			appendTo: "body",
+			helper: "clone",
+			// brings the item back to its place when dragging is over
+			 revert: true
+			// helper: "clone",
+			// appendTo: "body",
+			// once the dragging starts, we decrease the opactiy of other items
+			// Appending a class as we do that with CSS
+			// drag:function () {
+			// 	$(this).addClass("active");
+			// 	$(this).closest("#<{$component_element}>").addClass("active");
+			// },
+		
+			// // removing the CSS classes once dragging is over.
+			// stop:function () {
+			// 	$(this).removeClass("active").closest("#<{$component_element}>").removeClass("active");
+			// }
+		});
+
+        // jQuery Ui Droppable
+		$("#<{$target_element}>").droppable({
+		
+			// // The class that will be appended to the to-be-dropped-element (basket)
+			// activeClass:"active",
+		
+			// // The class that will be appended once we are hovering the to-be-dropped-element (basket)
+			// hoverClass:"hover",
+		
+			// // The acceptance of the item once it touches the to-be-dropped-element basket
+			// // For different values http://api.jqueryui.com/droppable/#option-tolerance
+			// tolerance:"touch",
+			drop:function (event, ui) {
+
+		
+				var basket = $(this),
+						move = ui.draggable,
+						itemId = basket.find("div[data-id='" + move.attr("data-id") + "']");
+		
+				// To increase the value by +1 if the same item is already in the basket
+				if (itemId.html() == null && move.attr("data-id")) {
+					
+					// Add the dragged item to the basket
+					addBasket(basket, move);
+		
+					
+				}
+			}
+		});
+
+        // This function runs onc ean item is added to the basket
+        function addBasket(basket, move) {
+			basket.append('<div data-id="' + move.attr("data-id") + '" class=" ui-draggable control-group component span2 alert alert-info" rel="popover" title="'+move.attr("title")+'" trigger="manual">'
+					+ move.text()
+					+ '<input type="hidden" element-type="hidden" name="tag[]" id="tag_no_"'+ move.attr("data-id")+'"" value="'+ move.attr("data-id")+'" >'
+					+ '</div>');
+			
+					
+					
+					
+
+				
+		}
+
+        // The function that is triggered once delete button is pressed
+         $(document).on( "click", "#tag_target [data-id]", function () {
+		 	$(this).remove();
+	});
+         
+
+</script>
+		
+
+    

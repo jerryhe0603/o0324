@@ -1,0 +1,105 @@
+<div class="row-fluid">
+	<table id="table_report" class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr role="row">
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" onclick="sort_table('management_id','<{$OrderSort}>');">體系</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" onclick="sort_table('type','<{$OrderSort}>');">訂單類型</th>
+				<!--
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" onclick="sort_table('group_no','<{$OrderSort}>');">業助群組</th>
+				-->
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" onclick="sort_table('salesperson_no','<{$OrderSort}>');">業務</th>
+				<!--
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" onclick="sort_table('service_id','<{$OrderSort}>');">服務</th>
+				-->
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" onclick="sort_table('phase_no','<{$OrderSort}>');">訂單狀態</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" onclick="sort_table('canceled','<{$OrderSort}>');">訂單取消</th>
+
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案名稱</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" onclick="sort_table('cb_id','<{$OrderSort}>');">品牌</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案起始時間</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案結束時間</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案PM</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >專案已建置</th>
+				<th  role="columnheader" tabindex="0"  rowspan="1" colspan="1" >檢視/編輯</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<{foreach item=oOrderProject from=$aAllProject}>
+			<tr>	
+				<{assign var=oOrder value=$oOrderProject->oOrder()}>
+				<{assign var=oManagement value=$oOrder->oManagement()}>
+				<td><{$oManagement->sName}></td>
+				<{assign var=iType value=$oOrder->iType}>
+				<td><{$aType.$iType}></td>
+				<!--
+				<{*assign var=oGroup value=$oOrder->oGroup()*}>
+				<td><{$oGroup->sName}></td>
+				-->
+				<{assign var=oSalesperson value=$oOrder->oSalesperson()}>
+				<td><{$oSalesperson->sName}></td>
+				<!--
+				<{assign var=iServiceId value=$oOrderProject->iServiceId}>
+				<td><{$aService.$iServiceId}></td>
+				-->
+				<{assign var=iPhaseNo value=$oOrder->iPhaseNo}>
+				<td><{$aOrderPhase.$iPhaseNo}></td>
+				<{assign var=iCanceled value=$oOrder->iCanceled}>
+				<td><{$aCancelScope.$iCanceled}></td>
+				<td><{$oOrderProject->sProjectName}></td>
+				<{assign var=oBrand value=$oOrderProject->oCompanyBrand()}>
+				<td><{$oBrand->sName}></td>
+				<td><{$oOrderProject->sStartDate}></td>
+				<td><{$oOrderProject->sEndDate}></td>
+				<td><{$oOrderProject->oUser->sName}></td>
+				<td>
+					<{if $oOrderProject->bExist == 1 }>
+					<span class="label label-large label-success arrowed arrowed-righ">是</span>
+					<{else}>
+					<span class="label label-large label-important arrowed arrowed-righ">否</span>
+					<{/if}>
+				</td>
+				<td class="td-actions">
+					<div class="hidden-phone visible-desktop action-buttons">
+					<{if $oOrderProject->bExist}>
+						<a class="blue cbox" href="<{$sApiUrl}>&action=view_order&project_no=<{$oOrderProject->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="檢視">
+							檢視
+						</a>
+						<a class="green cbox" href="<{$sApiUrl}>&action=edit_order&project_no=<{$oOrderProject->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>" title="編輯">
+							編輯
+						</a>
+					<{else}>
+						<a class="green cbox" href="<{$sApiUrl}>&action=add_order&project_no=<{$oOrderProject->sProjectUuid}>&PHPSESSID=<{$PHPSESSID}>&project_no_prefix=<{$oOrder->sOrderNo}>" title="編輯">
+							編輯
+						</a>
+						<!--
+						<a class="red" href="./index.php?func=<{$smarty.get.func}>&action=deactivate&project_no=<{$oOrderProject->sProjectUuid}>&order_id=<{$oOrder->sOrderUuid}>" title="刪除">
+							刪除
+						</a>	
+						-->					
+					<{/if}>
+					</div>
+				</td>
+
+			</tr>
+			<{/foreach}>
+		</tbody>
+	</table>
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="dataTables_info" id="table_report_info">Showing <{$StartRow}> to <{$EndRow}> of <{$Total}> entries</div>
+		</div>
+		<div class="span6">
+			<div class="dataTables_paginate paging_bootstrap pagination">
+			<{$PageBar}>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function sort_table(order,sort){
+	var service_id=$('li.service.active').attr('id').split('_')[1];
+	history.pushState({},'','');
+	vGetProjectList(service_id, <{$iPg|default:0}> ,order, sort);
+}
+</script>

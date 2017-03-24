@@ -1,0 +1,72 @@
+<a class="menu-toggler" id="menu-toggler" href="#">
+				<span class="menu-text"></span>
+			</a>
+<div class="sidebar" id="sidebar">
+
+	<ul class="nav nav-list">
+		<li>
+			<{if $smarty.server.SERVER_NAME=='localhost'}>
+				<a target='_BLANK' href="http://localhost/genesis/system.php?PHPSESSID=<{$PHPSESSID}>">
+			<{elseif $smarty.server.SERVER_NAME=='order.lab.net'}>
+				<a target='_BLANK' href="http://genesis.lab.net/system.php?PHPSESSID=<{$PHPSESSID}>">
+			<{else}>
+				<a target='_BLANK' href="http://genesis.on.net/system.php?PHPSESSID=<{$PHPSESSID}>">
+			<{/if}>
+				<i class="icon-laptop"></i>
+				<span class="menu-text">回系統總覽</span>
+			</a>
+		</li>
+		<li>
+			<a href="./index.php">
+				<i class="icon-dashboard blue"></i>
+				<span class="menu-text">總覽</span>
+			</a>
+		</li>
+		<li>
+			<a href="./index.php?func=order&action=admin&verify_status=1">
+				<i class=" icon-folder-close-alt blue"></i>
+				<span class="menu-text">所有訂單</span>
+			</a>
+		</li>
+		<li>
+			<a href="./index.php?func=order&action=list&verify_status=0">
+				<i class="icon-folder-close blue"></i>
+				<span class="menu-text">我的訂單</span>
+			</a>
+		</li>
+		<li>
+			<a href="./index.php?func=order_project&action=admin">
+				<i class="icon-circle-blank blue"></i>
+				<span class="menu-text">所有專案</span>
+			</a>
+		</li>
+		<li>
+			<a href="./index.php?func=order_project&action=list">
+				<i class="icon-circle blue"></i>
+				<span class="menu-text">我的專案</span>
+			</a>
+		</li>
+		<li>
+			<a href="./index.php?func=order_project&action=search">
+				<i class="icon-search blue"></i>
+				<span class="menu-text">專案搜尋</span>
+			</a>
+		</li>
+		<li>
+			<a href="./index.php?func=order_management_group&action=list">
+				<i class="icon-group blue"></i>
+				<span class="menu-text">業務體系群組</span>
+			</a>
+		</li>
+		<li>
+			<a href="./index.php?func=order_product_admin&action=list">
+				<i class="icon-list blue"></i>
+				<span class="menu-text">產品管理</span>
+			</a>
+		</li>
+	</ul><!--/.nav-list-->
+
+	<div class="sidebar-collapse" id="sidebar-collapse">
+		<i class="icon-double-angle-left"></i>
+	</div>
+</div>

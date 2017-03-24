@@ -1,0 +1,133 @@
+
+	<script type="text/javascript" src="../js/docs_selector.js"></script>
+
+    <style>
+     
+      #components{
+        min-height: 600px;
+      }
+      #target{
+        min-height: 200px;
+        border: 1px solid #ccc;
+        padding: 5px;
+      }
+      #target .component{
+        border: 1px solid #fff;
+      }
+      #temp{
+        width: 500px;
+        background: white;
+        border: 1px dotted #ccc;
+        border-radius: 10px;
+      }
+
+      .popover-content form {
+        width: 213px;
+      }
+      .popover-content form .btn{
+        margin-right: 10px
+      }
+      #source{
+        min-height: 500px;
+      }
+	  .validation-form {
+		min-height: 200px;
+        border: 1px solid #ccc;
+        padding: 5px;
+	  }
+    </style>
+  
+    <div class="row-fluid">
+        <div class="span6">
+            <div>
+                <div>
+                    <h4 class="smaller">
+                        <i class="icon-bookmark-empty bigger-110"></i>
+                        要求附檔的欄位
+                    </h4>
+                </div>
+                <div  style="border: 1px solid #ccc;padding: 5px;">
+                    <div class="clearfix">
+                        <div id="script_file_element" >
+                            <span> </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <form class="form-horizontal" name="validation-form" id="validation-form" method="post"  enctype="multipart/form-data" > 
+                      <div>
+                          <h4 class="smaller">
+                              <i class="icon-bookmark-empty bigger-110"></i>
+                              選擇文案 Drag & Drop Target
+                          </h4>
+                      </div>
+                      <div id="build">
+                          <div id="target" class="form-horizontal form-fieldset validation-form">
+                              <fieldset>
+                                  <a href="#" class="btn" data-rel="popover" data-placement="right"  data-original-title="使用說明" data-content="
+                                                <div class='alert alert-info'>文案:文案名稱&nbsp&nbsp&nbsp&nbsp檔案:檔案名稱</div>
+                                                可以直接右邊Drag至左邊Drop新增附檔文案<BR>
+                                        ">tooltip</a>
+                                  <div id="legend" data-rel="popover" >
+
+                                  </div>
+
+                                  <!-- Drag & Drop to here -->
+                              </fieldset>
+                          </div>
+                      </div>
+                </form>    
+            </div>
+        </div>
+        
+        <div class="span6">
+            <div>
+                <h4 class="smaller">
+                    <i class="icon-bookmark bigger-110"></i>
+                    附檔文案 Drag & Drop Components
+                </h4>
+            </div>	
+            <div class="clearfix">
+                <form class="form-horizontal" id="components">
+                    <div>
+                        <div class="form-horizontal form-fieldset validation-form">
+                            <fieldset>
+                                <{foreach from=$aFileDocs item=oFileDoc name=fileDocs key=iDocCount}>
+                                <{assign var=oDoc value=$oFileDoc->oDoc()}>
+                                <div class="control-group component" trigger="manual">
+                                    <!-- Text input-->
+                                    <div class="span12 controls alert alert-info row-fluid" style="margin-bottom: 0px;">
+                                        <span class="span6">文案: <{$oFileDoc->sName}></span>
+                                        <span class="span6">檔案: <{$oDoc->sFileName}></span>
+                                        <input type="hidden" name="file_docs_<{$iDocCount}>" id="file_docs_<{$iDocCount}>" value="<{$oFileDoc->iBeautyDocNo}>">
+                                        <input type="hidden" name="file_docs_<{$iDocCount}>_element" id="file_docs_<{$iDocCount}>_element">
+                                        <div>
+                                            <span class="span6">
+                                            <label class="boot_box_button badge badge-warning" id="boot_box_button_<{$iDocCount}>">選擇對應欄位</label>
+                                            </span>
+                                            <span class="span6">
+                                                對應欄位:
+                                                <span id="file_docs_<{$iDocCount}>_element_name"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <{/foreach}>
+                            </fieldset>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> <!-- row -->
+    
+<script type="text/javascript" src="../js/function_admin.js"></script>
+
+<script>
+$('[data-rel=popover]').popover({html:true});
+</script>
+
+		
+
+    

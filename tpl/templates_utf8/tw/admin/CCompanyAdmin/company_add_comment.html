@@ -1,0 +1,458 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" />
+<link rel="stylesheet" href="../css/datepicker.css" />
+<script src="../js/bootstrap-datepicker.js"></script>
+
+<script language="JavaScript">
+<!--
+	function show_detail(opt) {
+		//alert(opt);
+		if (opt==1) {
+			document.getElementById('opt1').style.display="block";
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt5').style.display="block";
+			document.getElementById('opt7').style.display="none";
+			document.getElementById('opt8').style.display="none";
+			toClean();
+		} else if (opt==2) {
+			document.getElementById('opt2').style.display="block";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt5').style.display="block";
+			document.getElementById('opt7').style.display="none";
+			document.getElementById('opt8').style.display="none";
+			toClean();
+		} else if (opt==3) {
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt5').style.display="none";
+			document.getElementById('opt7').style.display="none";
+			document.getElementById('opt8').style.display="none";
+			toClean();
+		} else if (opt==4) {
+			document.getElementById('opt3').style.display="block";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt5').style.display="none";
+			document.getElementById('opt7').style.display="none";
+			document.getElementById('opt8').style.display="none";
+			toClean();
+		} else if (opt==5) {
+			document.getElementById('opt4').style.display="block";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt5').style.display="none";
+			document.getElementById('opt7').style.display="none";
+			document.getElementById('opt8').style.display="none";
+			toClean();
+		} else if (opt==7) {
+			document.getElementById('opt4').style.display="none";
+			document.getElementById('opt1').style.display="none";
+			document.getElementById('opt2').style.display="none";
+			document.getElementById('opt3').style.display="none";
+			document.getElementById('opt5').style.display="none";
+			document.getElementById('opt7').style.display="block";
+			document.getElementById('opt8').style.display="block";
+			toClean();
+		}
+	}
+	
+	function toClean() {
+		// 清除所有的聯繫細項
+		var thisForm = document.myVisitForm;
+		//alert(thisForm.elements.length);
+		for (var i = 0; i < thisForm.elements.length; i++ ) {
+			if (thisForm.elements[i].name=='visit_detail[]') {
+				//alert(thisForm.elements[i].name);
+				if (thisForm.elements[i].type == 'checkbox') {
+					thisForm.elements[i].checked = false;
+				}
+				if (thisForm.elements[i].type == 'radio') {
+					thisForm.elements[i].checked = false;
+				}
+			}	
+		}
+	}
+	
+	function tosb(obj) {
+		// 檢測是否有選取拜訪狀態
+		var bFlag = false;
+		var iStatus = 0;
+	
+		for(var i=0;i<obj.visit_status.length;i++) {
+			if(obj.visit_status[i].checked) {
+				bFlag = true;
+				iStatus = obj.visit_status[i].value;
+				break;
+			}
+		}
+		if (!bFlag) {
+			alert("請選擇拜訪狀態");
+			return bFlag;
+		}
+		// 檢測聯繫細項是否有顯示及選取
+		bFlag = false;
+		if (iStatus==3) {
+			bFlag = true;
+		} else if (iStatus==7) {
+			// 檢測參加分享會是否有選擇場次
+			ecid = document.getElementById("ec_id").value;
+			if (ecid==0) {
+				alert("請選擇分享會場次");
+				return false;
+			}
+			co_user_no = document.getElementById("co_user_no").value;
+			if (co_user_no==0) {
+				alert("請選擇公司聯絡人");
+				return false;
+			}
+			bFlag = true;
+	
+		} else {
+			for (var i = 0; i < obj.elements.length; i++ ) {
+				if (obj.elements[i].name=='visit_detail[]') {
+					if (obj.elements[i].checked == true) {
+						bFlag = true;
+						break;
+					}
+				}
+			}
+		}
+		if (!bFlag) {
+			alert("請選擇聯繫細項");
+			return bFlag;
+		}
+		return bFlag;
+	}
+	
+	$(function() { 
+		$('.date-picker').datepicker();
+	});
+
+	
+//-->		
+</script>
+
+<div id="breadcrumbs" class="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+				
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li>
+			<a href="./index.php?func=<{$smarty.get.func}>&action=list&tab=oldcat">公司管理</a>
+				
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">新增拜訪紀錄</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>新增拜訪紀錄
+			<small>
+				<i class="icon-double-angle-right"></i>
+				新增客戶拜訪紀錄
+			</small>
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!-- 提示訊息 start -->
+		<div class="alert alert-info">
+			<i class="icon-hand-right"></i>
+			請填寫以下資料，<i class="icon-asterisk red"></i> 為必填。
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 提示訊息 ended -->
+		
+		<!-- 警示訊息 start -->
+		<div id="msg_warn" class="error alert alert-danger" style="display:none;">
+			<i class="icon-remove-sign icon-large"></i>
+			<span></span>
+			<button class="close" data-dismiss="alert">
+				<i class="icon-remove"></i>
+			</button>
+		</div>
+		<!-- 警示訊息 ended -->
+	
+	
+	
+
+			<!--PAGE CONTENT BEGINS HERE-->
+			<form name="myVisitForm" id="myVisitForm" class="form-horizontal" ENCTYPE="multipart/form-data" method="post" action="<{$csAddSubmit}>" onsubmit="return tosb(this);">
+				<input type="hidden" name="token" value="<{$token|escape}>" />
+				
+				<div class="control-group">
+					<label class="control-label" for="visit_date">拜訪日期</label>
+					<div class="controls">
+						<div class="input-append">
+							<input type="text" class="input-small date-picker" id="visit_date" name="visit_date" placeholder="yyyy-mm-dd" data-date-format="yyyy-mm-dd" />
+							<span class="add-on">
+								<i class="icon-calendar"></i>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label"><i class="icon-asterisk red"></i> 狀態</label>
+					<div class="controls">
+						<div class="space-2"></div>
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_status" value="1" onClick="javascript:show_detail(1);">
+							<span class="lbl"> 電訪</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_status" value="2" onClick="javascript:show_detail(2);">
+							<span class="lbl"> 直訪</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_status" value="3" onClick="javascript:show_detail(3);">
+							<span class="lbl"> 同意購買</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_status" value="4" onClick="javascript:show_detail(4);">
+							<span class="lbl"> 拒絕購買</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_status" value="5" onClick="javascript:show_detail(5);">
+							<span class="lbl"> 無效資料</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_status" value="7" onClick="javascript:show_detail(7);">
+							<span class="lbl"> 參加分享會</span>
+						</label>
+					</div>
+				</div>
+				
+				<div id="opt1" class="control-group" style="display:none;">
+					<label class="control-label"><i class="icon-asterisk red"></i> 聯繫細項</label>
+					<div class="controls">
+						<div class="space-2"></div>
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="1">
+							<span class="lbl"> 無人接</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="2">
+							<span class="lbl"> 約定直訪日期</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="3">
+							<span class="lbl"> 改日電話聯繫</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="14">
+							<span class="lbl"> 電話拜訪</span>
+						</label>
+						
+					</div>
+				</div>
+				
+				<div id="opt2" class="control-group" style="display:none;">
+					<label class="control-label"><i class="icon-asterisk red"></i> 聯繫細項</label>
+					<div class="controls">
+						<div class="space-2"></div>
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="4">
+							<span class="lbl"> 負責人不在</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="5">
+							<span class="lbl"> 公司未上班</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="13">
+							<span class="lbl"> 到訪</span>
+						</label>
+						
+					</div>
+				</div>
+				
+				<div id="opt3" class="control-group" style="display:none;">
+					<label class="control-label"><i class="icon-asterisk red"></i> 聯繫細項</label>
+					<div class="controls">
+						<div class="space-2"></div>
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="6">
+							<span class="lbl"> 拒絕電訪</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="visit_detail[]" value="7">
+							<span class="lbl"> 拒絕直訪</span>
+						</label>
+						
+					</div>
+				</div>
+				
+				<div id="opt4" class="control-group" style="display:none;">
+					<label class="control-label"><i class="icon-asterisk red"></i> 聯繫細項</label>
+					<div class="controls">
+						<div class="space-2"></div>
+						<label class="inline">
+							<input class="ace" type="checkbox" name="visit_detail[]" value="8">
+							<span class="lbl"> 公司名稱錯誤</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="checkbox" name="visit_detail[]" value="9">
+							<span class="lbl"> 電話錯誤</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="checkbox" name="visit_detail[]" value="10">
+							<span class="lbl"> 聯絡人錯誤</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="checkbox" name="visit_detail[]" value="11">
+							<span class="lbl"> 地址錯誤</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="checkbox" name="visit_detail[]" value="12">
+							<span class="lbl"> 無此公司</span>
+						</label>
+						
+					</div>
+				</div>
+				
+				<div id="opt5" class="control-group" style="display:none;">
+					<label class="control-label">購買意願</label>
+					<div class="controls">
+						<div class="space-2"></div>
+						<label class="inline">
+							<input class="ace" type="radio" name="buy_wish" value="1">
+							<span class="lbl"> 意願高(A級客)</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="buy_wish" value="2">
+							<span class="lbl"> 考慮中(B級客)</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="buy_wish" value="3">
+							<span class="lbl"> 意願低(C級客)</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="radio" name="buy_wish" value="4">
+							<span class="lbl"> 無銷售對話(D級客)</span>
+						</label>
+
+					</div>
+				</div>
+				
+				<div id="opt7" class="control-group" style="display:none;">
+				  <label class="control-label"><i class="icon-asterisk red"></i> 分享會場次</label>
+				  <div class="controls">
+					<select name='ec_id' id='ec_id' size='1'>
+						<option value='0'>請選擇</option>
+						<{foreach from=$EventData item="entry" name="foo"}>
+						<option value='<{$entry.ec_id}>'><{$entry.ec_name}></option>
+						<{/foreach}>
+					</select>
+					
+				  </div>
+				</div>
+				
+				<div id="opt8" class="control-group" style="display:none;">
+				  <label class="control-label"><i class="icon-asterisk red"></i> 公司人員</label>
+				  <div class="controls">
+					<select name='co_user_no' id='co_user_no' size='1'>
+						<option value='0'>請選擇</option>
+						<{foreach from=$CoUserData item="entry2" name="foo2"}>
+						<option value='<{$entry2.user_no}>'><{$entry2.user_name}></option>
+						<{/foreach}>
+					</select>
+					
+				  </div>
+				</div>
+				
+				<{*<div class="control-group">
+					<label class="control-label">使用服務</label>
+					<div class="controls">
+						<div class="space-2"></div>
+						<label class="inline">
+							<input class="ace" type="checkbox" name="use_service[]" value="1">
+							<span class="lbl"> 需要試用</span>
+						</label>
+						&nbsp; &nbsp; &nbsp;
+						<label class="inline">
+							<input class="ace" type="checkbox" name="use_service[]" value="2">
+							<span class="lbl"> 參加分享會</span>
+						</label>
+					</div>
+				</div>*}>
+				
+				<div class="control-group">
+					<label class="control-label">備註說明</label>
+					<div class="controls">
+						<input class="ace" type="checkbox" name="is_help" value="1">
+						<label class="lbl"> 是否需要協助?</label>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label"></label>
+					<div class="controls">
+						<textarea name="note" id="note" style="margin:0px; height:196px; width:503px;" /><{$user.company.0.note}></textarea>
+					</div>
+				</div>
+				
+				
+				
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<button class="btn btn-success" type="submit">
+							<i class="icon-ok bigger-110"></i>
+							新增
+						</button>
+						
+						<button class="btn btn-primary" type="reset">
+							<i class="icon-undo bigger-110"></i>
+							重設
+						</button>
+						
+						<button class="btn btn-danger" type="button" onclick="javascript:history.go(-1);">
+							<i class="icon-remove bigger-110"></i>
+							取消
+						</button>
+					</div>	
+				</div>
+			</form>
+		
+	</div><!--/row-->
+</div><!--/#page-content-->
+
+<{$userEditJs}>
+<{$csAddTplName}>

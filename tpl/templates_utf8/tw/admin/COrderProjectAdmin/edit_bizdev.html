@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <{include file="./admin/header.html"}>
+    </head> 
+
+    <body style>
+        <div class="main-container container-fluid">
+        	<div class="page-header position-relative">
+				<h1>
+					設定商一權限
+				</h1>
+			</div><!--/.page-header-->
+
+			<div class="row-fluid">
+				<!--PAGE CONTENT BEGINS HERE-->
+				<form class="form-horizontal" id="validation-form" method="post" action="./index.php?func=<{$smarty.get.func}>&action=<{$smarty.get.action}>&project_no=<{$oProject->sProjectUuid}>">
+					<div class="control-group">
+						
+						<div class="controls">
+							<{foreach item=oUser key=count from=$aContractClient}>
+
+								<{if $count%4==0}>
+								<div class="row-fluid">
+								<{/if}>
+
+								<div class="span3">
+									<label>
+										<input type="checkbox" class="ace-switch ace-switch-6" name="project_user[<{$oUser->iUserNo}>]" value="1" <{if $oUser->bSelected}>checked<{/if}>/>
+										<span class="lbl"></span>
+										<span><{$oUser->sName}>(<{$oUser->sAccount}>)</span>
+									</label>
+								</div>
+
+								<{if $count%4==3}>
+								</div>
+								<{/if}>
+
+							<{/foreach}>
+
+							<{if $count%4==3}>
+								</div>
+							<{/if}>
+
+						</div>
+					</div>
+					<hr>
+					<{if $oCompany && $oCompany->iCompanyNo != $oContract->iCompanyNo}>
+						<div class="control-group">
+							<label class="control-label" for="company_client">服務客戶: <{$oCompany->sName}></label>
+							<div class="controls">
+								<{foreach item=oUser key=count from=$aCompanyClient}>
+
+									<{if $count%4==0}>
+									<div class="row-fluid">
+									<{/if}>
+
+									<div class="span3">
+										<label>
+											<input type="checkbox" class="ace-switch ace-switch-6" name="project_user[<{$oUser->iUserNo}>]" value="1" <{if $oUser->bSelected}>checked<{/if}>/>
+											<span class="lbl"></span>
+											<span><{$oUser->sName}>(<{$oUser->sAccount}>)</span>
+										</label>
+									</div>
+
+									<{if $count%4==3}>
+									</div>
+									<{/if}>
+
+								<{/foreach}>
+
+								<{if $count%4==3}>
+									</div>
+								<{/if}>
+
+							</div>
+						</div>
+						<hr>
+					<{/if}>
+					<div class="control-group">
+
+						<label class="control-label" for="contract_client" style="font-size: 20px;">銀河人員 </label>
+						<div class="controls">
+						<div style="width:900px;">
+							<{foreach item=oUser key=count from=$aIwantUser}>
+								<div   style="float:left;width:300px;margin-bottom: 10px;line-height: 36px;font-size: 16px;">
+										<input type="checkbox" class="ace-switch ace-switch-6" name="project_user[<{$oUser->iUserNo}>]" value="1" <{if $oUser->bSelected}>checked<{/if}>/>
+										<span class="lbl"></span>
+										<span><{$oUser->sName}><br>(<{$oUser->sEmail}>)</span>
+								</div>
+							<{/foreach}>
+						</div>
+						</div>
+					</div>
+					<div class="form-actions">
+						<input type="hidden" name="edit" value="1">
+						<button class="btn btn-small btn-info" type="submit">
+							<i class="icon-ok bigger-110"></i>
+							送出
+						</button>
+
+						&nbsp; &nbsp; &nbsp;
+						<button class="btn btn-small" type="reset">
+							<i class="icon-undo bigger-110"></i>
+							重置
+						</button>
+
+						&nbsp; &nbsp; &nbsp;
+						<button class="btn btn-small btn-danger" type="button" onclick="window.colorbox_close()">
+							<i class="icon-reply bigger-110"></i>
+							取消
+						</button>
+					</div>
+
+				<form>	
+			</div>
+            
+        </div>
+
+        <script>
+			$('#validation-form').on('reset',function(e){
+				e.preventDefault();
+				location.reload();
+			})
+
+			function colorbox_close(){
+				parent.postMessage("", "*");
+			}
+		</script>
+    </body>
+</html>

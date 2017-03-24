@@ -1,0 +1,451 @@
+
+<link rel="stylesheet" href="../css/datepicker.css" />
+
+<link rel="stylesheet" href="../css/daterangepicker.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/timeline.css">
+
+ <script type="text/javascript" src="../js/timeline.min.js"></script>
+<script src="../js/date-time/bootstrap-datepicker.min.js"></script>
+
+<script src="../js/date-time/moment.min.js"></script>
+<script src="../js/date-time/daterangepicker.min.js"></script>
+
+<style type="text/css">
+     
+
+        /* custom styles for individual items, load this after timeline.css */
+
+        div.timeline-green,span.timeline-green {
+            background-color: greenyellow;
+            border-color: green;
+        }
+
+        /* create a custom sized dot at the bottom of the red item */
+        div.timeline-red,span.timeline-red {
+            background-color: red;
+            border-color: darkred;
+            color: white;
+            font-family: monospace;
+            box-shadow: 0 0 10px gray;
+        }
+        div.timeline-event-dot.red {
+            border-radius: 10px;
+            border-width: 10px;
+        }
+        div.timeline-event-line.red {
+            border-width: 5px;
+        }
+        div.timeline-event-box.red {
+            border-radius: 0;
+            border-width: 2px;
+            font-size: 24pt;
+            font-weight: bold;
+        }
+
+        div.timeline-orange,span.timeline-orange {
+            background-color: gold;
+            border-color: orange;
+        }
+        div.timeline-event-selected.orange {
+            /* custom colors for selected orange items */
+            background-color: orange;
+            border-color: orangered;
+        }
+
+        div.timeline-magenta,span.timeline-magenta {
+            background-color: magenta;
+            border-color: purple;
+            color: white;
+        }
+         div.timeline-blue,span.timeline-blue {
+            background-color: #4986e7;
+            border-color: blue;
+            color: white;
+        }
+        /* our custom classes overrule the styles for selected events,
+           so lets define a new style for the selected events */
+        div.timeline-event-selected {
+            background-color: white;
+            border-color: black;
+            color: black;
+            box-shadow: 0 0 10px gray;
+        }
+    </style>
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			工作進度
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+<div class="page-content">
+<div class="row-fluid">
+	<div class="span12">
+		<!-- PAGE CONTENT BEGINS -->
+
+		<div class="row-fluid">
+			<div class="span12">
+				
+				<form class="form-search">
+					
+						
+						<div class="input-group">
+							<span class="input-icon input-icon-left">
+							<input id="date-picker" type="text" data-date-format="yyyy-mm-dd" value="">
+							
+								<i class="icon-calendar"></i>
+							</span>
+							<span class="input-group-btn">
+								<button class="btn btn-small" type="button" onClick="moveToCurrentTime()">
+									<i class="icon-calendar bigger-110"></i>
+									Go
+								</button>
+							</span>
+							<span class="input-group-btn">
+								<button class="btn btn-small" type="button" onClick="moveToNow()">
+									<i class="icon-calendar bigger-110"></i>
+									Now
+								</button>
+							</span>
+						</div>
+						
+					
+				</form>
+				<p>
+				<span class="timeline-blue">全天</span>
+				</p>
+				<h3>行事曆</h3>
+				<hr>
+				<div id="my_task_timeline"></div>
+					
+				<h3>系統記錄</h3>
+				<hr>
+				<div id="my_log_timeline"></div>
+			</div>
+			
+			
+		</div>
+
+		<!-- PAGE CONTENT ENDS -->
+	</div><!-- /.col -->
+</div><!-- /.row -->
+</div>
+<script type="text/javascript">
+			
+
+
+
+$(document).ready(function() {
+
+			
+
+	$('#date-picker').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
+         
+            // specify options
+            var options = {
+                'width':  '100%',
+                'height': '300px',
+                'cluster': true,
+                "zoomMin": 1000 * 60 * 60 * 1,             // one hour in milliseconds 最小顯示一小時
+                "zoomMax": 1000 * 60 * 60 * 24 * 31 * 1,     // about one months in milliseconds 最大顯示一個月
+                'showCustomTime': true,
+                 'style': 'box'
+            };
+
+            // Instantiate our timeline object.
+            log_timeline = new links.Timeline(document.getElementById('my_log_timeline'));
+            task_timeline = new links.Timeline(document.getElementById('my_task_timeline'));
+
+            // attach an event listener using the links events handler
+            links.events.addListener(log_timeline, 'rangechanged',  function (properties){
+
+            	// console.log(properties.start + ' - ' + properties.end);
+            	task_timeline.setVisibleChartRange(properties.start, properties.end);
+        	 	timeline_source_get(log_timeline,"../ajax/ajax.CTimeline.php?action=user_log&user_no=<{$iUserNo}>");
+            	timeline_source_get(task_timeline,"../ajax/ajax.CTimeline.php?action=user_task&user_no=<{$iUserNo}>");
+
+
+            });
+            links.events.addListener(log_timeline, 'ready', function(){
+             	//console.log("ready");
+             	timeline_source_get(log_timeline,"../ajax/ajax.CTimeline.php?action=user_log&user_no=<{$iUserNo}>");
+
+            });
+            links.events.addListener(log_timeline, 'select', function(){
+             	
+            	var sel = log_timeline.getSelection();
+            	var data = log_timeline.getData();
+            	console.log(data);
+            	if (sel.length) {
+			if (sel[0].row != undefined) {
+				var row = sel[0].row;
+				
+				//尋找task同一range是否有相同的table_id
+
+				var task_data = task_timeline.getData();
+				if(task_data){
+					$.each(task_data, function(i2, e2) {
+						
+						if(e2.table_id==data[row].table_id){
+							task_timeline.setSelection([{row: i2}]);//選取
+							return true;
+						}	
+					});
+				}	
+
+				//console.log("event " + sel[0].row + " selected");
+				//console.log(data[row]);
+
+				var html = data[row].start.toString()+"<hr>"+data[row].content+"<hr>";
+				bootbox.dialog({
+						message: html,
+						buttons: 			
+						{
+							
+							"go" :
+							{
+								"label" : "Go",
+								"className" : "btn-sm btn-primary",
+								"callback": function() {
+									if(data[row].url)
+										location.href=data[row].url;
+								}
+							}, 
+							"close" :
+							{
+								"label" : "Close",
+								"className" : "btn-sm"
+							}
+						}
+					});
+			}
+		}
+            });
+	
+            // attach an event listener using the links events handler
+            links.events.addListener(task_timeline, 'rangechanged',  function (properties){
+        	// console.log(properties.start + ' - ' + properties.end);
+        	log_timeline.setVisibleChartRange(properties.start, properties.end);
+    	  	timeline_source_get(task_timeline,"../ajax/ajax.CTimeline.php?action=user_task&user_no=<{$iUserNo}>");
+    	   	timeline_source_get(log_timeline,"../ajax/ajax.CTimeline.php?action=user_log&user_no=<{$iUserNo}>");
+            });
+            links.events.addListener(task_timeline, 'ready', function(){
+             	//console.log("ready");
+             	 timeline_source_get(task_timeline,"../ajax/ajax.CTimeline.php?action=user_task&user_no=<{$iUserNo}>");
+            });
+            links.events.addListener(task_timeline, 'select', function(){
+             	var sel = task_timeline.getSelection();
+            	var data = task_timeline.getData();
+            	if (sel.length) {
+			if (sel[0].row != undefined) {
+				var row = sel[0].row;
+				
+				//尋找log同一range是否有相同的table_id
+
+				var log_data = log_timeline.getData();
+				if(log_data){
+					$.each(log_data, function(i2, e2) {
+						
+						if(e2.table_id==data[row].table_id){
+							log_timeline.setSelection([{row: i2}]);//選取
+							return true;
+						}	
+					});
+				}	
+				//console.log("event " + sel[0].row + " selected");
+				//console.log(data[row]);
+				//console.log(task_timeline.getItem(row))
+				var html = data[row].start.toString();
+				if(data[row].end){
+
+					html += " ~ "+data[row].end.toString()+"<hr>";
+				}else
+					html +="<hr>";
+				html += data[row].event_name+"<hr>";
+				html += data[row].content+"<hr>"+data[row].description+"<hr>";
+					if(data[row].task_user){
+						$.each(data[row].task_user, function(i2, e2) {
+							html += '<p>'+e2.user_name+'</p>';	
+						});
+					}	
+				bootbox.dialog({
+						message: html,
+						buttons: 			
+						{
+							"go" :
+							{
+								"label" : "Go",
+								"className" : "btn-sm btn-primary",
+								"callback": function() {
+									if(data[row].url)
+										location.href=data[row].url;
+								}
+							}, 
+							"close" :
+							{
+								"label" : "Close",
+								"className" : "btn-sm"
+							}
+						}
+					});
+
+			}
+		}
+
+            });
+            // Draw our timeline with the created data and options
+            task_timeline.draw([], options);
+            log_timeline.draw([], options);
+
+});
+	
+	var log_timeline;
+	var task_timeline;
+
+	function moveToCurrentTime() {
+            	if(!log_timeline) return;
+            	//timeline.setVisibleChartRangeNow();
+            	//timeline.setVisibleChartRange(range.start, range.end);
+            	//var v = $('#date-picker').val().split('-');
+	            //var date = new Date(v[0], v[1], v[2]);
+	           var date = new Date($('#date-picker').val());
+	            if (date.toString() == "Invalid Date") {
+	                alert("Invalid Date");
+	            }
+	            else {
+	                task_timeline.setCustomTime(date);
+	                task_timeline.setVisibleChartRange(date,date);
+	                log_timeline.setCustomTime(date);
+	                log_timeline.setVisibleChartRange(date,date);
+	                timeline_source_get(task_timeline,"../ajax/ajax.CTimeline.php?action=user_task&user_no=<{$iUserNo}>");
+            	   	timeline_source_get(log_timeline,"../ajax/ajax.CTimeline.php?action=user_log&user_no=<{$iUserNo}>");
+	            }
+            	
+       	 }
+       	 function moveToNow() {
+        	if(!log_timeline) return;
+        	var date = new Date();
+        	//console.log(date);
+            task_timeline.setCustomTime(date);
+			task_timeline.setVisibleChartRangeNow();   
+            log_timeline.setCustomTime(date);
+			log_timeline.setVisibleChartRangeNow(); 
+			timeline_source_get(task_timeline,"../ajax/ajax.CTimeline.php?action=user_task&user_no=<{$iUserNo}>");
+        	timeline_source_get(log_timeline,"../ajax/ajax.CTimeline.php?action=user_log&user_no=<{$iUserNo}>");
+       	 }
+
+	function timeline_loding(loading){
+
+		if (loading) {
+			$('#my_log_timeline').addClass("position-relative")
+			$('#my_log_timeline').append('<div class="widget-box-layer"><i class="icon-spinner icon-spin icon-2x white"></i></div>');
+			$('#my_task_timeline').addClass("position-relative")
+			$('#my_task_timeline').append('<div class="widget-box-layer"><i class="icon-spinner icon-spin icon-2x white"></i></div>');
+		}
+		else {
+
+			$('#my_log_timeline').find(".widget-box-layer").remove();
+			$('#my_log_timeline').removeClass("position-relative");
+			
+			$('#my_task_timeline').find(".widget-box-layer").remove();
+			$('#my_task_timeline').removeClass("position-relative");
+		}
+	}
+
+	function timeline_source_get(timeline,url){
+		timeline_loding(true);
+
+		var range = timeline.getVisibleChartRange();
+                      	
+		var request = $.ajax({
+			  url: url,
+			  type: "GET",
+			  dataType: "html",
+			  data: {
+					// our hypothetical feed requires UNIX timestamps
+					start: Math.round(range.start.getTime() / 1000),
+					end: Math.round(range.end.getTime() / 1000)
+				}
+			});
+		request.done(function( msg ) {
+			console.log(msg);
+			var data = JSON.parse(msg);
+			if(data.errorMsg){
+				//console.log(data.errorMsg);
+				alert(data.errorMsg);
+				timeline_loding(false);
+				return true;
+			}
+			
+			timeline.deleteAllItems();
+
+			if(data.events){
+
+				$.each(data.events, function(i,e) {
+					//console.log(e);
+					//newDate = new Date(+unix_timestamp + 1000*3600);
+					e.start = new Date(e.start* 1000);
+					if(e.end)e.end = new Date(e.end* 1000);
+					
+					e.className="";
+					if(e.allDay) // all day 
+						e.className="timeline-blue";
+					else{
+						//可以依event_no 給不同的css,或者user_no ,project_no等
+						//switch(e.event_no){
+						//}
+					}
+					//timeline.addItem(e);
+				});
+				
+			}
+			timeline.setData(data.events);
+			timeline.redraw();
+			timeline_loding(false);
+		});	
+	}
+	
+	
+	function timeline_source_remove(timeline,url){
+		timeline_loding(true);
+		var range = timeline.getVisibleChartRange();
+		
+		var request = $.ajax({
+			  url: url,
+			  type: "GET",
+			  dataType: "html",
+			  data: {
+					// our hypothetical feed requires UNIX timestamps
+					start: Math.round(range.start.getTime() / 1000),
+					end: Math.round(range.end.getTime() / 1000)
+				}
+			});
+		request.done(function( msg ) {
+			var obj = jQuery.parseJSON(msg);
+			if(obj.errorMsg){
+				//console.log(obj.errorMsg);
+				alert(obj.errorMsg);
+				return true;
+			}
+			if(obj.events){
+				$.each(obj.events, function(i,e) {
+				});
+			}
+			timeline_loding(false);
+		});
+	}
+
+</script>
+

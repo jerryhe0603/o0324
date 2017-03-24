@@ -1,0 +1,82 @@
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="./index.php">首頁</a>
+
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+
+		<li>
+			<a href="./index.php?func=group&action=list">群組管理</a>
+			<span class="divider">
+				<i class="icon-angle-right"></i>
+			</span>
+		</li>
+		<li class="active">
+			人員群組使用者
+		</li>
+	</ul><!--.breadcrumb-->
+</div>
+
+<div class="page-content">
+	<div class="page-header position-relative">
+		<h1>
+			人員群組使用者
+		</h1>
+	</div><!--/.page-header-->
+
+	<div class="row-fluid">
+		<!--PAGE CONTENT BEGINS HERE-->
+		<form class="form-horizontal" id="validation-form" method="post" action="./index.php?func=<{$smarty.get.func}>&action=edit">
+			<div class="control-group">
+				<label class="control-label" for="name">名稱</label>
+
+				<div class="controls">
+					<input type="text" name="group_name" id="name" value="<{$group.group_name}>" />
+				</div>
+			</div>	
+
+			<div class="control-group">
+				<label class="control-label" for="desc">描述</label>
+
+				<div class="controls">
+					<input type="text" name="group_desc" id="desc" value="<{$group.group_desc}>" />
+				</div>
+			</div>	
+
+			<div class="control-group">
+				<label class="control-label">使用者</label>
+				<div class="controls">	
+					<div class="span6">
+						<{if $UserData}>
+						<table class="table table-striped table-bordered table-hover" width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+							  <th>姓名</th>
+							  <th>帳號</th>
+							</tr>
+							<{foreach from=$UserData item=key}>
+							<tr> 
+							  <td><{$key.user_name}></td>
+							  <td><{$key.user_account}></td>
+							</tr>
+							<{/foreach}>
+						</table>
+						<{/if}>
+					</div>		
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button class="btn btn-small btn-danger" type="button" onclick="window.history.go(-1)">
+					<i class="icon-reply bigger-110"></i>
+					返回
+				</button>
+			</div>
+
+			<input type="hidden" name="group_no" value="<{$smarty.get.group_no}>" />
+		<form>	
+	</div>
+</div>
